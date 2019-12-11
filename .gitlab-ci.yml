@@ -24,6 +24,10 @@ build:
     paths:
       - build
       - .gradle
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - build/distributions/
 
 test:
   stage: test
