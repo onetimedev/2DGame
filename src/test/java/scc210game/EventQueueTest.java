@@ -1,13 +1,14 @@
 package scc210game;
 
 import org.junit.Test;
+import scc210game.events.Event;
+import scc210game.events.EventQueue;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import java.lang.Iterable;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class EventQueueTest {
     @Test

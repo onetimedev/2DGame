@@ -1,4 +1,4 @@
-package scc210game;
+package scc210game.events;
 
 import org.jetbrains.annotations.NotNull;
 
