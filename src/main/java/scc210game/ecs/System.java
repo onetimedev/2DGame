@@ -27,10 +27,13 @@ public abstract class System {
     }
 
     public void run(World world) {
-        final Query q = this.getQuery();
+        final Query q = this.getCachedQuery();
         final Stream<Entity> entities = world.applyQuery(q);
 
-        entities.forEach(e -> this.actOnEntity(e, world));
+        entities.forEach(e -> {
+            world.resetModifiedState(e);
+            this.actOnEntity(e, world);
+        });
     }
 
     /**

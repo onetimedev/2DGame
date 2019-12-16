@@ -47,6 +47,8 @@ public class ECSTest {
 
                 pos.x += vel.dx;
                 pos.y += vel.dy;
+
+                world.setModified(e, Position.class);
             }
         }
 

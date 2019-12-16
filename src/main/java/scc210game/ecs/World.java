@@ -48,6 +48,19 @@ public class World {
         return (T) this.componentMaps.get(e).get(componentType).component;
     }
 
+    public void resetModifiedState(Entity e) {
+        this.componentMaps.get(e).values().forEach(m -> m.isModified = false);
+    }
+
+    public void setModified(Entity e, Class<? extends Component> componentType) {
+        this.setModifiedState(e, componentType, true);
+    }
+
+    @SuppressWarnings("BooleanParameter")
+    public void setModifiedState(Entity e, Class<? extends Component> componentType, boolean state) {
+        this.componentMaps.get(e).get(componentType).isModified = state;
+    }
+
     Stream<Entity> applyQuery(Query q) {
         // I hope this is performant
 

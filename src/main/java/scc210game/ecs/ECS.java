@@ -31,6 +31,15 @@ public class ECS {
         return this.world.fetchComponent(e, componentType);
     }
 
+    public void setModified(Entity e, Class<? extends Component> componentType) {
+        this.world.setModified(e, componentType);
+    }
+
+    @SuppressWarnings("BooleanParameter")
+    public void setModifiedState(Entity e, Class<? extends Component> componentType, boolean state) {
+        this.world.setModifiedState(e, componentType, state);
+    }
+
     public World.EntityBuilder entityBuilder() {
         return this.world.entityBuilder();
     }
