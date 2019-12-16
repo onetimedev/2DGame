@@ -12,7 +12,7 @@ public class Entity {
         this.id = id;
     }
 
-    public static Entity get() {
+    public static Entity make() {
         return EntityAllocator.allocate();
     }
 
