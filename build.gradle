@@ -28,6 +28,7 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    implementation 'org.jetbrains:annotations:15.0'
 }
 
 java {
@@ -36,7 +37,7 @@ java {
 
 version = '1.0-SNAPSHOT'
 
-import org.gradle.internal.os.OperatingSystem;
+import org.gradle.internal.os.OperatingSystem
 
 application {
     // Define the main class for the application.
