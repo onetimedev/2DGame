@@ -43,24 +43,56 @@ public class World {
         componentStorage.put(component.getClass(), new ComponentMeta<>(component));
     }
 
+    /**
+     * Fetch a component for an entity
+     *
+     * @param e             the {@link Entity} to fetch the component of
+     * @param componentType the type of {@link Component} to fetch
+     * @param <T>           the class of {@link Component} to fetch
+     * @return the requested {@link Component}
+     */
     @SuppressWarnings("unchecked")
     public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
         return (T) this.componentMaps.get(e).get(componentType).component;
     }
 
+    /**
+     * Reset the modification state of all components for the given {@link Entity} to unmodified
+     *
+     * @param e the {@link Entity} to modify
+     */
     public void resetModifiedState(Entity e) {
         this.componentMaps.get(e).values().forEach(m -> m.isModified = false);
     }
 
+    /**
+     * Flag an entity's component as modified
+     *
+     * @param e             the {@link Entity} for which the component to be flagged as modified belongs to
+     * @param componentType the type of {@link Component} to flag as modified
+     */
     public void setModified(Entity e, Class<? extends Component> componentType) {
         this.setModifiedState(e, componentType, true);
     }
 
+    /**
+     * Set the modified state of an entity's component
+     *
+     * @param e             the {@link Entity} for which the component to set the modified flag belongs to
+     * @param componentType the type of {@link Component} to set the modified flag on
+     * @param state         the state to set the modified flag to
+     */
     @SuppressWarnings("BooleanParameter")
     public void setModifiedState(Entity e, Class<? extends Component> componentType, boolean state) {
         this.componentMaps.get(e).get(componentType).isModified = state;
     }
 
+    /**
+     * Apply a query to the world, fetching all the entities matching the conditions of the query
+     *
+     * @param q the {@link Query} to use
+     * @return a {@link Stream<Entity>} of entities that match the query
+     */
     Stream<Entity> applyQuery(Query q) {
         // I hope this is performant
 
@@ -72,10 +104,18 @@ public class World {
         });
     }
 
+    /**
+     * Construct an {@link EntityBuilder} used to build an entity with a set of components
+     *
+     * @return the constructed {@link EntityBuilder}
+     */
     public EntityBuilder entityBuilder() {
         return new EntityBuilder();
     }
 
+    /**
+     * A helper class for constructing entities
+     */
     public class EntityBuilder {
         private final Entity entity;
         private final ArrayList<Component> components;
@@ -87,6 +127,12 @@ public class World {
             this.built = false;
         }
 
+        /**
+         * Add a {@link Component} to the initial components of the entity
+         *
+         * @param component the {@link Component} to add
+         * @return the current {@link EntityBuilder} instance (to allow chaining)
+         */
         public EntityBuilder with(Component component) {
             assert !this.built : "EntityBuilder already built";
 
@@ -95,6 +141,11 @@ public class World {
             return this;
         }
 
+        /**
+         * Construct the entity
+         *
+         * @return the constructed {@link Entity}
+         */
         public Entity build() {
             assert !this.built : "EntityBuilder already built";
             this.built = true;

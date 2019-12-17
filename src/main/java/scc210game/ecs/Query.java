@@ -35,33 +35,68 @@ public class Query {
         return true;
     }
 
+    /**
+     * Get a {@link Builder} instance
+     *
+     * @return the new {@link Builder} instance
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * A helper class for constructing queries
+     */
     public static class Builder {
         private final ArrayList<Class<? extends Component>> mustHave;
         private final ArrayList<Class<? extends Component>> mustBeModified;
+        private boolean built;
 
         public Builder() {
             this.mustHave = new ArrayList<>();
             this.mustBeModified = new ArrayList<>();
+            this.built = false;
         }
 
+        /**
+         * Add to the set of components this query needs
+         *
+         * @param compType the type of {@link Component} to add to the set of required components
+         * @return the current {@link Builder} instance (to allow chaining)
+         */
         public Builder require(Class<? extends Component> compType) {
+            assert !this.built : "Builder already build";
+
             this.mustHave.add(compType);
 
             return this;
         }
 
+        /**
+         * Add to the set of components that must have been modified that this query needs
+         *
+         * @param compType the type of {@link Component} to add to the set of modified required components
+         * @return the current {@link Builder} instance (to allow chaining)
+         */
         public Builder requireModified(Class<? extends Component> compType) {
+            assert !this.built : "Builder already build";
+
             this.mustHave.add(compType);
             this.mustBeModified.add(compType);
 
             return this;
         }
 
+        /**
+         * Construct the query
+         *
+         * @return the constructed {@link Query}
+         */
         public Query build() {
+            assert !this.built : "Builder already build";
+            this.built = true;
+
+
             return new Query(this.mustHave, this.mustBeModified);
         }
     }

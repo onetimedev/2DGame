@@ -24,13 +24,14 @@ class EntityAllocator {
 
     /**
      * Allocate a new entity.
+     *
      * @return The newly allocated entity
      */
-    public static Entity allocate() {
+    static Entity allocate() {
         return getInstance().allocateInner();
     }
 
-    public static EntityAllocator getInstance() {
+    static EntityAllocator getInstance() {
         if (EntityAllocator.instance == null)
             EntityAllocator.instance = new EntityAllocator();
 
