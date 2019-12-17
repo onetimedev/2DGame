@@ -1,6 +1,8 @@
 package scc210game.ecs;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -8,9 +10,11 @@ import java.util.List;
  */
 class SystemExecutor {
     private final List<? extends System> systems;
+    private Instant lastRun;
 
     public SystemExecutor(List<? extends System> systems) {
         this.systems = systems;
+        this.lastRun = Instant.now();
     }
 
     /**
@@ -19,8 +23,13 @@ class SystemExecutor {
      * @param world the {@link World} to run
      */
     public void runOnce(@Nonnull World world) {
+        Instant now = Instant.now();
+        Duration delta = Duration.between(this.lastRun, now);
+
         for (final System s : this.systems) {
-            s.run(world);
+            s.run(world, delta);
         }
+
+        this.lastRun = now;
     }
 }

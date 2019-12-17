@@ -5,6 +5,7 @@ import scc210game.ecs.System;
 import scc210game.ecs.*;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -41,7 +42,7 @@ public class ECSTest {
             }
 
             @Override
-            public void actOnEntity(Entity e, @Nonnull World world) {
+            public void actOnEntity(Entity e, @Nonnull World world, @Nonnull Duration timeDelta) {
                 var pos = world.fetchComponent(e, Position.class);
                 var vel = world.fetchComponent(e, Velocity.class);
 
