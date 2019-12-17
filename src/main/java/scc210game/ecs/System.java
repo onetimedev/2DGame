@@ -26,7 +26,7 @@ public abstract class System {
         return this.q;
     }
 
-    public void run(World world) {
+    public void run(@Nonnull World world) {
         final Query q = this.getCachedQuery();
         final Stream<Entity> entities = world.applyQuery(q);
 

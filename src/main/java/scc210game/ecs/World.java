@@ -1,5 +1,7 @@
 package scc210game.ecs;
 
+
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -8,8 +10,11 @@ import java.util.stream.Stream;
  * A world tracks which components each entity has and stores those components.
  */
 public class World {
+    @Nonnull
     private final List<Entity> entities;
+    @Nonnull
     private final Map<Entity, Set<Class<? extends Component>>> entityComponents;
+    @Nonnull
     private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
 
     World() {
@@ -18,7 +23,7 @@ public class World {
         this.componentMaps = new HashMap<>();
     }
 
-    void addEntity(Entity e, Collection<? extends Component> components) {
+    void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.entities.add(e);
 
         HashSet<Class<? extends Component>> componentTypes = components.stream()
@@ -32,7 +37,7 @@ public class World {
         }
     }
 
-    void addComponentToEntity(Entity e, Component component) {
+    void addComponentToEntity(Entity e, @Nonnull Component component) {
         assert this.entities.contains(e) : "Entity not added to world";
 
         Set<Class<? extends Component>> componentSet = this.entityComponents.computeIfAbsent(e, k -> new HashSet<>());
@@ -51,6 +56,7 @@ public class World {
      * @param <T>           the class of {@link Component} to fetch
      * @return the requested {@link Component}
      */
+    @Nonnull
     @SuppressWarnings("unchecked")
     public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
         return (T) this.componentMaps.get(e).get(componentType).component;
@@ -93,7 +99,7 @@ public class World {
      * @param q the {@link Query} to use
      * @return a {@link Stream<Entity>} of entities that match the query
      */
-    Stream<Entity> applyQuery(Query q) {
+    Stream<Entity> applyQuery(@Nonnull Query q) {
         // I hope this is performant
 
         return this.entities.parallelStream().filter(e -> {
@@ -109,6 +115,7 @@ public class World {
      *
      * @return the constructed {@link EntityBuilder}
      */
+    @Nonnull
     public EntityBuilder entityBuilder() {
         return new EntityBuilder();
     }
@@ -117,7 +124,9 @@ public class World {
      * A helper class for constructing entities
      */
     public class EntityBuilder {
+        @Nonnull
         private final Entity entity;
+        @Nonnull
         private final ArrayList<Component> components;
         private boolean built;
 
@@ -133,6 +142,7 @@ public class World {
          * @param component the {@link Component} to add
          * @return the current {@link EntityBuilder} instance (to allow chaining)
          */
+        @Nonnull
         public EntityBuilder with(Component component) {
             assert !this.built : "EntityBuilder already built";
 
@@ -146,6 +156,7 @@ public class World {
          *
          * @return the constructed {@link Entity}
          */
+        @Nonnull
         public Entity build() {
             assert !this.built : "EntityBuilder already built";
             this.built = true;

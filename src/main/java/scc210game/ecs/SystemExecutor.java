@@ -1,5 +1,6 @@
 package scc210game.ecs;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ class SystemExecutor {
      *
      * @param world the {@link World} to run
      */
-    public void runOnce(World world) {
+    public void runOnce(@Nonnull World world) {
         for (final System s : this.systems) {
             s.run(world);
         }

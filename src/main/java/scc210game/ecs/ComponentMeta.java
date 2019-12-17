@@ -1,5 +1,7 @@
 package scc210game.ecs;
 
+import javax.annotation.Nonnull;
+
 /**
  * Stores metadata about components
  * <p>
@@ -8,10 +10,11 @@ package scc210game.ecs;
  * @param <T> The component this metadata is wrapping
  */
 class ComponentMeta<T extends Component> {
+    @Nonnull
     public final T component;
     public boolean isModified = false;
 
-    public ComponentMeta(T component) {
+    public ComponentMeta(@Nonnull T component) {
         this.component = component;
     }
 }

@@ -1,12 +1,15 @@
 package scc210game.ecs;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
  * Represents a query used to filter entities that have a set of components.
  */
 public class Query {
+    @Nonnull
     private final Set<Class<? extends Component>> mustHave;
+    @Nonnull
     private final Set<Class<? extends Component>> mustBeModified;
 
     /**
@@ -15,12 +18,12 @@ public class Query {
      * @param mustHave       the set of components that entities must have to pass the filter
      * @param mustBeModified components that must have been modified to pass the filter
      */
-    public Query(List<Class<? extends Component>> mustHave, List<Class<? extends Component>> mustBeModified) {
+    public Query(@Nonnull List<Class<? extends Component>> mustHave, @Nonnull List<Class<? extends Component>> mustBeModified) {
         this.mustHave = new HashSet<>(mustHave);
         this.mustBeModified = new HashSet<>(mustBeModified);
     }
 
-    boolean testEntity(Collection<Class<? extends Component>> componentSet, Map<Class<? extends Component>, ? extends ComponentMeta<Component>> componentData) {
+    boolean testEntity(@Nonnull Collection<Class<? extends Component>> componentSet, @Nonnull Map<Class<? extends Component>, ? extends ComponentMeta<Component>> componentData) {
         if (!componentSet.containsAll(this.mustHave))
             return false;
 
@@ -40,6 +43,7 @@ public class Query {
      *
      * @return the new {@link Builder} instance
      */
+    @Nonnull
     public static Builder builder() {
         return new Builder();
     }
@@ -48,7 +52,9 @@ public class Query {
      * A helper class for constructing queries
      */
     public static class Builder {
+        @Nonnull
         private final ArrayList<Class<? extends Component>> mustHave;
+        @Nonnull
         private final ArrayList<Class<? extends Component>> mustBeModified;
         private boolean built;
 
@@ -64,6 +70,7 @@ public class Query {
          * @param compType the type of {@link Component} to add to the set of required components
          * @return the current {@link Builder} instance (to allow chaining)
          */
+        @Nonnull
         public Builder require(Class<? extends Component> compType) {
             assert !this.built : "Builder already build";
 
@@ -78,6 +85,7 @@ public class Query {
          * @param compType the type of {@link Component} to add to the set of modified required components
          * @return the current {@link Builder} instance (to allow chaining)
          */
+        @Nonnull
         public Builder requireModified(Class<? extends Component> compType) {
             assert !this.built : "Builder already build";
 
@@ -92,6 +100,7 @@ public class Query {
          *
          * @return the constructed {@link Query}
          */
+        @Nonnull
         public Query build() {
             assert !this.built : "Builder already build";
             this.built = true;

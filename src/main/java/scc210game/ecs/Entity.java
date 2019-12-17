@@ -1,5 +1,8 @@
 package scc210game.ecs;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Represents an entity in the entity-component-system model
  */
@@ -12,12 +15,13 @@ public class Entity {
         this.id = id;
     }
 
+    @Nonnull
     public static Entity make() {
         return EntityAllocator.allocate();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
 

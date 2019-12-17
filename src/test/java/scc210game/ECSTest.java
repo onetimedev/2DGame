@@ -1,10 +1,10 @@
 package scc210game;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import scc210game.ecs.System;
 import scc210game.ecs.*;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +31,7 @@ public class ECSTest {
             }
         }
         class System0 extends System {
-            @NotNull
+            @Nonnull
             @Override
             public Query getQuery() {
                 return Query.builder()
@@ -41,7 +41,7 @@ public class ECSTest {
             }
 
             @Override
-            public void actOnEntity(Entity e, World world) {
+            public void actOnEntity(Entity e, @Nonnull World world) {
                 var pos = world.fetchComponent(e, Position.class);
                 var vel = world.fetchComponent(e, Velocity.class);
 

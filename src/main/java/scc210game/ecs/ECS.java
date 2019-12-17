@@ -1,5 +1,7 @@
 package scc210game.ecs;
 
+
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
@@ -7,7 +9,9 @@ import java.util.List;
  * Wraps all the ECS parts
  */
 public class ECS {
+    @Nonnull
     private final World world;
+    @Nonnull
     private final SystemExecutor executor;
 
     /**
@@ -26,7 +30,7 @@ public class ECS {
      * @param e          the {@link Entity} to add to the world
      * @param components the {@link Component}s the entity should start with
      */
-    public void addEntity(Entity e, Collection<? extends Component> components) {
+    public void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.world.addEntity(e, components);
     }
 
@@ -36,7 +40,7 @@ public class ECS {
      * @param e         the {@link Entity} to add the component to
      * @param component the {@link Component} to add to the entity
      */
-    public void addComponentToEntity(Entity e, Component component) {
+    public void addComponentToEntity(Entity e, @Nonnull Component component) {
         this.world.addComponentToEntity(e, component);
     }
 
@@ -55,6 +59,7 @@ public class ECS {
      * @param <T>           the class of {@link Component} to fetch
      * @return the requested {@link Component}
      */
+    @Nonnull
     public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
         return this.world.fetchComponent(e, componentType);
     }
@@ -86,6 +91,7 @@ public class ECS {
      *
      * @return the constructed {@link World.EntityBuilder}
      */
+    @Nonnull
     public World.EntityBuilder entityBuilder() {
         return this.world.entityBuilder();
     }
