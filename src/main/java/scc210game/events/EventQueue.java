@@ -1,7 +1,7 @@
 package scc210game.events;
 
-import org.jetbrains.annotations.NotNull;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,9 +13,12 @@ import java.util.Iterator;
  * This is a singleton class, use like: `EventQueue.listen`, etc.
  */
 public class EventQueue {
+    @Nullable
     private static EventQueue instance = null;
 
+    @Nonnull
     private final HashMap<Long, ArrayDeque<Event>> queues;
+    @Nonnull
     private final HashMap<Class<? extends Event>, HashSet<Long>> registered;
 
     public EventQueue() {
@@ -60,7 +63,7 @@ public class EventQueue {
      *
      * @param e The event to broadcast
      */
-    public static void broadcast(@NotNull Event e) {
+    public static void broadcast(@Nonnull Event e) {
         var instance = getInstance();
 
         var listeners = instance.registered.get(e.getClass());
@@ -69,7 +72,7 @@ public class EventQueue {
             return;
         }
 
-        for (var entID : listeners) {
+        for (final var entID : listeners) {
             instance.queues.get(entID).add(e);
         }
     }
@@ -79,6 +82,7 @@ public class EventQueue {
      * @param entID The entity to get events for
      * @return An iterator of events for this entity
      */
+    @Nonnull
     public static Iterator<Event> getEventsFor(long entID) {
         var q = getInstance().queues.get(entID);
         
@@ -95,10 +99,11 @@ public class EventQueue {
         };
     }
 
+    @Nonnull
     private static EventQueue getInstance() {
         if (EventQueue.instance == null)
             EventQueue.instance = new EventQueue();
 
-        return instance;
+        return EventQueue.instance;
     }
 }
