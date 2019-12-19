@@ -1,5 +1,7 @@
 package scc210game.events;
 
+import scc210game.ecs.Entity;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
@@ -17,9 +19,9 @@ public class EventQueue {
     private static EventQueue instance = null;
 
     @Nonnull
-    private final HashMap<Long, ArrayDeque<Event>> queues;
+    private final HashMap<Entity, ArrayDeque<Event>> queues;
     @Nonnull
-    private final HashMap<Class<? extends Event>, HashSet<Long>> registered;
+    private final HashMap<Class<? extends Event>, HashSet<Entity>> registered;
 
     public EventQueue() {
         this.queues = new HashMap<>();
@@ -27,33 +29,35 @@ public class EventQueue {
     }
 
     /**
-     * Register `entID` to listen to events of type `on`
-     * @param entID The entity that is listening
-     * @param on The type of event to listen on
+     * Register `e` to listen to events of type `on`
+     *
+     * @param e  The {@link Entity} that is listening
+     * @param on The type of {@link Event} to listen on
      */
-    public static void listen(long entID, Class<? extends Event> on) {
+    public static void listen(Entity e, Class<? extends Event> on) {
         var instance = getInstance();
-        instance.queues.computeIfAbsent(entID, k -> new ArrayDeque<>());
-        instance.registered.computeIfAbsent(on, k -> new HashSet<>()).add(entID);
+        instance.queues.computeIfAbsent(e, k -> new ArrayDeque<>());
+        instance.registered.computeIfAbsent(on, k -> new HashSet<>()).add(e);
     }
 
     /**
-     * Unregister `entID` from listening to events of type `on`
-     * @param entID The entity that is listening
+     * Unregister `e` from listening to events of type `on`
+     *
+     * @param e  The {@link Entity} that is listening
      * @param on The type of event to stop listening on
      */
-    public static void unListen(long entID, Class<? extends Event> on) {
+    public static void unListen(Entity e, Class<? extends Event> on) {
         EventQueue instance = getInstance();
-        var set = instance.registered.get(on);
+        HashSet<Entity> set = instance.registered.get(on);
 
         if (set == null) {
             return;
         }
 
-        set.remove(entID);
+        set.remove(e);
 
         if (set.isEmpty()) {
-            instance.queues.remove(entID) ;
+            instance.queues.remove(e);
             instance.registered.remove(on);
         }
     }
@@ -61,31 +65,32 @@ public class EventQueue {
     /**
      * Broadcast an event to all listeners.
      *
-     * @param e The event to broadcast
+     * @param evt The event to broadcast
      */
-    public static void broadcast(@Nonnull Event e) {
+    public static void broadcast(@Nonnull Event evt) {
         var instance = getInstance();
 
-        var listeners = instance.registered.get(e.getClass());
+        HashSet<Entity> listeners = instance.registered.get(evt.getClass());
 
         if (listeners == null) {
             return;
         }
 
-        for (final var entID : listeners) {
-            instance.queues.get(entID).add(e);
+        for (final Entity entID : listeners) {
+            instance.queues.get(entID).add(evt);
         }
     }
 
     /**
-     * Fetch an iterator of events for the listening `entID`
-     * @param entID The entity to get events for
+     * Fetch an iterator of events for the listening `e`
+     *
+     * @param e The entity to get events for
      * @return An iterator of events for this entity
      */
     @Nonnull
-    public static Iterator<Event> getEventsFor(long entID) {
-        var q = getInstance().queues.get(entID);
-        
+    public static Iterator<Event> getEventsFor(Entity e) {
+        var q = getInstance().queues.get(e);
+
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
