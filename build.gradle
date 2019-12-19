@@ -36,7 +36,7 @@ java {
 
 version = '1.0-SNAPSHOT'
 
-import org.gradle.internal.os.OperatingSystem;
+import org.gradle.internal.os.OperatingSystem
 
 application {
     // Define the main class for the application.
