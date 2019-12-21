@@ -1,7 +1,6 @@
 package scc210game;
 
 import org.junit.Test;
-import scc210game.ecs.Entity;
 import scc210game.events.Event;
 import scc210game.events.EventQueue;
 
@@ -27,33 +26,33 @@ public class EventQueueTest {
             String msg = "event1";
         }
 
-        var ent0 = Entity.make();
-        var ent1 = Entity.make();
+        var r0 = EventQueue.makeReader();
+        var r1 = EventQueue.makeReader();
 
-        EventQueue.listen(ent0, Event0.class);
-        EventQueue.listen(ent0, Event1.class);
+        EventQueue.listen(r0, Event0.class);
+        EventQueue.listen(r0, Event1.class);
 
-        EventQueue.listen(ent1, Event0.class);
+        EventQueue.listen(r1, Event0.class);
 
         EventQueue.broadcast(new Event0());
         EventQueue.broadcast(new Event1());
 
         ArrayList<Event> ent0Events = StreamSupport.stream(
-                ((Iterable<Event>) () -> EventQueue.getEventsFor(ent0)).spliterator(), false)
+                ((Iterable<Event>) () -> EventQueue.getEventsFor(r0)).spliterator(), false)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         ArrayList<Event> ent1Events = StreamSupport.stream(
-                ((Iterable<Event>) () -> EventQueue.getEventsFor(ent1)).spliterator(), false)
+                ((Iterable<Event>) () -> EventQueue.getEventsFor(r1)).spliterator(), false)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         assertEquals(ent0Events.size(), 2);
         assertEquals(ent1Events.size(), 1);
 
-        EventQueue.unListen(ent0, Event0.class);
+        EventQueue.unListen(r0, Event0.class);
         EventQueue.broadcast(new Event0());
 
         ArrayList<Event> ent0Events1 = StreamSupport.stream(
-                ((Iterable<Event>) () -> EventQueue.getEventsFor(ent0)).spliterator(), false)
+                ((Iterable<Event>) () -> EventQueue.getEventsFor(r0)).spliterator(), false)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         assertEquals(ent0Events1.size(), 0);
