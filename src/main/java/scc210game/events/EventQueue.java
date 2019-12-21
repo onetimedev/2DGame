@@ -28,6 +28,12 @@ public class EventQueue {
         this.registered = new HashMap<>();
     }
 
+    /**
+     * Get an event queue reader that can be used to register
+     * listeners and collect fired events
+     *
+     * @return a new {@link EventQueueReader}
+     */
     public static EventQueueReader makeReader() {
         return new EventQueueReader(getInstance().lastReaderID++);
     }
