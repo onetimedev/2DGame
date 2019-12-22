@@ -3,9 +3,12 @@
  */
 package scc210game;
 
+import scc210game.render.Render;
+
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world");
+        Render r = new Render(720, 480);
 
     }
 }
