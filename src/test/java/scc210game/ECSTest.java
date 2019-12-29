@@ -6,6 +6,10 @@ import com.github.cliftonlabs.json_simple.Jsoner;
 import org.junit.Test;
 import scc210game.ecs.System;
 import scc210game.ecs.*;
+import scc210game.state.State;
+import scc210game.state.event.StateEvent;
+import scc210game.state.trans.TransNop;
+import scc210game.state.trans.Transition;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
@@ -13,6 +17,13 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+
+class BasicState implements State {
+    @Override
+    public Transition handleEvent(StateEvent evt) {
+        return TransNop.getInstance();
+    }
+}
 
 class Velocity extends Component {
     static {
@@ -118,7 +129,7 @@ public class ECSTest {
             }
         }
 
-        ECS ecs = new ECS(List.of(new System0()));
+        ECS ecs = new ECS(List.of(new System0()), new BasicState());
 
         var ent = ecs.entityBuilder()
                 .with(new Position(0, 0))

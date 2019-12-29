@@ -1,5 +1,7 @@
 package scc210game.ecs;
 
+import scc210game.state.State;
+
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.stream.Stream;
@@ -27,9 +29,9 @@ public abstract class System {
         return this.q;
     }
 
-    public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
+    public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
         final Query q = this.getCachedQuery();
-        final Stream<Entity> entities = world.applyQuery(q);
+        final Stream<Entity> entities = world.applyQuery(q, currentState);
 
         entities.forEach(e -> {
             world.resetModifiedState(e);

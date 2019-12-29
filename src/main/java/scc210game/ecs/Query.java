@@ -1,5 +1,7 @@
 package scc210game.ecs;
 
+import scc210game.state.State;
+
 import javax.annotation.Nonnull;
 import java.util.*;
 
@@ -11,6 +13,8 @@ public class Query {
     private final Set<Class<? extends Component>> mustHave;
     @Nonnull
     private final Set<Class<? extends Component>> mustBeModified;
+    @Nonnull
+    private final Set<Class<? extends State>> stateBlackList;
 
     /**
      * Create a query
@@ -18,9 +22,16 @@ public class Query {
      * @param mustHave       the set of components that entities must have to pass the filter
      * @param mustBeModified components that must have been modified to pass the filter
      */
-    public Query(@Nonnull List<Class<? extends Component>> mustHave, @Nonnull List<Class<? extends Component>> mustBeModified) {
+    public Query(@Nonnull List<Class<? extends Component>> mustHave,
+                 @Nonnull List<Class<? extends Component>> mustBeModified,
+                 @Nonnull List<Class<? extends State>> stateBlackList) {
         this.mustHave = new HashSet<>(mustHave);
         this.mustBeModified = new HashSet<>(mustBeModified);
+        this.stateBlackList = new HashSet<>(stateBlackList);
+    }
+
+    boolean runInThisState(@Nonnull Class<? extends State> state) {
+        return !this.stateBlackList.contains(state);
     }
 
     boolean testEntity(@Nonnull Collection<Class<? extends Component>> componentSet, @Nonnull Map<Class<? extends Component>, ? extends ComponentMeta<Component>> componentData) {
@@ -56,11 +67,14 @@ public class Query {
         private final ArrayList<Class<? extends Component>> mustHave;
         @Nonnull
         private final ArrayList<Class<? extends Component>> mustBeModified;
+        @Nonnull
+        private final ArrayList<Class<? extends State>> stateBlackList;
         private boolean built;
 
         public Builder() {
             this.mustHave = new ArrayList<>();
             this.mustBeModified = new ArrayList<>();
+            this.stateBlackList = new ArrayList<>();
             this.built = false;
         }
 
@@ -72,9 +86,24 @@ public class Query {
          */
         @Nonnull
         public Builder require(Class<? extends Component> compType) {
-            assert !this.built : "Builder already build";
+            assert !this.built : "builder already build";
 
             this.mustHave.add(compType);
+
+            return this;
+        }
+
+        /**
+         * Add to the set of states this query cannot match while in.
+         *
+         * @param state the type of {@link State} that is disallowed
+         * @return the current {@link Builder} instance (to allow chaining)
+         **/
+        @Nonnull
+        public Builder notInState(Class<? extends State> state) {
+            assert !this.built : "builder already build";
+
+            this.stateBlackList.add(state);
 
             return this;
         }
@@ -106,7 +135,7 @@ public class Query {
             this.built = true;
 
 
-            return new Query(this.mustHave, this.mustBeModified);
+            return new Query(this.mustHave, this.mustBeModified, this.stateBlackList);
         }
     }
 }

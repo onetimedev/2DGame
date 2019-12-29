@@ -1,28 +1,33 @@
 package scc210game.state;
 
 import scc210game.state.event.StateEvent;
+import scc210game.state.trans.TransNop;
 import scc210game.state.trans.Transition;
 
 public interface State {
     /**
      * Called when this game state is entered
      */
-    void onStart();
+    default void onStart() {
+    }
 
     /**
      * Called when this game state is stopped
      */
-    void onStop();
+    default void onStop() {
+    }
 
     /**
      * Called when another game state is put on top of this state
      */
-    void onPause();
+    default void onPause() {
+    }
 
     /**
      * Called when this game state is unpaused
      */
-    void onResume();
+    default void onResume() {
+    }
 
     /**
      * Called when this state needs to handle an event
@@ -37,12 +42,16 @@ public interface State {
      *
      * @return a Transition object describing what to do
      */
-    Transition update();
+    default Transition update() {
+        return TransNop.getInstance();
+    }
 
     /**
      * Called every frame
      *
      * @return a Transition object describing what to do
      */
-    Transition onFrame();
+    default Transition onFrame() {
+        return TransNop.getInstance();
+    }
 }
