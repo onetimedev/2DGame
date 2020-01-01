@@ -3,12 +3,17 @@
  */
 package scc210game;
 
+import scc210game.render.Camera;
 import scc210game.render.Render;
 
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world");
-        Render r = new Render(720, 480);
+        Render.getInstance();
+        Render.createWindow(720, 480);
+
+        Camera c = new Camera(100, 20, 20);
+        Render.setView(c);
 
     }
 }
