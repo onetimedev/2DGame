@@ -13,8 +13,6 @@ public class Query {
     private final Set<Class<? extends Component>> mustHave;
     @Nonnull
     private final Set<Class<? extends Component>> mustBeModified;
-    @Nonnull
-    private final Set<Class<? extends State>> stateBlackList;
 
     /**
      * Create a query
@@ -23,15 +21,9 @@ public class Query {
      * @param mustBeModified components that must have been modified to pass the filter
      */
     public Query(@Nonnull List<Class<? extends Component>> mustHave,
-                 @Nonnull List<Class<? extends Component>> mustBeModified,
-                 @Nonnull List<Class<? extends State>> stateBlackList) {
+                 @Nonnull List<Class<? extends Component>> mustBeModified) {
         this.mustHave = new HashSet<>(mustHave);
         this.mustBeModified = new HashSet<>(mustBeModified);
-        this.stateBlackList = new HashSet<>(stateBlackList);
-    }
-
-    boolean runInThisState(@Nonnull Class<? extends State> state) {
-        return !this.stateBlackList.contains(state);
     }
 
     boolean testEntity(@Nonnull Collection<Class<? extends Component>> componentSet, @Nonnull Map<Class<? extends Component>, ? extends ComponentMeta<Component>> componentData) {
@@ -135,7 +127,7 @@ public class Query {
             this.built = true;
 
 
-            return new Query(this.mustHave, this.mustBeModified, this.stateBlackList);
+            return new Query(this.mustHave, this.mustBeModified);
         }
     }
 }

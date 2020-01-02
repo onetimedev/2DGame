@@ -21,9 +21,8 @@ public class UITransform extends Component {
             BigDecimal zPos = (BigDecimal) json.get("zPos");
             BigDecimal width = (BigDecimal) json.get("width");
             BigDecimal height = (BigDecimal) json.get("height");
-            Boolean opaque = (Boolean) json.get("opaque");
 
-            return new UITransform(xPos.floatValue(), yPos.floatValue(), zPos.intValue(), width.floatValue(), height.floatValue(), opaque);
+            return new UITransform(xPos.floatValue(), yPos.floatValue(), zPos.intValue(), width.floatValue(), height.floatValue());
         });
     }
 
@@ -49,19 +48,12 @@ public class UITransform extends Component {
     public float width;
     public float height;
 
-    /**
-     * If clicks should pass through this ui element
-     */
-    public boolean opaque;
-
-    @SuppressWarnings("BooleanParameter")
-    public UITransform(float xPos, float yPos, int zPos, float width, float height, boolean opaque) {
+    public UITransform(float xPos, float yPos, int zPos, float width, float height) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.zPos = zPos;
         this.width = width;
         this.height = height;
-        this.opaque = opaque;
     }
 
     @Override
@@ -72,7 +64,6 @@ public class UITransform extends Component {
             this.put("zPos", UITransform.this.zPos);
             this.put("width", UITransform.this.width);
             this.put("height", UITransform.this.height);
-            this.put("opaque", UITransform.this.opaque);
         }};
 
         return json.toJson();
