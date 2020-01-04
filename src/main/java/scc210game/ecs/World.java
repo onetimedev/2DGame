@@ -179,6 +179,19 @@ public class World {
         }
 
         /**
+         * Invoke a {@link Spawner} with this entity
+         *
+         * @param spawner the {@link Spawner} to use
+         * @return the current {@link EntityBuilder} instance (to allow chaining)
+         */
+        @Nonnull
+        public EntityBuilder with(Spawner spawner) {
+            assert !this.built : "EntityBuilder already built";
+
+            return spawner.inject(this);
+        }
+
+        /**
          * Construct the entity
          *
          * @return the constructed {@link Entity}

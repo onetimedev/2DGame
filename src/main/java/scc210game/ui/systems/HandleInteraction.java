@@ -13,6 +13,12 @@ import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.Iterator;
 
+
+/**
+ * The system to handle user interaction
+ * <p>
+ * This must be added to the ECS to work
+ */
 public class HandleInteraction implements System {
     private final EventQueueReader eventReader;
 

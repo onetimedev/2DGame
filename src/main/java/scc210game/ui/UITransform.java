@@ -45,7 +45,14 @@ public class UITransform extends Component {
      */
     public int zPos;
 
+    /**
+     * Width on the screen in percentage
+     */
     public float width;
+
+    /**
+     * Height on the screen in percentage
+     */
     public float height;
 
     public UITransform(float xPos, float yPos, int zPos, float width, float height) {
