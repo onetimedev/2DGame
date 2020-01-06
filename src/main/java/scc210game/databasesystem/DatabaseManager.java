@@ -1,15 +1,19 @@
 package scc210game.databasesystem;
 
+import com.sun.jdi.ArrayReference;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 public class DatabaseManager
 {
-
-    private File databasePath = new File("database.txt"); //filepath for database text file
+    private String FILEPATH = "database.txt";
+    private File databasePath = new File(FILEPATH); //filepath for database text file
 
 
     /**
@@ -51,10 +55,11 @@ public class DatabaseManager
     {
         if(!databasePath.exists())
         {
-            Path dbPath = Paths.get("database.txt");
+
+            Path dbPath = Paths.get(FILEPATH);
             try
             {
-                Files.write(dbPath, null, StandardCharsets.UTF_8);
+                Files.write(dbPath, Arrays.asList(), StandardCharsets.UTF_8);
             }
             catch(IOException e)
             {
@@ -210,7 +215,7 @@ public class DatabaseManager
      * clears the text file and repopulates it with new structured data
      * @param data new value of the database
      */
-    private void clearAndRepopulate(String data)
+    public void clearAndRepopulate(String data)
     {
         try
         {
