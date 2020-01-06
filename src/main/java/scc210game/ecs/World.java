@@ -1,8 +1,6 @@
 package scc210game.ecs;
 
 
-import scc210game.state.State;
-
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -126,7 +124,7 @@ public class World {
      * @param q the {@link Query} to use
      * @return a {@link Stream<Entity>} of entities that match the query
      */
-    public Stream<Entity> applyQuery(@Nonnull Query q, @Nonnull Class<? extends State> currentState) {
+    public Stream<Entity> applyQuery(@Nonnull Query q) {
         // I hope this is performant
 
         return this.entities.parallelStream().filter(e -> {

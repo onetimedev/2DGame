@@ -1,7 +1,5 @@
 package scc210game.ecs;
 
-import scc210game.state.State;
-
 import javax.annotation.Nonnull;
 import java.util.*;
 
@@ -59,14 +57,11 @@ public class Query {
         private final ArrayList<Class<? extends Component>> mustHave;
         @Nonnull
         private final ArrayList<Class<? extends Component>> mustBeModified;
-        @Nonnull
-        private final ArrayList<Class<? extends State>> stateBlackList;
         private boolean built;
 
         public Builder() {
             this.mustHave = new ArrayList<>();
             this.mustBeModified = new ArrayList<>();
-            this.stateBlackList = new ArrayList<>();
             this.built = false;
         }
 
@@ -81,21 +76,6 @@ public class Query {
             assert !this.built : "builder already build";
 
             this.mustHave.add(compType);
-
-            return this;
-        }
-
-        /**
-         * Add to the set of states this query cannot match while in.
-         *
-         * @param state the type of {@link State} that is disallowed
-         * @return the current {@link Builder} instance (to allow chaining)
-         **/
-        @Nonnull
-        public Builder notInState(Class<? extends State> state) {
-            assert !this.built : "builder already build";
-
-            this.stateBlackList.add(state);
 
             return this;
         }

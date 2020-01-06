@@ -118,7 +118,7 @@ public class ECSTest {
 
             @Override
             public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
-                final Stream<Entity> entities = world.applyQuery(this.q, currentState);
+                final Stream<Entity> entities = world.applyQuery(this.q);
 
                 entities.forEach(e -> {
                     world.resetModifiedState(e);

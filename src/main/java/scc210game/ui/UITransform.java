@@ -27,14 +27,14 @@ public class UITransform extends Component {
     }
 
     /**
-     * Offset from the left side of the screen in percentage of the screen
+     * Offset of the centre of the transform from the left side of the screen in percentage of the screen
      * 0.0 = Left
      * 1.0 = Right
      */
     public float xPos;
 
     /**
-     * Offset from the bottom of the screen in percentage of the screen
+     * Offset of the centre of the transform from the bottom of the screen in percentage of the screen
      * 0.0 = Bottom
      * 1.0 = Top
      */
@@ -74,5 +74,28 @@ public class UITransform extends Component {
         }};
 
         return json.toJson();
+    }
+
+    /**
+     * Test if the given coordinates are in the area described by this ui transform.
+     *
+     * @param x the X coordinate in percentage from the left of the screen
+     * @param y the Y coordinate in percentage from the bottom of the screen
+     * @return whether the given coordinates are in the area described by this ui transform.
+     */
+    public boolean contains(float x, float y) {
+        final float halfWidth = this.width / 2f;
+        final float halfHeight = this.height / 2f;
+
+        final float xLowBound = this.xPos - halfWidth;
+        final float xUppBound = this.xPos + halfWidth;
+
+        final float yLowBound = this.yPos - halfHeight;
+        final float yUppBound = this.yPos + halfHeight;
+
+        return (x > xLowBound &&
+                x < xUppBound &&
+                y > yLowBound &&
+                y < yUppBound);
     }
 }
