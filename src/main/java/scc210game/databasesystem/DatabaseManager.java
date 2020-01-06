@@ -12,15 +12,17 @@ import java.util.List;
 
 public class DatabaseManager
 {
-    private String FILEPATH = "database.txt";
-    private File databasePath = new File(FILEPATH); //filepath for database text file
+    private String FILEPATH;
+    private File databasePath; //filepath for database text file
 
 
     /**
-     * basic constructor which builds the database
+     * basic constructor which builds the database and requires a filename with a .txt extension
      */
-    public DatabaseManager()
+    public DatabaseManager(String filepath)
     {
+        this.FILEPATH = filepath;
+        this.databasePath = new File(FILEPATH);
         build();
     }
 
@@ -28,8 +30,10 @@ public class DatabaseManager
      * secondary constructor which allows user to add an array of keys with null values for later use
      * @param keysToCreate array of keys to create
      */
-    public DatabaseManager(String[] keysToCreate)
+    public DatabaseManager(String filepath, String[] keysToCreate)
     {
+        this.FILEPATH = filepath;
+        this.databasePath =  new File(FILEPATH);
         build();
         createMultipleKeys(keysToCreate);
     }
