@@ -16,11 +16,14 @@ public class World {
     private final Map<Entity, Set<Class<? extends Component>>> entityComponents;
     @Nonnull
     private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
+    @Nonnull
+    private final Map<Class<? extends Resource>, Resource> resourceMap;
 
-    World() {
+    public World() {
         this.entities = new ArrayList<>();
         this.entityComponents = new HashMap<>();
         this.componentMaps = new HashMap<>();
+        this.resourceMap = new HashMap<>();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
@@ -46,6 +49,28 @@ public class World {
         Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
                 this.componentMaps.computeIfAbsent(e, k -> new HashMap<>());
         componentStorage.put(component.getClass(), new ComponentMeta<>(component));
+    }
+
+    /**
+     * Add a resource
+     *
+     * @param r the {@link Resource} to add
+     */
+    public void addResource(@Nonnull Resource r) {
+        this.resourceMap.put(r.getClass(), r);
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @param <T>          the class of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public <T extends Resource> T fetchResource(Class<T> resourceType) {
+        return (T) this.resourceMap.get(resourceType);
     }
 
     /**
@@ -99,7 +124,7 @@ public class World {
      * @param q the {@link Query} to use
      * @return a {@link Stream<Entity>} of entities that match the query
      */
-    Stream<Entity> applyQuery(@Nonnull Query q) {
+    public Stream<Entity> applyQuery(@Nonnull Query q) {
         // I hope this is performant
 
         return this.entities.parallelStream().filter(e -> {
@@ -149,6 +174,19 @@ public class World {
             this.components.add(component);
 
             return this;
+        }
+
+        /**
+         * Invoke a {@link Spawner} with this entity
+         *
+         * @param spawner the {@link Spawner} to use
+         * @return the current {@link EntityBuilder} instance (to allow chaining)
+         */
+        @Nonnull
+        public EntityBuilder with(Spawner spawner) {
+            assert !this.built : "EntityBuilder already built";
+
+            return spawner.inject(this);
         }
 
         /**
