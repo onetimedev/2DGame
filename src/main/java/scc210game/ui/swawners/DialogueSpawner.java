@@ -5,10 +5,10 @@ import scc210game.ecs.World;
 import scc210game.ui.UIText;
 import scc210game.ui.UITransform;
 
-public class DialogueSwawner implements Spawner {
+public class DialogueSpawner implements Spawner {
     private final String message;
 
-    public DialogueSwawner(String message) {
+    public DialogueSpawner(String message) {
         this.message = message;
     }
 
