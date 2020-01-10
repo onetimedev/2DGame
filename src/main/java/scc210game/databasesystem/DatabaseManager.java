@@ -1,28 +1,21 @@
 package scc210game.databasesystem;
 
-import com.sun.jdi.ArrayReference;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class DatabaseManager
 {
-    private String FILEPATH;
-    private File databasePath; //filepath for database text file
+    private String DBNAME; //name of database (name of directory)
+    private File databasePath; //path to the various files within the database directory
 
 
     /**
      * basic constructor which builds the database and requires a filename with a .txt extension
      */
-    public DatabaseManager(String filepath)
+    public DatabaseManager(String dbName)
     {
-        this.FILEPATH = filepath;
-        this.databasePath = new File(FILEPATH);
+        this.DBNAME = dbName;
+        this.databasePath = new File(DBNAME);
         build();
     }
 
@@ -30,10 +23,10 @@ public class DatabaseManager
      * secondary constructor which allows user to add an array of keys with null values for later use
      * @param keysToCreate array of keys to create
      */
-    public DatabaseManager(String filepath, String[] keysToCreate)
+    public DatabaseManager(String dbName, String[] keysToCreate)
     {
-        this.FILEPATH = filepath;
-        this.databasePath =  new File(FILEPATH);
+        this.DBNAME = dbName;
+        this.databasePath =  new File(DBNAME);
         build();
         createMultipleKeys(keysToCreate);
     }
@@ -51,85 +44,48 @@ public class DatabaseManager
         }
     }
 
+
     /**
-     * checks if the instance of File() called database path exists in the filesystem.
-     * If nothing is found it will create a new text file called database.txt
+     * This method checks to see if there is a database that exists with the name provided in the constructor
+     * if there is not it will create a new database with the given name and create all the inner structure
+     * for the db to operate.
      */
     private void build()
     {
-        if(!databasePath.exists())
+        File directory = new File(DBNAME);
+        if(!directory.exists())
         {
-
-            Path dbPath = Paths.get(FILEPATH);
-            try
+            if(directory.mkdir()) //creates a new directory
             {
-                Files.write(dbPath, Arrays.asList(), StandardCharsets.UTF_8);
-            }
-            catch(IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-    }
+                for (String file : Constants.filenames)
+                {
+                    try
+                    {
+                        String path = DBNAME + "/" + file + ".txt";
+                        File fileData = new File(path);
+                        FileWriter writer = new FileWriter(fileData.getAbsoluteFile()); //file writer is a class used to create simple character files
+                        BufferedWriter bWriter = new BufferedWriter(writer);
+                        bWriter.write("");
+                        bWriter.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
 
-    /**
-     * adds a new key to the database. checks if the keyId and the keyData are different and also checks to see
-     * if that key already exists or not, if it does then the user must use the updateKey() method to alter the value.
-     * @param keyId the id for example 'score'
-     * @param keyData the contents of the key for example '124'
-     */
-    public void addKey(String keyId, String keyData)
-    {
-        if(!keyId.equals(keyData))
-        {
-            if(!database().contains(keyId))
-            {
-                String nd = keyId + "=" + keyData + "-" + database(); //uses a '-' as a regex string to ensure structure
-                clearAndRepopulate(nd);
+                }
+
             }
             else
-                {
-                System.out.println("The key " + keyId + " already exists in database. Use updateKey() to change an existing value");
-            }
-        }
-        else
             {
-            System.out.println("keyID cannot be the same as keyData");
-        }
-    }
-
-    /**
-     * gets the value of the key using the keyId provided as an argument
-     * @param key keyId used to locate the contents
-     * @return the contents of the key as a string
-     */
-    public String getKey(String key)
-    {
-        String keyData = "";
-        if(databasePath.exists())
-        {
-
-            String[] fullFile = database().split("-");
-            for(String entry : fullFile)
-            {
-                if(entry.contains(key + "="))
-                {
-                    String value = entry.replaceAll(key + "=", "");
-                    keyData = (value.equals("")) ? "null" : value;
-                }
+                System.out.println("Error: error creating the directory '" + DBNAME + "'");
             }
 
         }
-        else
-            {
-            System.out.println("Cant Find Database");
-        }
 
-        return (keyData.equals("")) ? "Key not found" : keyData;
 
     }
-
 
     /**
      * does the same as getKey() except returns value as integer, if value cannot be converted to an int
@@ -168,40 +124,209 @@ public class DatabaseManager
 
 
     /**
-     * updates a keys current value to a new value. if no key is found will return an error message
-     * @param keyId keyId used to name the key
-     * @param replacementData replacement value
+     * This method gets the content of a given key provided as an argument. It checks
+     * the reference file to see if that key exists, then takes the first letter of the keyId
+     * and matches it to the file its content is stored in, then a method called getPositionInFile() is called
+     * and this is run on a separate thread beacuse it goes through the reference file to locate the positionId
+     * associated with the keyId and then that id is used as in index on the given file that the key content is stored
+     * in.
+     * @param keyId id provided by the user to find the associated content
+     * @return the keyData
      */
-    public void updateKey(String keyId, String replacementData)
+
+    public String getKey(String keyId)
     {
-        boolean keyFound = false;
-        String[] fileData = database().split("-");
-        for(String key : fileData)
+        String keyData = "";
+        String keys = openSegment("keys").toString();
+
+        if(keys.contains(keyId))
         {
-            if(key.contains(keyId + "="))
+
+            String fileName = String.valueOf(keyId.charAt(0));
+            String[] file = openSegment(fileName).toString().split(Constants.DELIMITER);
+            String indexData = getPositionInFile(Constants.GET_KEY_POSITION, keys.split(Constants.DELIMITER), keyId);
+            if(!indexData.equals("null"))
             {
-                keyFound = true;
-                String nd = database().replace(key, keyId + "=" + replacementData);
-                clearAndRepopulate(nd);
-                break;
+                int index = Integer.parseInt(indexData);
+                keyData = file[index].replace(keyId + "=", "");
+            }
+            else
+            {
+                System.out.println("Error: key '" + keyId + "' does not exist in the database, please use addKey() to add any new data");
+            }
+
+        }
+        else
+        {
+            System.out.println("Error: key '" + keyId + "' does not exist in the database");
+        }
+        return keyData;
+    }
+
+
+    /**
+     * this method passes the array of reference keys and the keyId being searched for
+     * to the mutli-threaded class which will execute on a separate thread so processing will
+     * be faster.
+     * @param opcode operation code depending on whether a key's position is being searched for or a key's reference is being searched for
+     * @param keys
+     * @param keyId
+     * @return
+     */
+    private String getPositionInFile(int opcode, String[] keys, String keyId)
+    {
+        DataProcessor dp = new DataProcessor(keys, keyId);
+        ProcessManager pm = new ProcessManager(dp, opcode);
+        pm.run();
+        return pm.getResult();
+    }
+
+
+    /**
+     * this method adds a new key to the database, it first checks if the key exists in the reference file, structures the
+     * data then appends a new reference to the ref file and a new key to the relevant file depending on the what the first letter of the
+     * keyId is.
+     * @param keyId keyId used to find the key
+     * @param keyData content of the key to be stored
+     */
+    public void addKey(String keyId, String keyData)
+    {
+        String keys = openSegment("keys").toString();
+
+        if(!keys.contains(keyId))
+        {
+            String segmentName = String.valueOf(keyId.charAt(0));
+            String data = format(keyId, keyData);
+            String refData = format(keyId, createId(segmentName));
+            alterFile(Constants.APPEND_OPERATION, data, segmentName);
+            alterFile(Constants.APPEND_OPERATION, refData, "keys");
+        }
+        else
+        {
+            System.out.println("Error: key '" + keyId + "' already exists please use updateKey() to alter any existing data");
+        }
+    }
+
+
+    /**
+     * this method performs two types of operations on existing keys, it can update or delete an existing key.
+     * @param opcode operation code for update or delete
+     * @param keyId keyId of the key to perform the operation on
+     * @param replacementKeyData replacement data if the operation is update
+     */
+    private void keyOperation(int opcode, String keyId, String replacementKeyData){
+        String keys = openSegment("keys").toString();
+
+        if(keys.contains(keyId))
+        {
+            String segmentName = String.valueOf(keyId.charAt(0));
+            String[] file = openSegment(segmentName).toString().split(Constants.DELIMITER);
+            String indexData = getPositionInFile(Constants.GET_KEY_POSITION, keys.split(Constants.DELIMITER), keyId);
+            if(!indexData.equals("null"))
+            {
+                int index = Integer.parseInt(indexData);
+                ArrayList<String> sData2 = new ArrayList<String>(Arrays.asList(file));
+
+                switch (opcode) {
+                    case Constants.UPDATE_OPERATION: //update action
+                        String newData = keyId + "=" + replacementKeyData;
+                        sData2.remove(index);
+                        sData2.add(index, newData);
+                        break;
+                    case Constants.DELETE_OPERATION: //delete action
+
+                        String[] refFile = openSegment("keys").toString().split(Constants.DELIMITER);
+                        ArrayList<String> structuredRefFile = new ArrayList<String>(Arrays.asList(refFile));
+
+                        String refIndexData = getPositionInFile(Constants.GET_KEY_REF_POSITION, refFile, keyId);
+                        if(!refIndexData.equals("null")) {
+                            int refIndex = Integer.parseInt(refIndexData);
+                            structuredRefFile.remove(refIndex);
+                            String newRefFile = String.join(Constants.DELIMITER, structuredRefFile) + Constants.DELIMITER;
+                            alterFile(Constants.REPLACE_OPERATION, newRefFile, "keys");
+                            sData2.remove(index);
+                        }
+                        else
+                        {
+                            System.out.println("Error: key '" + keyId + "' does not exist in the database, please use addKey() to add any new data");
+                        }
+                        break;
+
+                }
+
+                String newFile = String.join(Constants.DELIMITER, sData2) + Constants.DELIMITER;
+                alterFile(Constants.REPLACE_OPERATION, newFile, segmentName);
+
 
             }
+            else
+            {
+                System.out.println("Error: key '" + keyId + "' does not exist in the database, please use addKey() to add any new data");
+            }
         }
+        else
+        {
+            System.out.println("Error: key '" + keyId + "' does not exist in the database, please use addKey() to add any new data");
+        }
+    }
 
-        if(!keyFound) System.out.println("Cant find key '" + keyId + "' to update");
+
+    /**
+     * public method the user will call to perform an update operation on a key
+     * @param keyId name of the key
+     * @param replacementKeyData replacement data for the key
+     */
+    public void updateKey(String keyId, String replacementKeyData)
+    {
+        keyOperation(Constants.UPDATE_OPERATION, keyId, replacementKeyData);
     }
 
     /**
-     * method that returns a string containing the whole value of the text file and then other method use search and replace to
-     * perform operations on the database
-     * @return string value of text file
+     * public method the user will call to perform a delete operation on an existing key
+     * @param keyId name of the key
      */
-    private String database()
+    public void deleteKey(String keyId)
     {
+
+        keyOperation(Constants.DELETE_OPERATION, keyId, null);
+
+    }
+
+    /**
+     * this method creates an id for a key to be stored in the ref file and it is basically
+     * the position of the key in the file that it is stored in so when the file is converted
+     * to an array or ArrayList then the key is easily found beacuse this id is used to index the
+     * data
+     * @param segment name of file e.g. A.txt, B.txt
+     * @return returns the position to be allocated the id in the ref file for a given key
+     */
+    private String createId(String segment)
+    {
+        String data = openSegment(segment).toString();
+        if(data.contains(Constants.DELIMITER))
+        {
+            String[] file = openSegment(segment).toString().split(Constants.DELIMITER);
+            return String.valueOf(file.length);
+        }
+        else
+        {
+            return "0";
+        }
+    }
+
+
+    /**
+     * this method opens a segment of the database and provides it as a StringBuilder
+     * @param segment name of file
+     * @return returns the file contents in a StringBuilder structure
+     */
+    private StringBuilder openSegment(String segment)
+    {
+
         StringBuilder file = new StringBuilder();
         try
         {
-            BufferedReader reader = new BufferedReader(new FileReader(databasePath));
+            BufferedReader reader = new BufferedReader(new FileReader(new File(DBNAME + "/" + segment + ".txt")));
             String data;
             while((data = reader.readLine()) != null)
             {
@@ -211,46 +336,87 @@ public class DatabaseManager
         {
             e.printStackTrace();
         }
-        return file.toString();
+        return file;
     }
 
-
     /**
-     * clears the text file and repopulates it with new structured data
-     * @param data new value of the database
+     * this method alters a given file and has two operations, append and replace
+     * @param opcode the code to signify the operation to perform
+     * @param data the data to append or replace
+     * @param filename the filename of the file to open and change
      */
-    public void clearAndRepopulate(String data)
+    private void alterFile(int opcode, String data, String filename)
     {
+
         try
         {
-            PrintWriter writer = new PrintWriter("database.txt");
-            writer.println("");
-            writer.print(data);
-            writer.close();
+            String path = DBNAME + "/" + filename + ".txt";
+            File fileData = new File(path);
+            FileWriter writer;
+            BufferedWriter buffer;
+            switch (opcode)
+            {
+                case Constants.APPEND_OPERATION://append action
+
+                    writer = new FileWriter(fileData.getAbsoluteFile(), true);
+                    buffer = new BufferedWriter(writer);
+                    buffer.append(data);
+                    buffer.close();
+
+                    break;
+                case Constants.REPLACE_OPERATION: //replace action
+
+                    writer = new FileWriter(fileData.getAbsoluteFile());
+                    buffer = new BufferedWriter(writer);
+                    buffer.write(data);
+                    buffer.close();
+
+                    break;
+            }
+
+
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+
+
     }
 
     /**
-     * deletes a given key from the database
-     * @param key keyId
+     * this simply formats keys so they are inline with the databases structure
+     * @param keyId id of the key
+     * @param keyData content of the key
+     * @return formatted key data
      */
-    public void deleteKey(String key)
+    private String format(String keyId, String keyData)
     {
-        String[] fileData = database().split("-");
+        return keyId + "=" + keyData + Constants.DELIMITER;
+    }
 
-        for(String keyData : fileData)
+
+
+    public void clearDatabase()
+    {
+        String[] fileNames = {"keys", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+                "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+        for(String file : fileNames)
         {
-            if(keyData.contains(key + "="))
+            try
             {
-                String newData = database().replace(keyData, "");
-                clearAndRepopulate(newData);
+                String path = DBNAME + "/" + file + ".txt";
+                File fileData = new File(path);
+                FileWriter writer = new FileWriter(fileData.getAbsoluteFile());
+                BufferedWriter bWriter = new BufferedWriter(writer);
+                bWriter.write("");
+                bWriter.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
             }
         }
-
     }
 
 }
