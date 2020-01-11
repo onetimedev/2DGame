@@ -25,7 +25,7 @@ public class Tile {
 			textureSize = tileTexture.getSize();
 		}
 		catch(IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 
