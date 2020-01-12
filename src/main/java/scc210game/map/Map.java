@@ -1,11 +1,14 @@
 package scc210game.map;
 
 import scc210game.ecs.Component;
+import scc210game.render.Render;
 
 /**
  * Create map as part of the ECS
  */
 public class Map extends Component {
+	private Tile[][] mapTiles;
+
 
 	@Override
 	public String serialize() {
@@ -13,8 +16,11 @@ public class Map extends Component {
 	}
 
 
+	public Map() {
+		GenerateMap genMap = new GenerateMap(10, 10);
+		mapTiles = genMap.getAllTiles();
 
-
+		}
 
 
 
