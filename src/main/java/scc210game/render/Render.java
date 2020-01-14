@@ -6,6 +6,8 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.Event.Type;
 import org.jsfml.window.event.KeyEvent;
+import org.jsfml.window.event.MouseButtonEvent;
+import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
 import scc210game.ecs.Entity;
 import scc210game.ecs.Query;
@@ -59,6 +61,7 @@ public class Render {
 
 	/**
 	 * Runs the game loop from the createWindow method
+	 *
 	 */
 	private static void mainLoop() {
 		while(mainWindow.isOpen()) {
@@ -67,15 +70,36 @@ public class Render {
 				StateEvent se;
 				switch (event.type) {
 					case KEY_PRESSED: {
-						KeyEvent kEvent = event.asKeyEvent();
-						scc210game.state.event.KeyPressedEvent ksEvent = new scc210game.state.event.KeyPressedEvent(kEvent.key);
-						se = ksEvent;
+						KeyEvent keyEvent = event.asKeyEvent();
+						scc210game.state.event.KeyPressedEvent keyPressEvent = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
+						se = keyPressEvent;
 						break;
 					}
 					case KEY_RELEASED: {
-
+						KeyEvent keyEvent = event.asKeyEvent();
+						scc210game.state.event.KeyDepressedEvent keyDepressEvent = new scc210game.state.event.KeyDepressedEvent(keyEvent.key);
+						se = keyDepressEvent;
+						break;
 					}
-					// TODO: Add state.event all events to the switch
+					case MOUSE_BUTTON_PRESSED: {
+						MouseButtonEvent msBtnEvent = event.asMouseButtonEvent();
+						scc210game.state.event.MouseButtonPressedEvent msBtnPressEvent = new scc210game.state.event.MouseButtonPressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
+						se = msBtnPressEvent;
+						break;
+					}
+					case MOUSE_BUTTON_RELEASED: {
+						MouseButtonEvent msBtnEvent = event.asMouseButtonEvent();
+						scc210game.state.event.MouseButtonDepressedEvent msBtnDepressEvent = new scc210game.state.event.MouseButtonDepressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
+						se = msBtnDepressEvent;
+						break;
+					}
+					case MOUSE_MOVED: {
+						MouseEvent msMoved = event.asMouseEvent();
+						scc210game.state.event.MouseMovedEvent msMovedEvent = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y);
+						se = msMovedEvent;
+						break;
+					}
+
 				}
 				ecs.runWithUpdateOnce(se);
 		}
