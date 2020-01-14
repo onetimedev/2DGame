@@ -93,14 +93,6 @@ public class Render {
 	}
 
 
-	/**
-	 * Method to draw a shape in the window
-	 * @param shapeToDisplay
-	 */
-	public static void displayInWindow(Shape shapeToDisplay) {
-		mainWindow.draw(shapeToDisplay);
-
-	}
 
 
 }
