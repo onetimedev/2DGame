@@ -1,7 +1,7 @@
 package scc210game.ecs;
 
 /**
- * An empty marker interface to mark components
+ * Abstract class representing Components of entities
  */
-public interface Component {
+public abstract class Component extends SerDe {
 }

@@ -18,7 +18,8 @@ public class Query {
      * @param mustHave       the set of components that entities must have to pass the filter
      * @param mustBeModified components that must have been modified to pass the filter
      */
-    public Query(@Nonnull List<Class<? extends Component>> mustHave, @Nonnull List<Class<? extends Component>> mustBeModified) {
+    public Query(@Nonnull List<Class<? extends Component>> mustHave,
+                 @Nonnull List<Class<? extends Component>> mustBeModified) {
         this.mustHave = new HashSet<>(mustHave);
         this.mustBeModified = new HashSet<>(mustBeModified);
     }
@@ -72,7 +73,7 @@ public class Query {
          */
         @Nonnull
         public Builder require(Class<? extends Component> compType) {
-            assert !this.built : "Builder already build";
+            assert !this.built : "builder already build";
 
             this.mustHave.add(compType);
 
