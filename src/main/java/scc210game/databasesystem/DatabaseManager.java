@@ -58,7 +58,7 @@ public class DatabaseManager
             if(directory.mkdir()) //creates a new directory
             {
 
-                for (String file : Constants.filenames)
+                for (String file : DatabaseOperation.filenames)
                 {
                     try
                     {
@@ -143,8 +143,8 @@ public class DatabaseManager
         {
 
             String fileName = String.valueOf(keyId.charAt(0));
-            String[] file = openSegment(fileName).toString().split(Constants.DELIMITER);
-            String indexData = getPositionInFile(Constants.GET_KEY_POSITION, keys.split(Constants.DELIMITER), keyId);
+            String[] file = openSegment(fileName).toString().split(DatabaseOperation.DELIMITER);
+            String indexData = getPositionInFile(DatabaseOperation.GET_KEY_POSITION, keys.split(DatabaseOperation.DELIMITER), keyId);
             if(!indexData.equals("null"))
             {
                 int index = Integer.parseInt(indexData);
@@ -175,10 +175,7 @@ public class DatabaseManager
      */
     private String getPositionInFile(int opcode, String[] keys, String keyId)
     {
-        DataProcessor dp = new DataProcessor(keys, keyId);
-        ProcessManager pm = new ProcessManager(dp, opcode);
-        pm.run();
-        return pm.getResult();
+       return "";
     }
 
 
@@ -198,8 +195,8 @@ public class DatabaseManager
             String segmentName = String.valueOf(keyId.charAt(0));
             String data = format(keyId, keyData);
             String refData = format(keyId, createId(segmentName));
-            alterFile(Constants.APPEND_OPERATION, data, segmentName);
-            alterFile(Constants.APPEND_OPERATION, refData, "keys");
+            alterFile(DatabaseOperation.APPEND_OPERATION, data, segmentName);
+            alterFile(DatabaseOperation.APPEND_OPERATION, refData, "keys");
         }
         else
         {
@@ -220,30 +217,30 @@ public class DatabaseManager
         if(keys.contains(keyId))
         {
             String segmentName = String.valueOf(keyId.charAt(0));
-            String[] file = openSegment(segmentName).toString().split(Constants.DELIMITER);
-            String indexData = getPositionInFile(Constants.GET_KEY_POSITION, keys.split(Constants.DELIMITER), keyId);
+            String[] file = openSegment(segmentName).toString().split(DatabaseOperation.DELIMITER);
+            String indexData = getPositionInFile(DatabaseOperation.GET_KEY_POSITION, keys.split(DatabaseOperation.DELIMITER), keyId);
             if(!indexData.equals("null"))
             {
                 int index = Integer.parseInt(indexData);
                 ArrayList<String> sData2 = new ArrayList<String>(Arrays.asList(file));
 
                 switch (opcode) {
-                    case Constants.UPDATE_OPERATION: //update action
+                    case DatabaseOperation.UPDATE_OPERATION: //update action
                         String newData = keyId + "=" + replacementKeyData;
                         sData2.remove(index);
                         sData2.add(index, newData);
                         break;
-                    case Constants.DELETE_OPERATION: //delete action
+                    case DatabaseOperation.DELETE_OPERATION: //delete action
 
-                        String[] refFile = openSegment("keys").toString().split(Constants.DELIMITER);
+                        String[] refFile = openSegment("keys").toString().split(DatabaseOperation.DELIMITER);
                         ArrayList<String> structuredRefFile = new ArrayList<String>(Arrays.asList(refFile));
 
-                        String refIndexData = getPositionInFile(Constants.GET_KEY_REF_POSITION, refFile, keyId);
+                        String refIndexData = getPositionInFile(DatabaseOperation.GET_KEY_REF_POSITION, refFile, keyId);
                         if(!refIndexData.equals("null")) {
                             int refIndex = Integer.parseInt(refIndexData);
                             structuredRefFile.remove(refIndex);
-                            String newRefFile = String.join(Constants.DELIMITER, structuredRefFile) + Constants.DELIMITER;
-                            alterFile(Constants.REPLACE_OPERATION, newRefFile, "keys");
+                            String newRefFile = String.join(DatabaseOperation.DELIMITER, structuredRefFile) + DatabaseOperation.DELIMITER;
+                            alterFile(DatabaseOperation.REPLACE_OPERATION, newRefFile, "keys");
                             sData2.remove(index);
                         }
                         else
@@ -254,8 +251,8 @@ public class DatabaseManager
 
                 }
 
-                String newFile = String.join(Constants.DELIMITER, sData2) + Constants.DELIMITER;
-                alterFile(Constants.REPLACE_OPERATION, newFile, segmentName);
+                String newFile = String.join(DatabaseOperation.DELIMITER, sData2) + DatabaseOperation.DELIMITER;
+                alterFile(DatabaseOperation.REPLACE_OPERATION, newFile, segmentName);
 
 
             }
@@ -278,7 +275,7 @@ public class DatabaseManager
      */
     public void updateKey(String keyId, String replacementKeyData)
     {
-        keyOperation(Constants.UPDATE_OPERATION, keyId, replacementKeyData);
+        keyOperation(DatabaseOperation.UPDATE_OPERATION, keyId, replacementKeyData);
     }
 
     /**
@@ -288,7 +285,7 @@ public class DatabaseManager
     public void deleteKey(String keyId)
     {
 
-        keyOperation(Constants.DELETE_OPERATION, keyId, null);
+        keyOperation(DatabaseOperation.DELETE_OPERATION, keyId, null);
 
     }
 
@@ -303,9 +300,9 @@ public class DatabaseManager
     private String createId(String segment)
     {
         String data = openSegment(segment).toString();
-        if(data.contains(Constants.DELIMITER))
+        if(data.contains(DatabaseOperation.DELIMITER))
         {
-            String[] file = openSegment(segment).toString().split(Constants.DELIMITER);
+            String[] file = openSegment(segment).toString().split(DatabaseOperation.DELIMITER);
             return String.valueOf(file.length);
         }
         else
@@ -356,7 +353,7 @@ public class DatabaseManager
             BufferedWriter buffer;
             switch (opcode)
             {
-                case Constants.APPEND_OPERATION://append action
+                case DatabaseOperation.APPEND_OPERATION://append action
 
                     writer = new FileWriter(fileData.getAbsoluteFile(), true);
                     buffer = new BufferedWriter(writer);
@@ -364,7 +361,7 @@ public class DatabaseManager
                     buffer.close();
 
                     break;
-                case Constants.REPLACE_OPERATION: //replace action
+                case DatabaseOperation.REPLACE_OPERATION: //replace action
 
                     writer = new FileWriter(fileData.getAbsoluteFile());
                     buffer = new BufferedWriter(writer);
@@ -392,7 +389,7 @@ public class DatabaseManager
      */
     private String format(String keyId, String keyData)
     {
-        return keyId + "=" + keyData + Constants.DELIMITER;
+        return keyId + "=" + keyData + DatabaseOperation.DELIMITER;
     }
 
 
