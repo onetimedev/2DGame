@@ -61,7 +61,8 @@ public class Render {
 
 	/**
 	 * Runs the game loop from the createWindow method
-	 *
+	 *  Takes events from the MainWindow and translates them to
+	 *  proprietary StateEvent for the EventQueue
 	 */
 	private static void mainLoop() {
 		while(mainWindow.isOpen()) {
@@ -71,32 +72,27 @@ public class Render {
 				switch (event.type) {
 					case KEY_PRESSED: {
 						KeyEvent keyEvent = event.asKeyEvent();
-						scc210game.state.event.KeyPressedEvent keyPressEvent = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
-						se = keyPressEvent;
+						se = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
 						break;
 					}
 					case KEY_RELEASED: {
 						KeyEvent keyEvent = event.asKeyEvent();
-						scc210game.state.event.KeyDepressedEvent keyDepressEvent = new scc210game.state.event.KeyDepressedEvent(keyEvent.key);
-						se = keyDepressEvent;
+						se = new scc210game.state.event.KeyDepressedEvent(keyEvent.key);
 						break;
 					}
 					case MOUSE_BUTTON_PRESSED: {
 						MouseButtonEvent msBtnEvent = event.asMouseButtonEvent();
-						scc210game.state.event.MouseButtonPressedEvent msBtnPressEvent = new scc210game.state.event.MouseButtonPressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
-						se = msBtnPressEvent;
+						se = new scc210game.state.event.MouseButtonPressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
 						break;
 					}
 					case MOUSE_BUTTON_RELEASED: {
 						MouseButtonEvent msBtnEvent = event.asMouseButtonEvent();
-						scc210game.state.event.MouseButtonDepressedEvent msBtnDepressEvent = new scc210game.state.event.MouseButtonDepressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
-						se = msBtnDepressEvent;
+						se = new scc210game.state.event.MouseButtonDepressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
 						break;
 					}
 					case MOUSE_MOVED: {
 						MouseEvent msMoved = event.asMouseEvent();
-						scc210game.state.event.MouseMovedEvent msMovedEvent = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y);
-						se = msMovedEvent;
+						se = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y);
 						break;
 					}
 
