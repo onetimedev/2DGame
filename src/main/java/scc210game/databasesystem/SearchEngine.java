@@ -2,8 +2,8 @@ package scc210game.databasesystem;
 
 class SearchEngine {
 
-
     private Search s;
+
     public SearchEngine(String keyId, String[] keys)
     {
         s = new Search(keyId, keys);
