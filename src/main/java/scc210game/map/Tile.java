@@ -1,6 +1,9 @@
 package scc210game.map;
 
 import org.jsfml.graphics.Texture;
+import org.jsfml.graphics.Transform;
+import org.jsfml.graphics.Transformable;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -31,6 +34,9 @@ public class Tile {
 
 	}
 
+	public Vector2f getPosition() {
+		return new Vector2f(xPos, yPos);
+	}
 
 	public int getXPos() {
 		return xPos;
@@ -51,8 +57,6 @@ public class Tile {
 	public Vector2i getTextureSize() {
 		return textureSize;
 	}
-
-
 
 
 }

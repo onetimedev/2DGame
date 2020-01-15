@@ -10,8 +10,8 @@ public class GenerateMap {
 	// Read from object map tile values that are already preset
 
 
-	public GenerateMap(int x, int y) {
-		mapSize = new Vector2i(x, y);
+	public GenerateMap() {
+		mapSize = new Vector2i(10, 10);
 		generate();
 	}
 
@@ -21,6 +21,10 @@ public class GenerateMap {
 		return allTiles;
 	}
 
+
+	public Vector2i getMapSize() {
+		return mapSize;
+	}
 
 	/**
 	 * Method to generate all tiles, TEMP fixed size and texture
