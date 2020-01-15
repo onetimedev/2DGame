@@ -4,17 +4,23 @@ import javax.xml.crypto.Data;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.security.Key;
+import java.sql.Timestamp;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class DatabaseManager {
 
     private String DBNAME; //name of database (name of directory)
-
+    private String dataFilePath;
+    private String logFilePath;
 
     public DatabaseManager(String dbName)
     {
         this.DBNAME = dbName;
+        this.dataFilePath = DBNAME + "-database/data.txt";
+        this.logFilePath = DBNAME + "-database/logs.txt";
         build();
     }
 
@@ -42,7 +48,7 @@ public class DatabaseManager {
         {
             if(directory.mkdir()) //creates a new directory
             {
-
+                LOG(DatabaseOperation.BUILDING_DATABASE, "", getTS());
                 for (String file : DatabaseOperation.filenames)
                 {
                     try
@@ -83,14 +89,18 @@ public class DatabaseManager {
                 String keyData = new SearchEngine(keyId, Keys()).findKeyData();
                 if(!keyData.equals(DatabaseOperation.EMPTY_KEY))
                 {
+                    LOG(DatabaseOperation.PROVIDING_KEY_OPERATION, keyId, getTS());
                     return keyData;
-                }else{
+                }
+                else
+                {
                     System.out.println("Key is empty");
                 }
             }
             else
             {
                 System.out.println("Key '" + keyId + "' does not exist");
+                LOG(DatabaseOperation.PROVIDING_KEY_ERROR, keyId, getTS());
             }
 
         }
@@ -99,18 +109,20 @@ public class DatabaseManager {
 
 
 
-    public int getKeyAsInt(String key)
+    public int getKeyAsInt(String keyId)
     {
 
         int value = 0;
 
         try
         {
-            value = Integer.parseInt(getKey(key));
+            LOG(DatabaseOperation.PROVIDING_KEY_OPERATION, keyId, getTS());
+            value = Integer.parseInt(getKey(keyId));
         }
         catch (Exception e)
         {
-            System.out.println("Value of '" + key + "' cannot be converted to an integer, use getKey() to obtain String value");
+            LOG(DatabaseOperation.PROVIDING_KEY_ERROR, keyId, getTS());
+            System.out.println("Value of '" + keyId + "' cannot be converted to an integer, use getKey() to obtain String value");
         }
 
         return value;
@@ -124,15 +136,22 @@ public class DatabaseManager {
             if (!new SearchEngine(keyId, Keys()).keyExists())
             {
 
+                LOG(DatabaseOperation.ADD_KEY_OPERATION, format(keyId, keyData).replace("-", ""), getTS());
                 String newData = format(keyId, keyData);
-                alterFile(DatabaseOperation.APPEND_OPERATION, newData);
+                alterFile(DatabaseOperation.APPEND_OPERATION, newData, dataFilePath);
 
+            }
+            else
+            {
+                LOG(DatabaseOperation.ADD_KEY_ERROR, format(keyId, keyData).replace("-", ""), getTS());
+                System.out.println("Error: key '" + keyId + "' already exists in the database, use updateKey() to alter its value");
             }
         }
         else
         {
+            LOG(DatabaseOperation.ADD_KEY_OPERATION, format(keyId, keyData).replace("-", ""), getTS());
             String newData = format(keyId, keyData);
-            alterFile(DatabaseOperation.APPEND_OPERATION, newData);
+            alterFile(DatabaseOperation.APPEND_OPERATION, newData, dataFilePath);
         }
 
 
@@ -147,6 +166,7 @@ public class DatabaseManager {
             if(new SearchEngine(keyId, Keys()).keyExists())
             {
 
+                LOG(DatabaseOperation.UPDATE_KEY_OPERATION, format(keyId, replacementKeyData).replace("-", ""), getTS());
                 ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(Keys()));
 
                 int index = new SearchEngine(keyId, Keys()).findKeyPosition();
@@ -155,16 +175,18 @@ public class DatabaseManager {
 
                 keysList.add(index, format(keyId, replacementKeyData).replace("-", ""));
                 String newKeys = String.join("-", keysList);
-                alterFile(DatabaseOperation.REPLACE_OPERATION, newKeys);
+                alterFile(DatabaseOperation.REPLACE_OPERATION, newKeys, dataFilePath);
 
             }
             else
             {
+                LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace("-", ""), getTS());
                 System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
             }
         }
         else
         {
+            LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace("-", ""), getTS());
             System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
         }
 
@@ -179,20 +201,23 @@ public class DatabaseManager {
             if(new SearchEngine(keyId, Keys()).keyExists())
             {
 
+                LOG(DatabaseOperation.DELETE_KEY_OPERATION, keyId, getTS());
                 ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(Keys()));
                 int index = new SearchEngine(keyId, Keys()).findKeyPosition();
                 keysList.remove(index);
                 String newKeys = String.join("-", keysList) + "-";
-                alterFile(DatabaseOperation.REPLACE_OPERATION, newKeys);
+                alterFile(DatabaseOperation.REPLACE_OPERATION, newKeys, dataFilePath);
 
             }
             else
             {
+                LOG(DatabaseOperation.DELETE_KEY_ERROR, keyId, getTS());
                 System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
             }
         }
         else
         {
+            LOG(DatabaseOperation.DELETE_KEY_ERROR, keyId, getTS());
             System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
         }
 
@@ -244,18 +269,18 @@ public class DatabaseManager {
     public void clearKey(String keyId)
     {
 
+        LOG(DatabaseOperation.CLEAR_KEY_OPERATION, keyId, getTS());
         updateKey(keyId, "");
 
     }
 
 
-    private void alterFile(int opcode, String data)
+    private void alterFile(int opcode, String data, String file)
     {
 
         try
         {
-            String path = DBNAME + "-database/data.txt";
-            File fileData = new File(path);
+            File fileData = new File(file);
             FileWriter writer;
             BufferedWriter buffer;
             switch (opcode)
@@ -296,8 +321,26 @@ public class DatabaseManager {
 
     public void wipe()
     {
-        alterFile(DatabaseOperation.REPLACE_OPERATION, "");
+        alterFile(DatabaseOperation.REPLACE_OPERATION, "", dataFilePath);
+        alterFile(DatabaseOperation.REPLACE_OPERATION, "", logFilePath);
     }
 
+    private void LOG(String operation, String keyId,  String timestamp)
+    {
+
+        StringBuilder log = new StringBuilder();
+        log.append(operation).append(" '").append(keyId).append("' ").append("[").append(timestamp).append("]").append("\n");
+        alterFile(DatabaseOperation.APPEND_OPERATION, log.toString(), logFilePath);
+
+
+    }
+
+
+    private String getTS()
+    {
+        Date date = new Date();
+        return String.valueOf(new Timestamp(date.getTime()));
+
+    }
 
 }
