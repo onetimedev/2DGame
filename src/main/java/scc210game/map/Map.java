@@ -1,7 +1,6 @@
 package scc210game.map;
 
 import scc210game.ecs.Component;
-import scc210game.render.Render;
 
 /**
  * Create map as part of the ECS
