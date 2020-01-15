@@ -1,17 +1,41 @@
 package scc210game.health;
 
-public class HealthSystem {
-    private int health = 100;
+import scc210game.ecs.Component;
 
-    public int damageTaken(int damage) {
-        health = health - damage;
-        return health;
+public class HealthSystem extends Component {
+    private int health;
+
+    /**
+     * get initial health
+     */
+    public HealthSystem(int health) {
+        this.health = health;
     }
-    public boolean isDead(int health) {
-        if(health <= 0) {
-            return true; 
+
+    /**
+     * getter and setter functions for health
+     * setter function will set new health when taken damage
+     */
+    public void setHealth(int health) {
+        this.health = health;
+    }
+    public int getHealth() {
+        return this.health;
+    }
+
+    /**
+     * check if health is 0
+     */
+    public boolean isDead() {
+        if(this.health <= 0) {
+            return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public String serialize() {
+        return null;
     }
 }
