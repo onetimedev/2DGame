@@ -8,6 +8,7 @@ import scc210game.render.Render;
  */
 public class Map extends Component {
 	private Tile[][] mapTiles;
+	private GenerateMap genMap;
 
 
 	@Override
@@ -17,10 +18,28 @@ public class Map extends Component {
 
 
 	public Map() {
-		GenerateMap genMap = new GenerateMap(10, 10);
+		genMap = new GenerateMap();
 		mapTiles = genMap.getAllTiles();
 
 		}
+
+	public Tile[][] getMap() {
+		return mapTiles;
+	}
+
+	public int getWidth() {
+		return genMap.getMapSize().x;
+	}
+
+	public int getHeight() {
+		return genMap.getMapSize().y;
+	}
+
+	public Tile getTile(int xPos, int yPos) {
+		return mapTiles[xPos][yPos];
+	}
+
+
 
 
 
