@@ -90,10 +90,13 @@ public class EngineSetup {
 						se = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y);
 						break;
 					}
-
+					case CLOSED: {
+						mainWindow.close();
+						break;
+					}
 				}
-				ecs.runWithUpdateOnce(se);
-		}
+			ecs.runWithUpdateOnce(se);
+			}
 		ecs.runOnce();
 		mainWindow.display();
 		}
