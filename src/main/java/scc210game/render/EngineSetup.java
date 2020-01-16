@@ -27,6 +27,7 @@ public class EngineSetup {
 	private EngineSetup() {
 		mainWindow = new RenderWindow();
 		ecs = new ECS(List.of(new RenderSystem(mainWindow)), new BasicState());
+		ecs.start();
 		createWindow(720, 480);
 	}
 
@@ -90,10 +91,13 @@ public class EngineSetup {
 						se = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y);
 						break;
 					}
-
+					case CLOSED: {
+						mainWindow.close();
+						break;
+					}
 				}
-				ecs.runWithUpdateOnce(se);
-		}
+			ecs.runWithUpdateOnce(se);
+			}
 		ecs.runOnce();
 		mainWindow.display();
 		}

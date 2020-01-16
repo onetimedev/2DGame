@@ -1,7 +1,6 @@
 package scc210game.render;
 
 
-import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.RenderWindow;
 import scc210game.ecs.Entity;
 import scc210game.ecs.Query;
@@ -31,17 +30,15 @@ public class RenderSystem implements System {
 	@Override
 	public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
 		Stream<Entity> renderEntities = world.applyQuery(q);
-		// renderEntities Stream using map to result in changed values in stream from sort
-		// Making a tuple out of renderEntity (l) and Renderable Component (r) and sorting by depth
-		// For each tupleRenderEntity get the renderable component and call accept on its data
-		// passing in the tupleRenderEntity renderEntity (l)
+		java.lang.System.out.println("In Run of RenderSystem");
+		// renderEntities Stream using map to result in changed values in stream from sort. Making a tuple out of renderEntity (l) and Renderable Component (r) and sorting by depth
+		// For each tupleRenderEntity get the renderable component and call accept on its data passing in the tupleRenderEntity renderEntity (l)
 		renderEntities.map(renderEntity -> new Tuple2<>(renderEntity,  world.fetchComponent(renderEntity, Renderable.class)))
-				.sorted(Comparator.comparing(tupleRenderEntity -> {
+		  .sorted(Comparator.comparing(tupleRenderEntity -> {
 			return tupleRenderEntity.r.depthValue;  // .r refers to right handside in the tuple
-		} )).forEach(tupleRenderEntity -> {
-			tupleRenderEntity.r.drawData.accept(tupleRenderEntity.l, renderWindow, world);
+		} )).forEach(tupleRE -> {
+			java.lang.System.out.println("For Each");
+			tupleRE.r.drawData.accept(tupleRE.l, renderWindow, world);
 		});
 	}
-
-
 }
