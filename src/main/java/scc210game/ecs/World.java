@@ -3,6 +3,7 @@ package scc210game.ecs;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,16 +62,56 @@ public class World {
     }
 
     /**
+     * Test if a resource exists
+     *
+     * @param resourceType the type of {@link Resource} to test for existence
+     */
+    public boolean hasResource(Class<? extends Resource> resourceType) {
+        return this.resourceMap.containsKey(resourceType);
+    }
+
+    /**
      * Fetch a resource
      *
      * @param resourceType the type of {@link Resource} to fetch
      * @param <T>          the class of {@link Resource} to fetch
      * @return the requested {@link Resource}
+     * @apiNote this explodes if the resource doesn't exist
      */
     @SuppressWarnings("unchecked")
     @Nonnull
     public <T extends Resource> T fetchResource(Class<T> resourceType) {
         return (T) this.resourceMap.get(resourceType);
+    }
+
+    /**
+     * Fetch a resource with a producer if the resource does not exist
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @param <T>          the class of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     * @apiNote this explodes if the resource doesn't exist
+     */
+    @SuppressWarnings({"unchecked", "BoundedWildcard"})
+    @Nonnull
+    public <T extends Resource> T fetchResource(Class<T> resourceType, Supplier<T> supplier) {
+        return (T) this.resourceMap.computeIfAbsent(resourceType, k -> supplier.get());
+    }
+
+    /**
+     * Test if a component exists for a given entity
+     *
+     * @param e             the {@link Entity} to test the component of
+     * @param componentType the type of {@link Component} to test for existence
+     */
+    public boolean hasComponent(Entity e, Class<? extends Component> componentType) {
+        var components = this.componentMaps.get(e);
+
+        if (components == null) {
+            return false;
+        }
+
+        return components.containsKey(componentType);
     }
 
     /**
@@ -80,6 +121,7 @@ public class World {
      * @param componentType the type of {@link Component} to fetch
      * @param <T>           the class of {@link Component} to fetch
      * @return the requested {@link Component}
+     * @apiNote this explodes if the component doesn't exist
      */
     @Nonnull
     @SuppressWarnings("unchecked")

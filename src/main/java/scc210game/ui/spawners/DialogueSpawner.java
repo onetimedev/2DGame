@@ -1,4 +1,4 @@
-package scc210game.ui.swawners;
+package scc210game.ui.spawners;
 
 import scc210game.ecs.Spawner;
 import scc210game.ecs.World;

@@ -6,17 +6,34 @@ import java.util.List;
 
 /**
  * Fired when an entity is dragged
- * <p>
- * dy/dx are the offsets from the position the entity was at at the start of the drag
  */
 public class EntitiesDraggedEvent implements UiEvent, ContainsEntities {
     public final Entity entity;
 
-    public final int dx;
-    public final int dy;
+    /**
+     * Origin x coordinate of the drag
+     */
+    public final float originX;
 
-    public EntitiesDraggedEvent(Entity entity, int dx, int dy) {
+    /**
+     * Origin y coordinate of the drag
+     */
+    public final float originY;
+
+    /**
+     * Change in x coordinate since the last drag event
+     */
+    public final float dx;
+
+    /**
+     * Change in y coordinate since the last drag event
+     */
+    public final float dy;
+
+    public EntitiesDraggedEvent(Entity entity, float originX, float originY, float dx, float dy) {
         this.entity = entity;
+        this.originX = originX;
+        this.originY = originY;
         this.dx = dx;
         this.dy = dy;
     }
