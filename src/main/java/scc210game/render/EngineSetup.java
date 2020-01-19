@@ -1,8 +1,9 @@
 package scc210game.render;
 
-import org.jsfml.graphics.*;
+import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Vector2i;
+import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
@@ -22,13 +23,13 @@ public class EngineSetup {
 	private static EngineSetup instance = null;
 	public RenderWindow mainWindow;
 	// Add all systems / groups of systems here into the List
-	private ECS ecs;
+	private final ECS ecs;
 
 	private EngineSetup() {
-		mainWindow = new RenderWindow();
-		ecs = new ECS(List.of(new RenderSystem(mainWindow)), new BasicState());
-		ecs.start();
-		createWindow(720, 480);
+		this.mainWindow = new RenderWindow();
+		this.ecs = new ECS(List.of(new RenderSystem(this.mainWindow)), new BasicState());
+		this.ecs.start();
+		this.createWindow(720, 480);
 	}
 
 	
@@ -37,9 +38,9 @@ public class EngineSetup {
 	 * @return the singleton instance of Render
 	 */
 	public static EngineSetup getInstance() {
-		if(instance == null)
-			instance = new EngineSetup();
-		return instance;
+		if (EngineSetup.instance == null)
+			EngineSetup.instance = new EngineSetup();
+		return EngineSetup.instance;
 	}
 
 
@@ -49,8 +50,8 @@ public class EngineSetup {
 	 * @param height of the window
 	 */
 	public void createWindow(int width, int height) {
-		mainWindow.create(new VideoMode(width, height), "Explore");
-		mainLoop();
+		this.mainWindow.create(new VideoMode(width, height), "Explore");
+		this.mainLoop();
 	}
 
 
@@ -60,11 +61,21 @@ public class EngineSetup {
 	 *  proprietary StateEvent for the EventQueue
 	 */
 	private void mainLoop() {
-		while(mainWindow.isOpen()) {
-			tilesInWindow();
-			mainWindow.clear(Color.BLACK);
-			for(Event event: mainWindow.pollEvents()) {
-				StateEvent se = new StateEvent(){};
+		int lastMouseX;
+		int lastMouseY;
+
+		{
+			var initialMousePos = Mouse.getPosition(this.mainWindow);
+			lastMouseX = initialMousePos.x;
+			lastMouseY = initialMousePos.y;
+		}
+
+		while (this.mainWindow.isOpen()) {
+			this.tilesInWindow();
+			this.mainWindow.clear(Color.BLACK);
+			for (final Event event : this.mainWindow.pollEvents()) {
+				StateEvent se = new StateEvent() {
+				};
 				switch (event.type) {
 					case KEY_PRESSED: {
 						KeyEvent keyEvent = event.asKeyEvent();
@@ -88,18 +99,22 @@ public class EngineSetup {
 					}
 					case MOUSE_MOVED: {
 						MouseEvent msMoved = event.asMouseEvent();
-						se = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y);
+						se = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y,
+								msMoved.position.x - lastMouseX,
+								msMoved.position.y - lastMouseY);
+						lastMouseX = msMoved.position.x;
+						lastMouseY = msMoved.position.y;
 						break;
 					}
 					case CLOSED: {
-						mainWindow.close();
+						this.mainWindow.close();
 						break;
 					}
 				}
-			ecs.runWithUpdateOnce(se);
+				this.ecs.runWithUpdateOnce(se);
 			}
-		ecs.runOnce();
-		mainWindow.display();
+			this.ecs.runOnce();
+			this.mainWindow.display();
 		}
 	}
 
@@ -109,7 +124,7 @@ public class EngineSetup {
 
 	public void tilesInWindow(/*Tile[][] tiles*/) {
 		double tileSize = 64;
-		Vector2i windowSize = mainWindow.getSize();
+		Vector2i windowSize = this.mainWindow.getSize();
 		int tilesX = (int) Math.ceil(windowSize.x / tileSize);
 		int tilesY = (int) Math.ceil(windowSize.y / tileSize);
 		System.out.println("Window Width: " + windowSize.x + ". Tiles in width: " + tilesX);
