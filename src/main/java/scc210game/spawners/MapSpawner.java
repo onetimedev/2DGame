@@ -1,10 +1,7 @@
 package scc210game.spawners;
 
-import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.View;
-import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import scc210game.ecs.Entity;
 import scc210game.ecs.Spawner;
@@ -34,6 +31,15 @@ public class MapSpawner implements Spawner {
 					int tilesTop = (int) Math.floor(tilesY / 2.0);  // Number of tiles above player Y coord
 					int startY = playerCoords.y - tilesTop;  // First tile Y coord to be rendered from
 
+					if(startX < 0)
+						startX = 0;
+					else if(startX > m.getTileMaxX())
+						startX = m.getTileMaxX();
+					if(startY < 0)
+					  startY = 0;
+					else if(startY > m.getTileMaxY())
+						startY = m.getTileMaxY();
+
 					System.out.println("TilesX: " + tilesX);
 					System.out.println("TilesY: " + tilesY);
 
@@ -41,10 +47,12 @@ public class MapSpawner implements Spawner {
 					// renders the tile at this X,Y coordinate
 					for(int y=0; y<tilesY; y++) {
 						for(int x=0; x<tilesX; x++) {
-							Sprite tile = new Sprite(m.getTile(startX, startY).getTexture());
-							tile.setPosition(positionX, positionY);
-							System.out.println("Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
-							window.draw(tile);
+							if(startX <= m.getTileMaxX() && startY <= m.getTileMaxY()) {  // Only render tile if its X,Y is valid
+								Sprite tile = new Sprite(m.getTile(startX, startY).getTexture());
+								tile.setPosition(positionX, positionY);
+								System.out.println("Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
+								window.draw(tile);
+							}
 							startX++;
 							positionX += 64;
 						}
