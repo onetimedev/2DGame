@@ -37,7 +37,7 @@ public class RenderSystem implements System {
         // on its data passing in the tupleRenderEntity renderEntity (l)
         renderEntities
                 .map(e -> new Tuple2<>(e, world.fetchComponent(e, Renderable.class)))
-                .sorted(Comparator.comparing(t -> t.r.depth))
+                .sorted(Comparator.comparing(t -> t.r.height))
                 .forEach(t -> {
                     for (ViewType vt : t.r.includedViews) {
                         renderWindow.setView(this.views.get(vt));
