@@ -4,14 +4,15 @@ import org.jsfml.system.Vector2i;
 
 public class GenerateMap {
 
-	private Tile[][] allTiles = new Tile[10][10];
+	private Tile[][] allTiles;
 	private Vector2i mapSize;
 
 	// Read from object map tile values that are already preset
 
 
 	public GenerateMap() {
-		mapSize = new Vector2i(10, 10);
+		mapSize = new Vector2i(100, 100);
+		allTiles = new Tile[mapSize.x][mapSize.y];
 		generate();
 	}
 

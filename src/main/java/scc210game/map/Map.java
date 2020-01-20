@@ -38,6 +38,14 @@ public class Map extends Component {
 		return mapTiles[xPos][yPos];
 	}
 
+	public int getTileMaxX() {
+		return mapTiles.length;
+	}
+
+	public int getTileMaxY() {
+		return mapTiles[0].length;
+	}
+
 
 
 
