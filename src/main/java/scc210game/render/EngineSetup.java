@@ -7,7 +7,7 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
-import org.jsfml.window.WindowStyle;
+import org.jsfml.window.Window;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
@@ -15,6 +15,7 @@ import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
 import scc210game.state.event.StateEvent;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +26,24 @@ import java.util.Map;
  */
 public class EngineSetup {
     public final RenderWindow mainWindow;
+
+    public Method renderWindowSetSize = null;
+
     public final Map<ViewType, View> views;
     private final ECS ecs;
 
     private EngineSetup() {
         this.mainWindow = new RenderWindow();
         this.mainWindow.create(new VideoMode(720, 480), "SCC210 Game");
+
+        try {
+            //noinspection JavaReflectionMemberAccess
+            this.renderWindowSetSize = Window.class.getDeclaredMethod("nativeSetSize", int.class, int.class);
+            this.renderWindowSetSize.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
@@ -54,7 +67,11 @@ public class EngineSetup {
         // set height from width, 16:9 ratio
         var height = width * (9f / 16f);
 
-        this.mainWindow.setSize(new Vector2i(width, (int) height));
+        try {
+            this.renderWindowSetSize.invoke(this.mainWindow, (int)width, (int)height);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
