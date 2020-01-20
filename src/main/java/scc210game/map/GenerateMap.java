@@ -8,20 +8,15 @@ public class GenerateMap {
 	private Vector2i mapSize;
 
 	// Read from object map tile values that are already preset
-
-
 	public GenerateMap() {
 		mapSize = new Vector2i(100, 100);
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		generate();
 	}
 
-
-
 	public Tile[][] getAllTiles() {
 		return allTiles;
 	}
-
 
 	public Vector2i getMapSize() {
 		return mapSize;
@@ -36,11 +31,4 @@ public class GenerateMap {
 				allTiles[x][y] = new Tile("grass.png", x, y, true);
 			}
 	}
-
-
-
-
-
-
-
 }

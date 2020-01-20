@@ -8,6 +8,6 @@ import scc210game.render.EngineSetup;
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world");
-        EngineSetup.getInstance();
+        EngineSetup.runForever();
     }
 }

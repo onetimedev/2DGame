@@ -117,7 +117,7 @@ public class ECSTest {
                     .build();
 
             @Override
-            public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
+            public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
                 final Stream<Entity> entities = world.applyQuery(this.q);
 
                 entities.forEach(e -> {
