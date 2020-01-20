@@ -3,7 +3,6 @@ package scc210game.ui.systems;
 import scc210game.ecs.System;
 import scc210game.ecs.*;
 import scc210game.events.*;
-import scc210game.state.State;
 import scc210game.state.event.MouseButtonDepressedEvent;
 import scc210game.state.event.MouseButtonPressedEvent;
 import scc210game.state.event.MouseMovedEvent;
@@ -54,7 +53,7 @@ public class HandleInteraction implements System {
     }
 
     @Override
-    public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
+    public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
         for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
             Event e = it.next();
             this.handleEvent(world, e);

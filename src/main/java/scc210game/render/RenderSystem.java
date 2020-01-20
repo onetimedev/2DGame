@@ -7,7 +7,6 @@ import scc210game.ecs.Entity;
 import scc210game.ecs.Query;
 import scc210game.ecs.System;
 import scc210game.ecs.World;
-import scc210game.state.State;
 import scc210game.utils.Tuple2;
 
 import javax.annotation.Nonnull;
@@ -30,7 +29,7 @@ public class RenderSystem implements System {
     }
 
     @Override
-    public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
+    public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
         Stream<Entity> renderEntities = world.applyQuery(q);
         // renderEntities Stream using map to result in changed values in stream from sort.
         // Making a tuple out of renderEntity (l) and Renderable Component (r) and sorting by depth

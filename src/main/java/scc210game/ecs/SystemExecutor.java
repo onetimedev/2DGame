@@ -29,7 +29,7 @@ class SystemExecutor {
         Duration delta = Duration.between(this.lastRun, now);
 
         for (final System s : this.systems) {
-            s.run(world, currentState, delta);
+            s.run(world, delta);
         }
 
         this.lastRun = now;
