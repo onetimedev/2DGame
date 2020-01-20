@@ -7,20 +7,24 @@ import scc210game.ecs.Entity;
 import scc210game.ecs.World;
 import scc210game.utils.TriConsumer;
 
+import java.util.Set;
+
 
 public class Renderable extends Component {
-	public final TriConsumer<Entity, RenderWindow, World> drawData;
-	public final int depthValue;
+	/**
+	 * Which views this renderable renders in
+	 */
+    public final Set<ViewType> includedViews;
+	public final TriConsumer<Entity, RenderWindow, World> renderFn;
+	public final int depth;
 
-	public Renderable(TriConsumer<Entity, RenderWindow, World> d, int depth) {
-		this.drawData = d;
-		this.depthValue = depth;
+	public Renderable(Set<ViewType> includedViews, TriConsumer<Entity, RenderWindow, World> renderFn, int depth) {
+		this.includedViews = includedViews;
+		this.renderFn = renderFn;
+		this.depth = depth;
 	}
 
 	public String serialize() {
 		return "";
 	}
-
-
-
 }
