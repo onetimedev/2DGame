@@ -3,6 +3,7 @@ package scc210game.ui;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.Jsoner;
+import org.jsfml.system.Vector2f;
 import scc210game.ecs.Component;
 
 import java.math.BigDecimal;
@@ -61,6 +62,14 @@ public class UITransform extends Component {
         this.zPos = zPos;
         this.width = width;
         this.height = height;
+    }
+
+    public Vector2f pos() {
+        return new Vector2f(this.xPos, this.yPos);
+    }
+
+    public Vector2f size() {
+        return new Vector2f(this.width, this.height);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class Renderable extends Component {
 	public final TriConsumer<Entity, RenderWindow, World> renderFn;
 	public final int depth;
 
-	public Renderable(Set<ViewType> includedViews, TriConsumer<Entity, RenderWindow, World> renderFn, int depth) {
+	public Renderable(Set<ViewType> includedViews, int depth, TriConsumer<Entity, RenderWindow, World> renderFn) {
 		this.includedViews = includedViews;
 		this.renderFn = renderFn;
 		this.depth = depth;
