@@ -40,8 +40,8 @@ public class RenderSystem implements System {
                 .sorted(Comparator.comparing(t -> t.r.height))
                 .forEach(t -> {
                     for (ViewType vt : t.r.includedViews) {
-                        renderWindow.setView(this.views.get(vt));
-                        t.r.renderFn.accept(t.l, renderWindow, world);
+                        this.renderWindow.setView(this.views.get(vt));
+                        t.r.renderFn.accept(t.l, this.renderWindow, world);
                     }
                 });
     }

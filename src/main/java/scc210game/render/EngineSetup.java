@@ -7,6 +7,7 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
+import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
@@ -32,7 +33,7 @@ public class EngineSetup {
         this.mainWindow.create(new VideoMode(720, 480), "SCC210 Game");
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
-            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(mainWindow.getSize())));
+            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
         this.ecs = new ECS(List.of(new RenderSystem(this.mainWindow, this.views)), new BasicState());
@@ -43,6 +44,18 @@ public class EngineSetup {
         var engine = new EngineSetup();
         engine.mainLoop();
 	}
+
+	private void enforceAspectRatio() {
+        var windowSize = this.mainWindow.getSize();
+
+        // enforce minimum width of 720px
+        var width = Integer.max(windowSize.x, 720);
+
+        // set height from width, 16:9 ratio
+        var height = width * (9f / 16f);
+
+        this.mainWindow.setSize(new Vector2i(width, (int) height));
+    }
 
     /**
      * Runs the game loop from the createWindow method
@@ -66,6 +79,10 @@ public class EngineSetup {
                 StateEvent se = new StateEvent() {
                 };
                 switch (event.type) {
+                    case RESIZED: {
+                        this.enforceAspectRatio();
+                        break;
+                    }
                     case KEY_PRESSED: {
                         KeyEvent keyEvent = event.asKeyEvent();
                         se = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
