@@ -21,8 +21,8 @@ public class MapSpawner implements Spawner {
 					Vector2i playerCoords = new Vector2i(40,32);  //TODO: Player entity get current position coords
 
 					// Number of tiles that can fit in windows X and Y
-					int tilesX = (int) Math.ceil(window.getSize().x / 64.0);
-					int tilesY = (int) Math.ceil(window.getSize().y / 64.0);
+					int tilesX = (int) Math.ceil(window.getView().getSize().x / 64.0);
+					int tilesY = (int) Math.ceil(window.getView().getSize().y / 64.0);
 
 					int positionX = 0;  // Sprites X Position in window
 					int positionY = 0;  // Sprites Y Position in window
