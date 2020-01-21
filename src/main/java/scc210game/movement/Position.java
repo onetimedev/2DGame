@@ -1,4 +1,4 @@
-package scc210game.map;
+package scc210game.movement;
 
 import scc210game.ecs.Component;
 
