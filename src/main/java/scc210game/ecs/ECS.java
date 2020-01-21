@@ -1,98 +1,97 @@
 package scc210game.ecs;
 
 
+import scc210game.state.State;
+import scc210game.state.StateMachine;
+import scc210game.state.event.StateEvent;
+
 import javax.annotation.Nonnull;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Wraps all the ECS parts
  */
 public class ECS {
     @Nonnull
-    private final World world;
-    @Nonnull
     private final SystemExecutor executor;
+    @Nonnull
+    private final StateMachine stateMachine;
+    @Nonnull
+    private final Map<Class<? extends Resource>, Resource> globalResources;
 
     /**
      * Construct the ECS wrapper from a list of systems to run
      *
-     * @param systems The systems that will be used
+     * @param systems      The systems that will be used
+     * @param initialState The initial state the game will start with
      */
-    public ECS(List<? extends System> systems) {
-        this.world = new World();
+    public ECS(List<? extends System> systems, State initialState) {
         this.executor = new SystemExecutor(systems);
+        this.stateMachine = new StateMachine(initialState);
+        this.globalResources = new HashMap<>();
     }
 
     /**
-     * Add an entity to the world with a set of components
-     *
-     * @param e          the {@link Entity} to add to the world
-     * @param components the {@link Component}s the entity should start with
+     * Start the game
      */
-    public void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
-        this.world.addEntity(e, components);
+    public void start() {
+        this.stateMachine.start();
     }
 
     /**
-     * Add a component to an entity
-     *
-     * @param e         the {@link Entity} to add the component to
-     * @param component the {@link Component} to add to the entity
-     */
-    public void addComponentToEntity(Entity e, @Nonnull Component component) {
-        this.world.addComponentToEntity(e, component);
-    }
-
-    /**
-     * Run one iteration of every system
+     * Update the state of the game,
+     * Then run one iteration of every system
      */
     public void runOnce() {
-        this.executor.runOnce(this.world);
+        assert this.stateMachine.isRunning() : "State machine is not running";
+
+        this.stateMachine.update();
+        this.executor.runOnce(this.stateMachine.currentWorld(), this.stateMachine.currentState().getClass());
     }
 
     /**
-     * Fetch a component for an entity
+     * Fetch the current world
      *
-     * @param e             the {@link Entity} to fetch the component of
-     * @param componentType the type of {@link Component} to fetch
-     * @param <T>           the class of {@link Component} to fetch
-     * @return the requested {@link Component}
+     * @return the current world
      */
+    public World getCurrentWorld() {
+        return this.stateMachine.currentWorld();
+    }
+
+    /**
+     * Update the state of the game according to the passed event,
+     * Then run one iteration of every system
+     *
+     * @param event the {@link StateEvent} to handle
+     */
+    public void runWithUpdateOnce(StateEvent event) {
+        assert this.stateMachine.isRunning() : "State machine is not running";
+
+        this.stateMachine.handle(event);
+        this.executor.runOnce(this.stateMachine.currentWorld(), this.stateMachine.currentState().getClass());
+    }
+
+    /**
+     * Add a global resource
+     *
+     * @param r the {@link Resource} to add
+     */
+    public void addGlobalResource(@Nonnull Resource r) {
+        this.globalResources.put(r.getClass(), r);
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @param <T>          the class of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     */
+    @SuppressWarnings("unchecked")
     @Nonnull
-    public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
-        return this.world.fetchComponent(e, componentType);
-    }
-
-    /**
-     * Flag an entity's component as modified
-     *
-     * @param e             the {@link Entity} for which the component to be flagged as modified belongs to
-     * @param componentType the type of {@link Component} to flag as modified
-     */
-    public void setModified(Entity e, Class<? extends Component> componentType) {
-        this.world.setModified(e, componentType);
-    }
-
-    /**
-     * Set the modified state of an entity's component
-     *
-     * @param e             the {@link Entity} for which the component to set the modified flag belongs to
-     * @param componentType the type of {@link Component} to set the modified flag on
-     * @param state         the state to set the modified flag to
-     */
-    @SuppressWarnings("BooleanParameter")
-    public void setModifiedState(Entity e, Class<? extends Component> componentType, boolean state) {
-        this.world.setModifiedState(e, componentType, state);
-    }
-
-    /**
-     * Construct an {@link World.EntityBuilder} used to build an entity with a set of components
-     *
-     * @return the constructed {@link World.EntityBuilder}
-     */
-    @Nonnull
-    public World.EntityBuilder entityBuilder() {
-        return this.world.entityBuilder();
+    public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
+        return (T) this.globalResources.get(resourceType);
     }
 }

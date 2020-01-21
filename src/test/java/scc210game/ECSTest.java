@@ -6,13 +6,27 @@ import com.github.cliftonlabs.json_simple.Jsoner;
 import org.junit.Test;
 import scc210game.ecs.System;
 import scc210game.ecs.*;
+import scc210game.state.State;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+
+class BasicState implements State {
+    public Entity e;
+
+    @Override
+    public void onStart(World world) {
+        this.e = world.entityBuilder()
+                .with(new Position(0, 0))
+                .with(new Velocity(1, 0))
+                .build();
+    }
+}
 
 class Velocity extends Component {
     static {
@@ -96,17 +110,22 @@ class Position extends Component {
 public class ECSTest {
     @Test
     public void testECS() {
-        class System0 extends System {
-            @Nonnull
-            @Override
-            public Query getQuery() {
-                return Query.builder()
-                        .require(Position.class)
-                        .require(Velocity.class)
-                        .build();
-            }
+        class System0 implements System {
+            private final Query q = Query.builder()
+                    .require(Position.class)
+                    .require(Velocity.class)
+                    .build();
 
             @Override
+            public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
+                final Stream<Entity> entities = world.applyQuery(this.q);
+
+                entities.forEach(e -> {
+                    world.resetModifiedState(e);
+                    this.actOnEntity(e, world, timeDelta);
+                });
+            }
+
             public void actOnEntity(Entity e, @Nonnull World world, @Nonnull Duration timeDelta) {
                 var pos = world.fetchComponent(e, Position.class);
                 var vel = world.fetchComponent(e, Velocity.class);
@@ -118,16 +137,15 @@ public class ECSTest {
             }
         }
 
-        ECS ecs = new ECS(List.of(new System0()));
+        var s = new BasicState();
 
-        var ent = ecs.entityBuilder()
-                .with(new Position(0, 0))
-                .with(new Velocity(1, 0))
-                .build();
+        ECS ecs = new ECS(List.of(new System0()), s);
+
+        ecs.start();
 
         ecs.runOnce();
 
-        var entPos = ecs.fetchComponent(ent, Position.class);
+        var entPos = ecs.getCurrentWorld().fetchComponent(s.e, Position.class);
 
         assertEquals(entPos.x, 1);
 

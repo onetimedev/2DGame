@@ -1,5 +1,7 @@
 package scc210game.ecs;
 
+import scc210game.state.State;
+
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.Instant;
@@ -22,7 +24,7 @@ class SystemExecutor {
      *
      * @param world the {@link World} to run
      */
-    public void runOnce(@Nonnull World world) {
+    public void runOnce(@Nonnull World world, @Nonnull Class<? extends State> currentState) {
         Instant now = Instant.now();
         Duration delta = Duration.between(this.lastRun, now);
 

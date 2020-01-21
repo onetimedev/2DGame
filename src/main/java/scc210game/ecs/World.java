@@ -3,6 +3,7 @@ package scc210game.ecs;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,11 +17,14 @@ public class World {
     private final Map<Entity, Set<Class<? extends Component>>> entityComponents;
     @Nonnull
     private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
+    @Nonnull
+    private final Map<Class<? extends Resource>, Resource> resourceMap;
 
-    World() {
+    public World() {
         this.entities = new ArrayList<>();
         this.entityComponents = new HashMap<>();
         this.componentMaps = new HashMap<>();
+        this.resourceMap = new HashMap<>();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
@@ -49,12 +53,75 @@ public class World {
     }
 
     /**
+     * Add a resource
+     *
+     * @param r the {@link Resource} to add
+     */
+    public void addResource(@Nonnull Resource r) {
+        this.resourceMap.put(r.getClass(), r);
+    }
+
+    /**
+     * Test if a resource exists
+     *
+     * @param resourceType the type of {@link Resource} to test for existence
+     */
+    public boolean hasResource(Class<? extends Resource> resourceType) {
+        return this.resourceMap.containsKey(resourceType);
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @param <T>          the class of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     * @apiNote this explodes if the resource doesn't exist
+     */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public <T extends Resource> T fetchResource(Class<T> resourceType) {
+        return (T) this.resourceMap.get(resourceType);
+    }
+
+    /**
+     * Fetch a resource with a producer if the resource does not exist
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @param <T>          the class of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     * @apiNote this explodes if the resource doesn't exist
+     */
+    @SuppressWarnings({"unchecked", "BoundedWildcard"})
+    @Nonnull
+    public <T extends Resource> T fetchResource(Class<T> resourceType, Supplier<T> supplier) {
+        return (T) this.resourceMap.computeIfAbsent(resourceType, k -> supplier.get());
+    }
+
+    /**
+     * Test if a component exists for a given entity
+     *
+     * @param e             the {@link Entity} to test the component of
+     * @param componentType the type of {@link Component} to test for existence
+     */
+    public boolean hasComponent(Entity e, Class<? extends Component> componentType) {
+        var components = this.componentMaps.get(e);
+
+        if (components == null) {
+            return false;
+        }
+
+        return components.containsKey(componentType);
+    }
+
+    /**
      * Fetch a component for an entity
      *
      * @param e             the {@link Entity} to fetch the component of
      * @param componentType the type of {@link Component} to fetch
      * @param <T>           the class of {@link Component} to fetch
      * @return the requested {@link Component}
+     * @apiNote this explodes if the component doesn't exist
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -99,7 +166,7 @@ public class World {
      * @param q the {@link Query} to use
      * @return a {@link Stream<Entity>} of entities that match the query
      */
-    Stream<Entity> applyQuery(@Nonnull Query q) {
+    public Stream<Entity> applyQuery(@Nonnull Query q) {
         // I hope this is performant
 
         return this.entities.parallelStream().filter(e -> {
@@ -107,7 +174,7 @@ public class World {
             Map<Class<? extends Component>, ComponentMeta<Component>> componentMap = this.componentMaps.get(e);
 
             return q.testEntity(componentSet, componentMap);
-        });
+        }).sequential();
     }
 
     /**
@@ -149,6 +216,19 @@ public class World {
             this.components.add(component);
 
             return this;
+        }
+
+        /**
+         * Invoke a {@link Spawner} with this entity
+         *
+         * @param spawner the {@link Spawner} to use
+         * @return the current {@link EntityBuilder} instance (to allow chaining)
+         */
+        @Nonnull
+        public EntityBuilder with(Spawner spawner) {
+            assert !this.built : "EntityBuilder already built";
+
+            return spawner.inject(this);
         }
 
         /**
