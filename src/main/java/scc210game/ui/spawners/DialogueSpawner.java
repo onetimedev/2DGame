@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.util.Set;
 
 public class DialogueSpawner implements Spawner {
-    private static Font font = new Font() {{
+    private static final Font font = new Font() {{
         try {
             this.loadFromFile(ResourceLoader.resolve("font/FreeSans.ttf"));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }};
@@ -32,24 +32,25 @@ public class DialogueSpawner implements Spawner {
         this.message = message;
     }
 
+    @SuppressWarnings("TypeMayBeWeakened")
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
         return builder
                 .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))
                 .with(new UIText(this.message))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var textContent = w.fetchComponent(e, UIText.class);
                     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
-                        setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-                        setFillColor(UiUtils.transformColor(Color.LIGHT_GRAY));
-                        setOutlineColor(UiUtils.transformColor(Color.BLACK));
+                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+                        this.setFillColor(UiUtils.transformColor(Color.LIGHT_GRAY));
+                        this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
                     }};
 
                     rw.draw(rect);
 
-                    var text = new Text(textContent.text, font, 24) {{
-                        setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+                    var text = new Text(textContent.text, DialogueSpawner.font, 24) {{
+                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
                     }};
 
                     rw.draw(text);

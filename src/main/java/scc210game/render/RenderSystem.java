@@ -16,10 +16,11 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 
+@SuppressWarnings("BoundedWildcard")
 public class RenderSystem implements System {
     private final RenderWindow renderWindow;
     private final Map<ViewType, View> views;
-    private Query q = Query.builder()
+    private final Query q = Query.builder()
             .require(Renderable.class)
             .build();
 
@@ -30,7 +31,7 @@ public class RenderSystem implements System {
 
     @Override
     public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-        Stream<Entity> renderEntities = world.applyQuery(q);
+        Stream<Entity> renderEntities = world.applyQuery(this.q);
         // renderEntities Stream using map to result in changed values in stream from sort.
         // Making a tuple out of renderEntity (l) and Renderable Component (r) and sorting by depth
         // For each tupleRenderEntity get the renderable component and call accept
@@ -39,7 +40,8 @@ public class RenderSystem implements System {
                 .map(e -> new Tuple2<>(e, world.fetchComponent(e, Renderable.class)))
                 .sorted(Comparator.comparing(t -> t.r.height))
                 .forEach(t -> {
-                    for (ViewType vt : t.r.includedViews) {
+                    for (final ViewType vt : t.r.includedViews) {
+                        java.lang.System.out.println("rendering...");
                         this.renderWindow.setView(this.views.get(vt));
                         t.r.renderFn.accept(t.l, this.renderWindow, world);
                     }

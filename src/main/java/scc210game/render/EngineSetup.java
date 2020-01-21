@@ -1,21 +1,21 @@
 package scc210game.render;
 
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
-import org.jsfml.window.Window;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
 import scc210game.state.event.StateEvent;
+import scc210game.utils.Tuple2;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,53 +25,86 @@ import java.util.Map;
  * Singleton class to hold game loop, take entities to render, and change mainWindow views
  */
 public class EngineSetup {
-    public final RenderWindow mainWindow;
+    private static final int width = 720;
+    private static final int height = 480;
 
-    public Method renderWindowSetSize = null;
-
-    public final Map<ViewType, View> views;
+    private final RenderWindow mainWindow;
+    private final Map<ViewType, Tuple2<FloatRect, View>> views;
     private final ECS ecs;
 
     private EngineSetup() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(720, 480), "SCC210 Game");
-
-        try {
-            //noinspection JavaReflectionMemberAccess
-            this.renderWindowSetSize = Window.class.getDeclaredMethod("nativeSetSize", int.class, int.class);
-            this.renderWindowSetSize.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        this.mainWindow.create(new VideoMode(EngineSetup.width, EngineSetup.height), "SCC210 Game");
 
         this.mainWindow.setFramerateLimit(60);
+
         this.views = new HashMap<>() {{
-            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
-            this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
+            this.put(ViewType.MAIN, new Tuple2<>(
+                    new FloatRect(0f, 0f, 1f, 1f),
+                    new View(new Vector2f(0, 0), new Vector2f(EngineSetup.width, EngineSetup.height))));
+
+            this.put(ViewType.UI, new Tuple2<>(
+                    new FloatRect(0f, 0f, 1f, 1f),
+                    new View(new Vector2f(0, 0), new Vector2f(EngineSetup.width, EngineSetup.height))));
+
+            this.put(ViewType.MINIMAP, new Tuple2<>(
+                    new FloatRect(0.8f, 0.05f, 0.15f, 0.15f),
+                    new View(new Vector2f(0, 0), new Vector2f(EngineSetup.width, EngineSetup.height)) {{
+                        this.setViewport(new FloatRect(0.8f, 0.05f, 0.15f, 0.15f));
+                    }}));
         }};
-        this.ecs = new ECS(List.of(new RenderSystem(this.mainWindow, this.views)), new BasicState());
+
+        // create a views map of (ViewType -> View), our one has the original viewport included
+        var justViews = new HashMap<ViewType, View>();
+        this.views.forEach((k, v) -> justViews.put(k, v.r));
+
+        this.ecs = new ECS(List.of(new RenderSystem(this.mainWindow, justViews)), new BasicState());
         this.ecs.start();
     }
 
     public static void runForever() {
         var engine = new EngineSetup();
         engine.mainLoop();
-	}
+    }
 
-	private void enforceAspectRatio() {
+    private void enforceAspectRatio() {
+        for (final var t : this.views.values()) {
+            this.enforceViewAspectRatio(t.l, t.r);
+        }
+    }
+
+    private void enforceViewAspectRatio(FloatRect initialView, View v) {
         var windowSize = this.mainWindow.getSize();
 
-        // enforce minimum width of 720px
-        var width = Integer.max(windowSize.x, 720);
+        var windowW = (float) windowSize.x;
+        var windowH = (float) windowSize.y;
 
-        // set height from width, 16:9 ratio
-        var height = width * (9f / 16f);
+        var viewSize = v.getSize();
+        var viewW = viewSize.x;
+        var viewH = viewSize.y;
 
-        try {
-            this.renderWindowSetSize.invoke(this.mainWindow, (int)width, (int)height);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        var windowR = windowW / windowH;
+        var viewR = viewW / viewH;
+
+        // bars are vertical?
+        boolean barPositionVertical = windowR < viewR;
+
+        float finalW = initialView.width;
+        float finalH = initialView.height;
+        float finalOffsetX = initialView.left;
+        float finalOffsetY = initialView.top;
+
+        if (barPositionVertical) {
+            var ratio = windowR / viewR;
+            finalW *= ratio;
+            finalOffsetY = (ratio * finalOffsetY) + (1f - ratio) / 2f;
+        } else {
+            var ratio = viewR / windowR;
+            finalH *= ratio;
+            finalOffsetX = (ratio * finalOffsetX) + (1f - ratio) / 2f;
         }
+
+        v.setViewport(new FloatRect(finalOffsetX, finalOffsetY, finalH, finalW));
     }
 
     /**
