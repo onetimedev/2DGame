@@ -174,7 +174,7 @@ public class World {
             Map<Class<? extends Component>, ComponentMeta<Component>> componentMap = this.componentMaps.get(e);
 
             return q.testEntity(componentSet, componentMap);
-        });
+        }).sequential();
     }
 
     /**
