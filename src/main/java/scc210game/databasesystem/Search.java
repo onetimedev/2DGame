@@ -1,6 +1,6 @@
 package scc210game.databasesystem;
 
-public class Search{
+class Search{
 
     public int position = -1;
     public boolean isFound = false;
@@ -21,7 +21,7 @@ public class Search{
         int start = 0;
         int end = keys.length-1;
         while(start <= end){
-            int index = start + (end - start) /2;
+            int index = start + (end - start) / 2;
 
             String[] currentData = keys[index].split("=");
 
