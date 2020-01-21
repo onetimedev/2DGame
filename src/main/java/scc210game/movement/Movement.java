@@ -1,84 +1,48 @@
 package scc210game.movement;
 
-import org.jsfml.window.Keyboard;
-import scc210game.ecs.Component;
+import scc210game.ecs.World;
+import scc210game.ecs.Query;
+import scc210game.events.Event;
+import scc210game.state.event.KeyPressedEvent;
 
-public class Movement extends Component {
-    private int posX;
-    private int posY;
-    private char key;
+import javax.annotation.Nonnull;
 
-    Movement(int posX, int posY) {
-        this.posY = posY;
-        this.posY = posY;
+public class Movement {
+    public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
+
     }
+    private void handleEvent(@Nonnull World world, Event e) {
+        if (e instanceof KeyPressedEvent) {
+            KeyPressedEvent e1 = (KeyPressedEvent) e;
 
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-    public int getPosX() {
-        return this.posX;
-    }
+            int hMove = 0;
+            int vMove = 0;
 
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
-    public int getPosY() {
-        return this.posY;
-    }
+            switch (e1.key) {
+                case A: {
+                    hMove -= 1;
+                    break;
+                }
+                case S: {
+                    vMove += 1;
+                    break;
+                }
+                case D: {
+                    hMove += 1;
+                    break;
+                }
+                case W: {
+                    vMove -= 1;
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unexpected value: " + e1.key);
+            }
 
-    public void setKey(char key) {
-        this.key = key;
-    }
-    public char getKey() {
-        return this.key;
-    }
-
-
-
-
-   //Sets the direction the player is moving
-   /*public int direction(char key) {
-       if(key == 'W') {
-           direc = 0; //set the direction angle forward
-       }
-       else if(key == 'A') {
-           direc = 270; //set the direction angle left
-       }
-       else if(key == 'S') {
-           direc = 180; //set the direction angle backward
-       }
-       else if(key == 'D') {
-           direc = 90; //set the direction angle right
-       }
-       return direc;
-   }*/
-
-    @Override
-    public String serialize() {
-        return null;
+            var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+            var position = world.fetchComponent(playerEnt, Position.class);
+            position.x += hMove;
+            position.y + -vMove;
+        }
     }
 }
-
-//if key w, a, s, d is pressed return true, if not return false
-   /*public boolean keyPressed(Keyboard.Key W, Keyboard.Key A, Keyboard.Key S, Keyboard.Key D) {
-       if(Keyboard.isKeyPressed(W)) {
-           key = 'W';
-           return true;
-       }
-       else if(Keyboard.isKeyPressed(A)) {
-           key = 'A';
-           return true;
-       }
-       else if(Keyboard.isKeyPressed(S)) {
-           key = 'S';
-           return true;
-       }
-       else if(Keyboard.isKeyPressed(D)) {
-           key = 'D';
-           return true;
-       }
-       else {
-           return false;
-       }
-   }*/
