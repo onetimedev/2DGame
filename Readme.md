@@ -202,8 +202,6 @@ public void run(@Nonnull World world, @Nonnull Duration timeDelta)
 The parameter `world` is the current world the game is in.
 The parameter `timeDelta` is the time since the system last ran.
 
-TODO(ben): The clock should 'pause' when a state is paused.
-
 The `run` method is called whenever the game engine requires your system to run,
 which is whenever a user input happens, or every 1/60th of a second.
 
