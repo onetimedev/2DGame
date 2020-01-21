@@ -4,13 +4,11 @@ import scc210game.ecs.World;
 import scc210game.ecs.Query;
 import scc210game.events.Event;
 import scc210game.state.event.KeyPressedEvent;
+import scc210game.map.Player;
 
 import javax.annotation.Nonnull;
 
 public class Movement {
-    public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-
-    }
     private void handleEvent(@Nonnull World world, Event e) {
         if (e instanceof KeyPressedEvent) {
             KeyPressedEvent e1 = (KeyPressedEvent) e;
@@ -41,8 +39,8 @@ public class Movement {
 
             var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
             var position = world.fetchComponent(playerEnt, Position.class);
-            position.x += hMove;
-            position.y + -vMove;
+            position.xPos += hMove;
+            position.yPos += vMove;
         }
     }
 }
