@@ -93,14 +93,11 @@ public class UITransform extends Component {
      * @return whether the given coordinates are in the area described by this ui transform.
      */
     public boolean contains(float x, float y) {
-        final float halfWidth = this.width / 2f;
-        final float halfHeight = this.height / 2f;
+        final float xLowBound = this.xPos;
+        final float xUppBound = this.xPos + this.width;
 
-        final float xLowBound = this.xPos - halfWidth;
-        final float xUppBound = this.xPos + halfWidth;
-
-        final float yLowBound = this.yPos - halfHeight;
-        final float yUppBound = this.yPos + halfHeight;
+        final float yLowBound = this.yPos;
+        final float yUppBound = this.yPos + this.height;
 
         return (x > xLowBound &&
                 x < xUppBound &&
