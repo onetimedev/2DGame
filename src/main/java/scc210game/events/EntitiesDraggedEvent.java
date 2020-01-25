@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Fired when an entity is dragged
  */
-public class EntitiesDraggedEvent implements UiEvent, ContainsEntities {
+public class EntitiesDraggedEvent extends UiEvent implements ContainsEntities {
     public final Entity entity;
 
     /**

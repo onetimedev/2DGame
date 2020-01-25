@@ -1,6 +1,6 @@
 package scc210game.state.event;
 
-public class MouseMovedEvent implements InputEvent {
+public class MouseMovedEvent extends InputEvent {
     /**
      * The x position of the mouse
      */

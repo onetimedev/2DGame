@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Fired when an entity was dragged and then dropped onto another
  */
-public class EntitiesDroppedEvent implements UiEvent, ContainsEntities {
+public class EntitiesDroppedEvent extends UiEvent implements ContainsEntities {
     public final Entity dropped;
     public final Entity droppedOnto;
 

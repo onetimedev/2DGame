@@ -1,4 +1,4 @@
-package scc210game.ui;
+package scc210game.ui.components;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;

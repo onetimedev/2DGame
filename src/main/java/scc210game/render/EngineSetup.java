@@ -13,6 +13,8 @@ import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
 import scc210game.state.event.StateEvent;
+import scc210game.ui.systems.HandleHovered;
+import scc210game.ui.systems.HandleInteraction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,10 +34,15 @@ public class EngineSetup {
         this.mainWindow.create(new VideoMode(720, 480), "SCC210 Game");
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
-            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(mainWindow.getSize())));
+            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
-        this.ecs = new ECS(List.of(new RenderSystem(this.mainWindow, this.views)), new BasicState());
+        final var systems = List.of(
+                new RenderSystem(this.mainWindow, this.views),
+                new HandleInteraction(this.mainWindow),
+                new HandleHovered()
+        );
+        this.ecs = new ECS(systems, new BasicState());
         this.ecs.start();
     }
 
@@ -112,8 +119,8 @@ public class EngineSetup {
         Vector2i windowSize = this.mainWindow.getSize();
         int tilesX = (int) Math.ceil(windowSize.x / tileSize);
         int tilesY = (int) Math.ceil(windowSize.y / tileSize);
-        System.out.println("Window Width: " + windowSize.x + ". Tiles in width: " + tilesX);
-        System.out.println("Window height: " + windowSize.y + ". Tiles in height: " + tilesY);
+//        System.out.println("Window Width: " + windowSize.x + ". Tiles in width: " + tilesX);
+//        System.out.println("Window height: " + windowSize.y + ". Tiles in height: " + tilesY);
 
         // Need players coords. Then render tiles around player
     }

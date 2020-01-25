@@ -1,13 +1,14 @@
 package scc210game.ui.systems;
 
+import org.jsfml.graphics.RenderWindow;
 import scc210game.ecs.System;
 import scc210game.ecs.*;
 import scc210game.events.*;
+import scc210game.state.event.InputEvent;
 import scc210game.state.event.MouseButtonDepressedEvent;
 import scc210game.state.event.MouseButtonPressedEvent;
 import scc210game.state.event.MouseMovedEvent;
-import scc210game.state.event.StateEvent;
-import scc210game.ui.UITransform;
+import scc210game.ui.components.UITransform;
 import scc210game.utils.Tuple2;
 
 import javax.annotation.Nonnull;
@@ -25,14 +26,16 @@ import java.util.stream.Stream;
  * This must be added to the ECS to work
  */
 public class HandleInteraction implements System {
+    private final RenderWindow window;
     private final EventQueueReader eventReader;
     private final Query uiEntityQuery = Query.builder()
             .require(UITransform.class)
             .build();
 
-    public HandleInteraction() {
+    public HandleInteraction(RenderWindow window) {
+        this.window = window;
         this.eventReader = EventQueue.makeReader();
-        EventQueue.listen(this.eventReader, StateEvent.class);
+        EventQueue.listen(this.eventReader, InputEvent.class);
     }
 
     private Stream<Entity> getUIEntities(@Nonnull World world) {
@@ -44,10 +47,16 @@ public class HandleInteraction implements System {
     }
 
     private Optional<Tuple2<Entity, UITransform>> getEntityAtPosition(float x, float y, @Nonnull World world, @Nullable Entity ignoring) {
+        // map window coords to percentages
+        var windowSize = this.window.getSize();
+
+        var xPct = x / (float) windowSize.x;
+        var yPct = y / (float) windowSize.y;
+
         return this.getUIEntities(world)
                 .filter(e -> e != ignoring)
                 .map(e -> new Tuple2<>(e, world.fetchComponent(e, UITransform.class)))
-                .filter(t -> t.r.contains(x, y))
+                .filter(t -> t.r.contains(xPct, yPct))
                 .max(Comparator.comparing(t -> t.r.zPos));
 
     }

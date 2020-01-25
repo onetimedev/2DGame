@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Fired when an entity is clicked
  */
-public class EntitiesClickEvent implements UiEvent, ContainsEntities {
+public class EntitiesClickEvent extends UiEvent implements ContainsEntities {
     public final float x;
     public final float y;
     public final Entity entity;

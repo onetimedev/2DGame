@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Fired when an entity was dragged but the mouse was not released on another entity
  */
-public class EntitiesFailedDroppedEvent implements UiEvent, ContainsEntities {
+public class EntitiesFailedDroppedEvent extends UiEvent implements ContainsEntities {
     public final Entity dropped;
 
     public EntitiesFailedDroppedEvent(Entity dropped) {
