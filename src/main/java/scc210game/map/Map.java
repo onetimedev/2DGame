@@ -50,8 +50,6 @@ public class Map extends Component {
 
 
 
-
-
 	/**
 	 * Method to create chests on tiles pseudo-random
 	 * Creating an entity with position component, renderable component and inventory component
