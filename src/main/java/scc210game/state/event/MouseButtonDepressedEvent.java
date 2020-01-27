@@ -2,7 +2,7 @@ package scc210game.state.event;
 
 import org.jsfml.window.Mouse;
 
-public class MouseButtonDepressedEvent implements InputEvent {
+public class MouseButtonDepressedEvent extends InputEvent {
     public final float x;
     public final float y;
     public final Mouse.Button button;

@@ -41,7 +41,13 @@ public class World {
         }
     }
 
-    void addComponentToEntity(Entity e, @Nonnull Component component) {
+    /**
+     * Add a Component to an Entity
+     *
+     * @param e         the Entity to add the Component to
+     * @param component the Component to add
+     */
+    public void addComponentToEntity(Entity e, @Nonnull Component component) {
         assert this.entities.contains(e) : "Entity not added to world";
 
         Set<Class<? extends Component>> componentSet = this.entityComponents.computeIfAbsent(e, k -> new HashSet<>());
@@ -50,6 +56,25 @@ public class World {
         Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
                 this.componentMaps.computeIfAbsent(e, k -> new HashMap<>());
         componentStorage.put(component.getClass(), new ComponentMeta<>(component));
+    }
+
+    /**
+     * Remove a component from an entity
+     *
+     * @param e             the Entity to remove the component from
+     * @param componentType the type of component to remove
+     */
+    public void removeComponentFromEntity(Entity e, @Nonnull Class<? extends Component> componentType) {
+        assert this.entities.contains(e) : "Entity not added to world";
+
+        Set<Class<? extends Component>> componentSet = this.entityComponents.get(e);
+        assert componentSet != null;
+        componentSet.remove(componentType);
+
+        Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
+                this.componentMaps.get(e);
+        assert componentStorage != null;
+        componentStorage.remove(componentType);
     }
 
     /**

@@ -91,7 +91,7 @@ public class StateMachine {
         } else if (t instanceof TransQuit) {
             this.running = false;
         } else {
-            System.err.println("Unknown transition type: " + t);
+            throw new RuntimeException("Unknown transition type: " + t);
         }
     }
 
