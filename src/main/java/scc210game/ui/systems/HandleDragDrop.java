@@ -11,7 +11,8 @@ import java.time.Duration;
 import java.util.Iterator;
 
 /**
- * A class that manages adding the Dragged component to entities that are being hovered
+ * A class that manages setting the ui transform translation for entities in the process of being dropped,
+ * and invoking the UIDroppable callback
  */
 public class HandleDragDrop implements System {
     private final EventQueueReader eventReader;

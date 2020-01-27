@@ -7,6 +7,7 @@ import scc210game.state.event.InputEvent;
 import scc210game.state.event.MouseButtonDepressedEvent;
 import scc210game.state.event.MouseButtonPressedEvent;
 import scc210game.state.event.MouseMovedEvent;
+import scc210game.ui.components.UIClickable;
 import scc210game.ui.components.UIDraggable;
 import scc210game.ui.components.UIDroppable;
 import scc210game.ui.components.UITransform;
@@ -43,6 +44,11 @@ public class HandleInteraction implements System {
     private final Query droppableUIEntityQuery = Query.builder()
             .require(UITransform.class)
             .require(UIDroppable.class)
+            .build();
+
+    private final Query clickableUIEntityQuery = Query.builder()
+            .require(UITransform.class)
+            .require(UIClickable.class)
             .build();
 
     public HandleInteraction() {
@@ -93,8 +99,9 @@ public class HandleInteraction implements System {
             MouseButtonDepressedEvent e1 = (MouseButtonDepressedEvent) e;
 
             if (state.draggingEntityData == null || (state.draggingEntityData.dragStartX == e1.x && state.draggingEntityData.dragStartY == e1.y)) {
+                state.draggingEntityData = null;
                 // wasn't dragging anything or the 'drag' wasn't a drag, emit a click
-                var entAtClickP = this.getEntityAtPosition(e1.x, e1.y, world, this.uiEntityQuery);
+                var entAtClickP = this.getEntityAtPosition(e1.x, e1.y, world, this.clickableUIEntityQuery);
 
                 // nothing to click on
                 if (!entAtClickP.isPresent()) {
@@ -102,8 +109,11 @@ public class HandleInteraction implements System {
                 }
 
                 var entAtClick = entAtClickP.get();
-                Event evt = new EntityClickEvent(e1.x, e1.y, entAtClick.l);
-                EventQueue.broadcast(evt);
+
+                if (world.hasComponent(entAtClick.l, UIClickable.class)) {
+                    Event evt = new EntityClickEvent(e1.x, e1.y, entAtClick.l);
+                    EventQueue.broadcast(evt);
+                }
             } else {
                 var entAtDropP = this.getEntityAtPosition(e1.x, e1.y, world, this.droppableUIEntityQuery, state.draggingEntityData.draggingEntity);
 
