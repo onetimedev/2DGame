@@ -8,7 +8,7 @@ import scc210game.ecs.Spawner;
 import scc210game.ecs.World;
 import scc210game.render.Renderable;
 import scc210game.render.ViewType;
-import scc210game.ui.components.UIDraggable;
+import scc210game.ui.components.UIDroppable;
 import scc210game.ui.components.UIHovered;
 import scc210game.ui.components.UITransform;
 import scc210game.utils.UiUtils;
@@ -16,13 +16,13 @@ import scc210game.utils.UiUtils;
 import java.awt.*;
 import java.util.Set;
 
-public class DraggableBoxSpawner implements Spawner {
+public class DroppableBoxSpawner implements Spawner {
     private final float x;
     private final float y;
     private final float width;
     private final float height;
 
-    public DraggableBoxSpawner(float x, float y, float width, float height) {
+    public DroppableBoxSpawner(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -36,11 +36,18 @@ public class DraggableBoxSpawner implements Spawner {
 
         return builder
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
-                .with(new UIDraggable())
-                .with(new Renderable(Set.of(ViewType.MAIN), 3, (Entity e, RenderWindow rw, World w) -> {
+                .with(new UIDroppable((Entity thisEntity, Entity droppedEntity, World w) -> {
+                    var thisTrans = w.fetchComponent(thisEntity, UITransform.class);
+                    var droppedTrans = w.fetchComponent(droppedEntity, UITransform.class);
+
+                    var centerdPosition = UiUtils.centerTransforms(droppedTrans.size(), thisTrans.pos(), thisTrans.size());
+
+                    droppedTrans.updateOrigin(centerdPosition.x, centerdPosition.y);
+                }))
+                .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.GREEN : new Color(0.0f, 0.2f, 0.1f, 0.5f);
+                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;
 
                     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));

@@ -68,4 +68,19 @@ public class UiUtils {
 
         return new Vector2f(values.x, values.y * aspectRatio);
     }
+
+    /**
+     * Get a position that will have the given size object appear at the center of the given targetPos and targetSize
+     *
+     * @param size       size of rectangle to center
+     * @param targetPos  position of rectangle to center on
+     * @param targetSize size of rectangle to center on
+     * @return position needed to have the given size rectangle appear centered
+     */
+    public static Vector2f centerTransforms(Vector2f size, Vector2f targetPos, Vector2f targetSize) {
+        var leftBorder = (targetSize.x - size.x) / 2f;
+        var topBorder = (targetSize.y - size.y) / 2f;
+
+        return new Vector2f(targetPos.x + leftBorder, targetPos.y + topBorder);
+    }
 }

@@ -112,6 +112,19 @@ public class UITransform extends Component {
         return new Vector2f(this.width, this.height);
     }
 
+    /**
+     * Update the position of the transform and set the origin positions too.
+     *
+     * @param x the new x position
+     * @param y the new y position
+     */
+    public void updateOrigin(float x, float y) {
+        this.originXPos = x;
+        this.xPos = x;
+        this.originYPos = y;
+        this.yPos = y;
+    }
+
     @Override
     public String serialize() {
         final Jsonable json = new JsonObject() {{

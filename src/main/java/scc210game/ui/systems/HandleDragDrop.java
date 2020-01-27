@@ -3,6 +3,7 @@ package scc210game.ui.systems;
 import scc210game.ecs.System;
 import scc210game.ecs.World;
 import scc210game.events.*;
+import scc210game.ui.components.UIDroppable;
 import scc210game.ui.components.UITransform;
 
 import javax.annotation.Nonnull;
@@ -12,10 +13,10 @@ import java.util.Iterator;
 /**
  * A class that manages adding the Dragged component to entities that are being hovered
  */
-public class HandleDragged implements System {
+public class HandleDragDrop implements System {
     private final EventQueueReader eventReader;
 
-    public HandleDragged() {
+    public HandleDragDrop() {
         this.eventReader = EventQueue.makeReader();
         EventQueue.listen(this.eventReader, EntityDraggedEvent.class);
         EventQueue.listen(this.eventReader, EntityDroppedEvent.class);
@@ -42,6 +43,8 @@ public class HandleDragged implements System {
                 var transform = world.fetchComponent(e1.dropped, UITransform.class);
                 transform.xPos = transform.originXPos;
                 transform.yPos = transform.originYPos;
+                var dropAccept = world.fetchComponent(e1.droppedOnto, UIDroppable.class);
+                dropAccept.acceptor.accept(e1.droppedOnto, e1.dropped, world);
             }
         }
     }

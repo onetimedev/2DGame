@@ -13,7 +13,7 @@ import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
 import scc210game.state.event.StateEvent;
-import scc210game.ui.systems.HandleDragged;
+import scc210game.ui.systems.HandleDragDrop;
 import scc210game.ui.systems.HandleHovered;
 import scc210game.ui.systems.HandleInteraction;
 
@@ -41,7 +41,7 @@ public class EngineSetup {
         final var systems = List.of(
                 new HandleInteraction(),
                 new HandleHovered(),
-                new HandleDragged(),
+                new HandleDragDrop(),
                 new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new BasicState());
