@@ -1,52 +1,28 @@
-public class Item {
+package scc210game.items;
 
-    public String name;
-    public int id;
-    private int level;
-
-    //contains methods to create entities with item components describe names
-    //implements events moving items between two inventories
-    //arraylist of entities all entities have item components in this array
+import scc210game.ecs.Entity;
+import scc210game.ecs.World;
 
 
-    public Item(String name, int id, int level){
-        this.name = name;
-        this.id = id;
-        this.level = level;
-    }
 
-    public Item(){
+import java.util.ArrayList;
 
-    }
+public class Item extends ItemComponent {
 
-    public String getName() {
-        return name;
-    }
 
-    public int getID() {
-        return id;
-    }
+    public World world;
+    public ArrayList<Entity> itemsList = new ArrayList<>();
 
-    public void use(){
+    public Item(String name, int level, String desc) {
+        super(name, level, desc);
+
+        itemsList.add(world.entityBuilder()
+                .with(new ItemComponent(name, level, desc))
+                .build());
+
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
+
 
