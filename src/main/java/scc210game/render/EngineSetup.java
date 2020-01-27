@@ -13,6 +13,7 @@ import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
 import scc210game.state.event.StateEvent;
+import scc210game.ui.systems.HandleDragged;
 import scc210game.ui.systems.HandleHovered;
 import scc210game.ui.systems.HandleInteraction;
 
@@ -31,16 +32,17 @@ public class EngineSetup {
 
     private EngineSetup() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(720, 480), "SCC210 Game");
+        this.mainWindow.create(new VideoMode(1280, 720), "SCC210 Game");
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
         final var systems = List.of(
-                new RenderSystem(this.mainWindow, this.views),
-                new HandleInteraction(this.mainWindow),
-                new HandleHovered()
+                new HandleInteraction(),
+                new HandleHovered(),
+                new HandleDragged(),
+                new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new BasicState());
         this.ecs.start();
@@ -66,6 +68,8 @@ public class EngineSetup {
             lastMouseY = initialMousePos.y;
         }
 
+        var screenSize = this.mainWindow.getSize();
+
         while (this.mainWindow.isOpen()) {
             this.tilesInWindow();
             this.mainWindow.clear(Color.BLACK);
@@ -73,6 +77,10 @@ public class EngineSetup {
                 StateEvent se = new StateEvent() {
                 };
                 switch (event.type) {
+                    case RESIZED: {
+                        screenSize = this.mainWindow.getSize();
+                        break;
+                    }
                     case KEY_PRESSED: {
                         KeyEvent keyEvent = event.asKeyEvent();
                         se = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
@@ -85,19 +93,25 @@ public class EngineSetup {
                     }
                     case MOUSE_BUTTON_PRESSED: {
                         MouseButtonEvent msBtnEvent = event.asMouseButtonEvent();
-                        se = new scc210game.state.event.MouseButtonPressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
+                        se = new scc210game.state.event.MouseButtonPressedEvent(
+                                msBtnEvent.position.x / (float) screenSize.x,
+                                msBtnEvent.position.y / (float) screenSize.y, msBtnEvent.button);
                         break;
                     }
                     case MOUSE_BUTTON_RELEASED: {
                         MouseButtonEvent msBtnEvent = event.asMouseButtonEvent();
-                        se = new scc210game.state.event.MouseButtonDepressedEvent(msBtnEvent.position.x, msBtnEvent.position.y, msBtnEvent.button);
+                        se = new scc210game.state.event.MouseButtonDepressedEvent(
+                                msBtnEvent.position.x / (float) screenSize.x,
+                                msBtnEvent.position.y / (float) screenSize.y, msBtnEvent.button);
                         break;
                     }
                     case MOUSE_MOVED: {
                         MouseEvent msMoved = event.asMouseEvent();
-                        se = new scc210game.state.event.MouseMovedEvent(msMoved.position.x, msMoved.position.y,
-                                msMoved.position.x - lastMouseX,
-                                msMoved.position.y - lastMouseY);
+                        se = new scc210game.state.event.MouseMovedEvent(
+                                msMoved.position.x / (float) screenSize.x,
+                                msMoved.position.y / (float) screenSize.y,
+                                (msMoved.position.x - lastMouseX) / (float) screenSize.x,
+                                (msMoved.position.y - lastMouseY) / (float) screenSize.y);
                         lastMouseX = msMoved.position.x;
                         lastMouseY = msMoved.position.y;
                         break;

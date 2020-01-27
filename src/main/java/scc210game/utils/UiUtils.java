@@ -49,10 +49,23 @@ public class UiUtils {
 
     /**
      * Transform a {@link java.awt.Color} colour into a {@link Color} colour.
+     *
      * @param c the {@link java.awt.Color} input colour
      * @return the {@link Color} transformed colour
      */
     public static Color transformColor(java.awt.Color c) {
         return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    }
+
+    /**
+     * Correct a size assuming a 1:1 aspect ratio into one that works for 16:9 aspect ratio
+     *
+     * @param values the size assuming a 1:1 aspect ratio
+     * @return a size that has the same ratio for 16:9 aspect ratio
+     */
+    public static Vector2f correctAspectRatio(Vector2f values) {
+        var aspectRatio = 16f / 9f;
+
+        return new Vector2f(values.x, values.y * aspectRatio);
     }
 }

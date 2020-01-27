@@ -2,22 +2,22 @@ package scc210game.state.event;
 
 public class MouseMovedEvent extends InputEvent {
     /**
-     * The x position of the mouse
+     * The x position of the mouse (in percentage of screen size)
      */
     public final float x;
 
     /**
-     * The y position of the mouse
+     * The y position of the mouse (in percentage of screen size)
      */
     public final float y;
 
     /**
-     * The change in x position of the mouse since the last move event
+     * The change in x position of the mouse since the last move event (in percentage of screen size)
      */
     public final float dx;
 
     /**
-     * The change in y position of the mouse since the last move event
+     * The change in y position of the mouse since the last move event (in percentage of screen size)
      */
     public final float dy;
 
