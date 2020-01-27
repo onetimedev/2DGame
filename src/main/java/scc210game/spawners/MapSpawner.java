@@ -2,6 +2,7 @@ package scc210game.spawners;
 
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import scc210game.ecs.Entity;
 import scc210game.ecs.Spawner;
@@ -22,7 +23,8 @@ public class MapSpawner implements Spawner {
                         (Entity entity, RenderWindow window, World world) -> {
                             Map m = world.fetchComponent(entity, Map.class);
 
-                            Vector2i playerCoords = new Vector2i(40, 32);  //TODO: Player entity get current position coords
+
+                            Vector2f playerCoords = window.getView().getCenter();  //TODO: Player entity get current position coords
 
                             // Number of tiles that can fit in windows X and Y
                             int tilesX = (int) Math.ceil(window.getView().getSize().x / 64.0);
@@ -31,9 +33,9 @@ public class MapSpawner implements Spawner {
                             int positionX = 0;  // Sprites X Position in window
                             int positionY = 0;  // Sprites Y Position in window
                             int tilesLeft = (int) Math.floor(tilesX / 2.0);  // Number of tiles left of player X coord
-                            int startX = playerCoords.x - tilesLeft;  // First tile X coord to be rendered from
+                            int startX = (int) (playerCoords.x - tilesLeft);  // First tile X coord to be rendered from
                             int tilesTop = (int) Math.floor(tilesY / 2.0);  // Number of tiles above player Y coord
-                            int startY = playerCoords.y - tilesTop;  // First tile Y coord to be rendered from
+                            int startY = (int) (playerCoords.y - tilesTop);  // First tile Y coord to be rendered from
 
                             if (startX < 0)
                                 startX = 0;
@@ -52,15 +54,18 @@ public class MapSpawner implements Spawner {
                             for (int y = 0; y < tilesY; y++) {
                                 for (int x = 0; x < tilesX; x++) {
                                     if (startX <= m.getTileMaxX() && startY <= m.getTileMaxY()) {  // Only render tile if its X,Y is valid
-                                        Sprite tile = new Sprite(m.getTile(startX, startY).getTexture());
-                                        tile.setPosition(positionX, positionY);
-                                        System.out.println("Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
-                                        window.draw(tile);
+                                      System.out.println("X: " + startX + " Y: " + startY);
+                                      Sprite tile = new Sprite(m.getTile(startX, startY).getTexture());
+                                      tile.setPosition(positionX, positionY);
+                                      System.out.println("Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
+                                      window.draw(tile);
                                     }
                                     startX++;
                                     positionX += 64;
                                 }
-                                startX = playerCoords.x - tilesLeft;
+                                startX = (int) (playerCoords.x - tilesLeft);
+                                if(startX < 0)
+                                  startX = 0;
                                 startY++;
                                 positionX = 0;
                                 positionY += 64;
