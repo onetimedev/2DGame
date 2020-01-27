@@ -121,7 +121,7 @@ public class EngineSetup {
                         break;
                     }
                 }
-                this.ecs.runWithUpdateOnce(se);
+                this.ecs.acceptEvent(se);
             }
             this.ecs.runOnce();
             this.mainWindow.display();
