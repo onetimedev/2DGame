@@ -4,6 +4,10 @@ import scc210game.ecs.World;
 import scc210game.state.event.StateEvent;
 import scc210game.state.trans.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -18,11 +22,26 @@ public class StateMachine {
     }
 
     public State currentState() {
-        return this.states.getLast().state;
+        return currentSD().state;
+    }
+
+    public Instant lastRunInstant() {
+        return currentSD().tLastRun;
+    }
+
+    public Instant lastRunInstant(Instant now) {
+        var c = currentSD();
+        var lr = c.tLastRun;
+        c.tLastRun = now;
+        return lr;
     }
 
     public World currentWorld() {
-        return this.states.getLast().world;
+        return currentSD().world;
+    }
+
+    private StateData currentSD() {
+        return this.states.getLast();
     }
 
     public boolean isRunning() {
@@ -55,10 +74,10 @@ public class StateMachine {
         if (t instanceof TransPop) {
             var s = this.states.removeLast();
             s.state.onStop(s.world);
-            this.currentState().onResume();
+            this.currentSD().resume();
         } else if (t instanceof TransPush) {
             var p = (TransPush) t;
-            this.currentState().onPause();
+            this.currentSD().pause();
             var s = new StateData(p.newState);
             this.states.addLast(s);
             s.state.onStart(s.world);
@@ -79,10 +98,27 @@ public class StateMachine {
     static class StateData {
         public final State state;
         public final World world;
+        @Nonnull
+        public Instant tLastRun = Instant.now();
+        @Nullable
+        public Instant tOnPause;
 
         public StateData(State state) {
             this.state = state;
             this.world = new World();
+        }
+
+        void pause() {
+            this.tOnPause = Instant.now();
+            this.state.onPause();
+        }
+
+        void resume() {
+            var now = Instant.now();
+            assert this.tOnPause != null;
+            var td = Duration.between(this.tOnPause, now);
+            this.tLastRun = this.tLastRun.plus(td);
+            this.state.onResume();
         }
     }
 }
