@@ -5,13 +5,17 @@ import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import scc210game.ecs.Entity;
+import scc210game.ecs.Query;
 import scc210game.ecs.Spawner;
 import scc210game.ecs.World;
 import scc210game.map.Map;
+import scc210game.map.Player;
+import scc210game.movement.Position;
 import scc210game.render.Renderable;
 import scc210game.render.ViewType;
 
 import java.util.Set;
+import java.util.Vector;
 
 public class MapSpawner implements Spawner {
 
@@ -24,7 +28,10 @@ public class MapSpawner implements Spawner {
                             Map m = world.fetchComponent(entity, Map.class);
 
 
-                            Vector2f playerCoords = window.getView().getCenter();  //TODO: Player entity get current position coords
+
+                            var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+                            var position = world.fetchComponent(playerEnt, Position.class);
+                            Vector2f playerCoords = new Vector2f(position.xPos, position.yPos);  //TODO: Player entity get current position coords
 
                             // Number of tiles that can fit in windows X and Y
                             int tilesX = (int) Math.ceil(window.getView().getSize().x / 64.0);
@@ -54,10 +61,10 @@ public class MapSpawner implements Spawner {
                             for (int y = 0; y < tilesY; y++) {
                                 for (int x = 0; x < tilesX; x++) {
                                     if (startX <= m.getTileMaxX() && startY <= m.getTileMaxY()) {  // Only render tile if its X,Y is valid
-                                      System.out.println("X: " + startX + " Y: " + startY);
+                                      //System.out.println("X: " + startX + " Y: " + startY);
                                       Sprite tile = new Sprite(m.getTile(startX, startY).getTexture());
                                       tile.setPosition(positionX, positionY);
-                                      System.out.println("Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
+                                      //System.out.println("Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
                                       window.draw(tile);
                                     }
                                     startX++;
