@@ -12,6 +12,7 @@ import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
 import scc210game.ecs.ECS;
+import scc210game.movement.Movement;
 import scc210game.state.event.StateEvent;
 import scc210game.ui.systems.HandleClicked;
 import scc210game.ui.systems.HandleDragDrop;
@@ -37,16 +38,19 @@ public class EngineSetup {
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
-            this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
+           this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(0, 0)));
         }};
         final var systems = List.of(
                 new HandleInteraction(),
                 new HandleHovered(),
                 new HandleDragDrop(),
                 new HandleClicked(),
+                new Movement(),
                 new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new BasicState());
+        System.out.println(this.views.get(ViewType.MAIN));
+        this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
         this.ecs.start();
     }
 
@@ -84,6 +88,7 @@ public class EngineSetup {
                         break;
                     }
                     case KEY_PRESSED: {
+                        System.out.println("Key Pressed!");
                         KeyEvent keyEvent = event.asKeyEvent();
                         se = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
                         break;
