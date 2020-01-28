@@ -65,7 +65,7 @@ public class Movement implements System {
             var position = world.fetchComponent(playerEnt, Position.class);
             position.xPos += hMove;
             position.yPos += vMove;
-            view.mainView.setCenter(position.xPos, position.yPos);
+            view.mainView.setCenter(position.xPos*10, position.yPos*10);
         }
     }
 
