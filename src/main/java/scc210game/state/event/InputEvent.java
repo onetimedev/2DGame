@@ -3,5 +3,5 @@ package scc210game.state.event;
 /**
  * Events that are specific to user input
  */
-public interface InputEvent extends StateEvent {
+public abstract class InputEvent extends StateEvent {
 }

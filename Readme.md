@@ -52,7 +52,7 @@ Look at the existing test cases for examples.
 - Component (`scc210game.ecs.Component`) :: A piece of data that is associated
   with an Entity, such as: Position, `scc210game.render.Renderable`. Empty
   Components may also be used to add flags to entities, such as:
-  `scc210game.ui.Interactive`. Flag components may be added at game startup, or
+  `scc210game.ui.components.UIInteractive`. Flag components may be added at game startup, or
   may be added/removed dynamically by other systems.
 - Resource (`scc210game.ecs.Resource`) :: Similar to a component, but has no
   associated Entity.
@@ -201,8 +201,6 @@ public void run(@Nonnull World world, @Nonnull Duration timeDelta)
 
 The parameter `world` is the current world the game is in.
 The parameter `timeDelta` is the time since the system last ran.
-
-TODO(ben): The clock should 'pause' when a state is paused.
 
 The `run` method is called whenever the game engine requires your system to run,
 which is whenever a user input happens, or every 1/60th of a second.

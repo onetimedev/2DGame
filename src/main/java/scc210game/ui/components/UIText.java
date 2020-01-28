@@ -1,4 +1,4 @@
-package scc210game.ui;
+package scc210game.ui.components;
 
 import scc210game.ecs.Component;
 

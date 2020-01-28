@@ -80,14 +80,18 @@ public class EventQueue {
     public static void broadcast(@Nonnull Event evt) {
         var instance = getInstance();
 
-        HashSet<EventQueueReader> listeners = instance.registered.get(evt.getClass());
+        Class<?> c = evt.getClass();
 
-        if (listeners == null) {
-            return;
-        }
+        while (c != null) {
+            HashSet<EventQueueReader> listeners = instance.registered.get(c);
 
-        for (final EventQueueReader entID : listeners) {
-            instance.queues.get(entID).add(evt);
+            if (listeners != null) {
+                for (final EventQueueReader r : listeners) {
+                    instance.queues.get(r).add(evt);
+                }
+            }
+
+            c = c.getSuperclass();
         }
     }
 

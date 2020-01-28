@@ -14,13 +14,13 @@ import static org.junit.Assert.assertEquals;
 public class EventQueueTest {
     @Test
     public void testEventQueue() {
-        class Event0 implements Event {
+        class Event0 extends Event {
             @Nonnull
             final
             String msg = "event0";
         }
 
-        class Event1 implements Event {
+        class Event1 extends Event {
             @Nonnull
             final
             String msg = "event1";

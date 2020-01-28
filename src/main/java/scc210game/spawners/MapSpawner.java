@@ -46,8 +46,8 @@ public class MapSpawner implements Spawner {
                             else if (startY > m.getTileMaxY())
                                 startY = m.getTileMaxY();
 
-                            System.out.println("TilesX: " + tilesX);
-                            System.out.println("TilesY: " + tilesY);
+//                            System.out.println("TilesX: " + tilesX);
+//                            System.out.println("TilesY: " + tilesY);
 
                             // Goes through each X,Y coordinate around the player that can be rendered and
                             // renders the tile at this X,Y coordinate
