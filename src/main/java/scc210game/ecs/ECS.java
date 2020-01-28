@@ -31,7 +31,7 @@ public class ECS {
      */
     public ECS(@Nonnull List<? extends System> systems, @Nonnull State initialState) {
         this.systems = systems;
-        this.stateMachine = new StateMachine(initialState);
+        this.stateMachine = new StateMachine(initialState, this);
         this.globalResources = new HashMap<>();
     }
 

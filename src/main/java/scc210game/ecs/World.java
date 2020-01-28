@@ -19,8 +19,11 @@ public class World {
     private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
+    @Nonnull
+    private final ECS ecs;
 
-    public World() {
+    public World(@Nonnull ECS ecs) {
+        this.ecs = ecs;
         this.entities = new ArrayList<>();
         this.entityComponents = new HashMap<>();
         this.componentMaps = new HashMap<>();
@@ -137,6 +140,26 @@ public class World {
         }
 
         return components.containsKey(componentType);
+    }
+
+    /**
+     * Add a global resource
+     *
+     * @param r the {@link Resource} to add
+     */
+    public void addGlobalResource(@Nonnull Resource r) {
+        ecs.addGlobalResource(r);
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     */
+    @Nonnull
+    public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
+        return ecs.fetchGlobalResource(resourceType);
     }
 
     /**
