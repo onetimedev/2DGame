@@ -73,7 +73,7 @@ public class ECS {
      *
      * @param event the {@link StateEvent} to handle
      */
-    public void runWithUpdateOnce(StateEvent event) {
+    public void acceptEvent(StateEvent event) {
         assert this.stateMachine.isRunning() : "State machine is not running";
 
         this.stateMachine.handle(event);

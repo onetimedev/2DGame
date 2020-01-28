@@ -1,13 +1,13 @@
-package scc210game.ui;
+package scc210game.ui.components;
 
 import scc210game.ecs.Component;
 
 /**
  * Component that flags entities that can be interacted with using the mouse
  */
-public class Interactive extends Component {
+public class UIInteractive extends Component {
     static {
-        register(Interactive.class, s -> new Interactive());
+        register(UIInteractive.class, s -> new UIInteractive());
     }
 
     @Override
