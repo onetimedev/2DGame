@@ -20,13 +20,6 @@ public class GenerateMap {
 	}
 
 
-	/* Call Tile serialise in a method that reads a file
-		1) turn file into JSON array using JSON decode (JSON array of Jsonable)
-		2) Cast jsonable to JSON array, iterate over this (each element will be a JSONable)
-		3) Cast that jsonable to a json object, then can do tile.deserialize
-		4) Streams to deserialize, rather than explicit loop can map over a stream of json objects
-		5) jsonarray .toStream as its a collection
-  */
 	private void jsonToTiles() {
 		try {
 			FileReader fr = new FileReader("./mapdata.json");
@@ -77,7 +70,7 @@ public class GenerateMap {
 				break;
 			}
 			case 2: {  // Grass
-				tileData.put("texture", "grass.png");
+				tileData.put("texture", "grass2.png");
 				break;
 			}
 			case 3: {  // Path
@@ -108,6 +101,28 @@ public class GenerateMap {
 			case 8: {  // Border
 				tileData.put("texture", "border.png");
 				tileData.put("collision", true);
+				break;
+			}
+			case 9: {  // Snow
+				tileData.put("texture", "snow.png");
+				break;
+			}
+			case 10: {  // Water
+				tileData.put("texture", "water.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 11: {  // Sand
+				tileData.put("texture", "sand.png");
+				break;
+			}
+			case 12: {  // Lava
+				tileData.put("texture", "lava.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 13: {  // Basalt
+				tileData.put("texture", "basalt.png");
 				break;
 			}
 
