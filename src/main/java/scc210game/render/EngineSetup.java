@@ -38,7 +38,7 @@ public class EngineSetup {
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
-            this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
+           this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(0, 0)));
         }};
         final var systems = List.of(
                 new HandleInteraction(),

@@ -30,7 +30,7 @@ public class PlayerSpawner implements Spawner {
 
 					Texture t = new Texture();
 					try {
-						t.loadFromFile(Paths.get("./src/main/assets/grass.png"));
+						t.loadFromFile(Paths.get("./src/main/assets/basalt.png"));
 						Sprite pl = new Sprite(t);
 						window.draw(pl);
 					}

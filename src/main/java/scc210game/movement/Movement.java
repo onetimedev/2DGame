@@ -32,7 +32,7 @@ public class Movement implements System {
 
     private void handleEvent(@Nonnull World world, Event e) {
         var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
-        var view = world.fetchResource(MainViewResource.class); // TODO: broken currently, waiting for fetchGlobalResource method
+        var view = world.fetchGlobalResource(MainViewResource.class); // TODO: broken currently, waiting for fetchGlobalResource method
         java.lang.System.out.println(view);
 
         if (e instanceof KeyPressedEvent) {
