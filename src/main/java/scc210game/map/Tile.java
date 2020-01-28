@@ -67,33 +67,31 @@ public class Tile {
 		return new Tile(texture, x, y, hasCol, hasCh, hasEn);
 	}
 
-	public Vector2f getPosition() {
-		return new Vector2f(xPos, yPos);
-	}
+  public Vector2f getPosition() {
+      return new Vector2f(xPos, yPos);
+  }
 
-	public int getXPos() {
-		return xPos;
-	}
+  public int getXPos() {
+      return xPos;
+  }
 
-	public int getYPos() {
-		return yPos;
-	}
+  public int getYPos() {
+      return yPos;
+  }
 
-	public Texture getTexture() {
-		return tileTexture;
-	}
-
-	public Boolean hasCollision() {
-		return hasCollision;
-	}
-
-	public Vector2i getTextureSize() {
-		return textureSize;
-	}
+  public Texture getTexture() {
+      return tileTexture;
+  }
 
 	public Boolean hasChest() {
 		return hasChest;
 	}
 
+  public Boolean hasCollision() {
+        return hasCollision;
+    }
 
+  public Vector2i getTextureSize() {
+        return textureSize;
+    }
 }

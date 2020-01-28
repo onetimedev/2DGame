@@ -6,6 +6,8 @@ import scc210game.state.StateMachine;
 import scc210game.state.event.StateEvent;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.Map;
  */
 public class ECS {
     @Nonnull
-    private final SystemExecutor executor;
+    private final List<? extends System> systems;
     @Nonnull
     private final StateMachine stateMachine;
     @Nonnull
@@ -27,9 +29,9 @@ public class ECS {
      * @param systems      The systems that will be used
      * @param initialState The initial state the game will start with
      */
-    public ECS(List<? extends System> systems, State initialState) {
-        this.executor = new SystemExecutor(systems);
-        this.stateMachine = new StateMachine(initialState);
+    public ECS(@Nonnull List<? extends System> systems, @Nonnull State initialState) {
+        this.systems = systems;
+        this.stateMachine = new StateMachine(initialState, this);
         this.globalResources = new HashMap<>();
     }
 
@@ -48,7 +50,12 @@ public class ECS {
         assert this.stateMachine.isRunning() : "State machine is not running";
 
         this.stateMachine.update();
-        this.executor.runOnce(this.stateMachine.currentWorld(), this.stateMachine.currentState().getClass());
+        Instant now = Instant.now();
+        Duration delta = Duration.between(this.stateMachine.lastRunInstant(now), now);
+
+        for (final System s : this.systems) {
+            s.run(this.stateMachine.currentWorld(), delta);
+        }
     }
 
     /**
@@ -66,11 +73,16 @@ public class ECS {
      *
      * @param event the {@link StateEvent} to handle
      */
-    public void runWithUpdateOnce(StateEvent event) {
+    public void acceptEvent(StateEvent event) {
         assert this.stateMachine.isRunning() : "State machine is not running";
 
         this.stateMachine.handle(event);
-        this.executor.runOnce(this.stateMachine.currentWorld(), this.stateMachine.currentState().getClass());
+        Instant now = Instant.now();
+        Duration delta = Duration.between(this.stateMachine.lastRunInstant(now), now);
+
+        for (final System s : this.systems) {
+            s.run(this.stateMachine.currentWorld(), delta);
+        }
     }
 
     /**

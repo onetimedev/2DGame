@@ -142,14 +142,4 @@ public class GenerateMap {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
 }

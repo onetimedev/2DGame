@@ -38,6 +38,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_10
 }
 
+jar {
+    into 'resources', {
+        from 'resources'
+    }
+}
+
 version = '1.0-SNAPSHOT'
 
 import org.gradle.internal.os.OperatingSystem

@@ -3,6 +3,7 @@ package scc210game.ecs;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,8 +19,11 @@ public class World {
     private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
+    @Nonnull
+    private final ECS ecs;
 
-    public World() {
+    public World(@Nonnull ECS ecs) {
+        this.ecs = ecs;
         this.entities = new ArrayList<>();
         this.entityComponents = new HashMap<>();
         this.componentMaps = new HashMap<>();
@@ -40,7 +44,13 @@ public class World {
         }
     }
 
-    void addComponentToEntity(Entity e, @Nonnull Component component) {
+    /**
+     * Add a Component to an Entity
+     *
+     * @param e         the Entity to add the Component to
+     * @param component the Component to add
+     */
+    public void addComponentToEntity(Entity e, @Nonnull Component component) {
         assert this.entities.contains(e) : "Entity not added to world";
 
         Set<Class<? extends Component>> componentSet = this.entityComponents.computeIfAbsent(e, k -> new HashSet<>());
@@ -49,6 +59,25 @@ public class World {
         Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
                 this.componentMaps.computeIfAbsent(e, k -> new HashMap<>());
         componentStorage.put(component.getClass(), new ComponentMeta<>(component));
+    }
+
+    /**
+     * Remove a component from an entity
+     *
+     * @param e             the Entity to remove the component from
+     * @param componentType the type of component to remove
+     */
+    public void removeComponentFromEntity(Entity e, @Nonnull Class<? extends Component> componentType) {
+        assert this.entities.contains(e) : "Entity not added to world";
+
+        Set<Class<? extends Component>> componentSet = this.entityComponents.get(e);
+        assert componentSet != null;
+        componentSet.remove(componentType);
+
+        Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
+                this.componentMaps.get(e);
+        assert componentStorage != null;
+        componentStorage.remove(componentType);
     }
 
     /**
@@ -61,16 +90,76 @@ public class World {
     }
 
     /**
+     * Test if a resource exists
+     *
+     * @param resourceType the type of {@link Resource} to test for existence
+     */
+    public boolean hasResource(Class<? extends Resource> resourceType) {
+        return this.resourceMap.containsKey(resourceType);
+    }
+
+    /**
      * Fetch a resource
      *
      * @param resourceType the type of {@link Resource} to fetch
      * @param <T>          the class of {@link Resource} to fetch
      * @return the requested {@link Resource}
+     * @apiNote this explodes if the resource doesn't exist
      */
     @SuppressWarnings("unchecked")
     @Nonnull
     public <T extends Resource> T fetchResource(Class<T> resourceType) {
         return (T) this.resourceMap.get(resourceType);
+    }
+
+    /**
+     * Fetch a resource with a producer if the resource does not exist
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @param <T>          the class of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     * @apiNote this explodes if the resource doesn't exist
+     */
+    @SuppressWarnings({"unchecked", "BoundedWildcard"})
+    @Nonnull
+    public <T extends Resource> T fetchResource(Class<T> resourceType, Supplier<T> supplier) {
+        return (T) this.resourceMap.computeIfAbsent(resourceType, k -> supplier.get());
+    }
+
+    /**
+     * Test if a component exists for a given entity
+     *
+     * @param e             the {@link Entity} to test the component of
+     * @param componentType the type of {@link Component} to test for existence
+     */
+    public boolean hasComponent(Entity e, Class<? extends Component> componentType) {
+        var components = this.componentMaps.get(e);
+
+        if (components == null) {
+            return false;
+        }
+
+        return components.containsKey(componentType);
+    }
+
+    /**
+     * Add a global resource
+     *
+     * @param r the {@link Resource} to add
+     */
+    public void addGlobalResource(@Nonnull Resource r) {
+        ecs.addGlobalResource(r);
+    }
+
+    /**
+     * Fetch a resource
+     *
+     * @param resourceType the type of {@link Resource} to fetch
+     * @return the requested {@link Resource}
+     */
+    @Nonnull
+    public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
+        return ecs.fetchGlobalResource(resourceType);
     }
 
     /**
@@ -80,6 +169,7 @@ public class World {
      * @param componentType the type of {@link Component} to fetch
      * @param <T>           the class of {@link Component} to fetch
      * @return the requested {@link Component}
+     * @apiNote this explodes if the component doesn't exist
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -132,7 +222,7 @@ public class World {
             Map<Class<? extends Component>, ComponentMeta<Component>> componentMap = this.componentMaps.get(e);
 
             return q.testEntity(componentSet, componentMap);
-        });
+        }).sequential();
     }
 
     /**

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Fired when the mouse cursor goes over an entity
  */
-public class EntityHoverStartEvent implements UiEvent, ContainsEntities {
+public class EntityHoverStartEvent extends UiEvent implements ContainsEntities {
     public final Entity entity;
 
     public EntityHoverStartEvent(Entity entity) {
