@@ -12,13 +12,13 @@ import scc210game.engine.state.trans.Transition;
  * Thus when the game is in the 'paused' state, no entities in the 'running' state or 'menu' state
  * are accessible
  */
-public interface State {
+public abstract class State {
     /**
      * Called when this game state is entered
      *
      * @param world the world associated with this state
      */
-    default void onStart(World world) {
+    public void onStart(World world) {
     }
 
     /**
@@ -26,19 +26,19 @@ public interface State {
      *
      * @param world the world associated with this state
      */
-    default void onStop(World world) {
+    public void onStop(World world) {
     }
 
     /**
      * Called when another game state is put on top of this state
      */
-    default void onPause() {
+    public void onPause() {
     }
 
     /**
      * Called when this game state is unpaused
      */
-    default void onResume() {
+    public void onResume() {
     }
 
     /**
@@ -48,7 +48,7 @@ public interface State {
      * @param world the world associated with this state
      * @return a Transition object describing what to do
      */
-    default Transition handleEvent(StateEvent evt, World world) {
+    public Transition handleEvent(StateEvent evt, World world) {
         return TransNop.getInstance();
     }
 
@@ -58,7 +58,7 @@ public interface State {
      * @param world the world associated with this state
      * @return a Transition object describing what to do
      */
-    default Transition update(World world) {
+    public Transition update(World world) {
         return TransNop.getInstance();
     }
 
@@ -67,7 +67,7 @@ public interface State {
      *
      * @return a Transition object describing what to do
      */
-    default Transition onFrame() {
+    public Transition onFrame() {
         return TransNop.getInstance();
     }
 }
