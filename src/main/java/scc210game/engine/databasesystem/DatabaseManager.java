@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class DatabaseManager {
 
@@ -49,7 +50,7 @@ public class DatabaseManager {
                 {
                     try
                     {
-                        String path = DBNAME + "/" + file + ".txt";
+                        String path = DBNAME + "-database/" + file + ".txt";
                         File fileData = new File(path);
                         FileWriter writer = new FileWriter(fileData.getAbsoluteFile()); //file writer is a class used to create simple character files
                         BufferedWriter bWriter = new BufferedWriter(writer);
@@ -132,20 +133,20 @@ public class DatabaseManager {
             if (!new SearchEngine(keyId, Keys()).keyExists())
             {
 
-                LOG(DatabaseOperation.ADD_KEY_OPERATION, format(keyId, keyData).replace("-", ""), getTS());
+                LOG(DatabaseOperation.ADD_KEY_OPERATION, format(keyId, keyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
                 String newData = format(keyId, keyData);
                 alterFile(DatabaseOperation.APPEND_OPERATION, newData, dataFilePath);
 
             }
             else
             {
-                LOG(DatabaseOperation.ADD_KEY_ERROR, format(keyId, keyData).replace("-", ""), getTS());
+                LOG(DatabaseOperation.ADD_KEY_ERROR, format(keyId, keyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
                 System.out.println("Error: key '" + keyId + "' already exists in the database, use updateKey() to alter its value");
             }
         }
         else
         {
-            LOG(DatabaseOperation.ADD_KEY_OPERATION, format(keyId, keyData).replace("-", ""), getTS());
+            LOG(DatabaseOperation.ADD_KEY_OPERATION, format(keyId, keyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
             String newData = format(keyId, keyData);
             alterFile(DatabaseOperation.APPEND_OPERATION, newData, dataFilePath);
         }
@@ -162,27 +163,27 @@ public class DatabaseManager {
             if(new SearchEngine(keyId, Keys()).keyExists())
             {
 
-                LOG(DatabaseOperation.UPDATE_KEY_OPERATION, format(keyId, replacementKeyData).replace("-", ""), getTS());
+                LOG(DatabaseOperation.UPDATE_KEY_OPERATION, format(keyId, replacementKeyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
                 ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(Keys()));
 
                 int index = new SearchEngine(keyId, Keys()).findKeyPosition();
 
                 keysList.remove(index);
 
-                keysList.add(index, format(keyId, replacementKeyData).replace("-", ""));
-                String newKeys = String.join("-", keysList);
+                keysList.add(index, format(keyId, replacementKeyData).replace(DatabaseOperation.DELIMITER, ""));
+                String newKeys = String.join(DatabaseOperation.DELIMITER, keysList);
                 alterFile(DatabaseOperation.REPLACE_OPERATION, newKeys, dataFilePath);
 
             }
             else
             {
-                LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace("-", ""), getTS());
+                LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
                 System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
             }
         }
         else
         {
-            LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace("-", ""), getTS());
+            LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
             System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
         }
 
@@ -201,7 +202,7 @@ public class DatabaseManager {
                 ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(Keys()));
                 int index = new SearchEngine(keyId, Keys()).findKeyPosition();
                 keysList.remove(index);
-                String newKeys = String.join("-", keysList) + "-";
+                String newKeys = String.join(DatabaseOperation.DELIMITER, keysList) + DatabaseOperation.DELIMITER;
                 alterFile(DatabaseOperation.REPLACE_OPERATION, newKeys, dataFilePath);
 
             }
@@ -219,6 +220,15 @@ public class DatabaseManager {
 
     }
 
+
+
+
+    public List getAllKeys()
+    {
+        LOG(DatabaseOperation.COLLECT_ALL_KEYS, "All Keys", getTS());
+        return Arrays.asList(Keys());
+
+    }
 
 
     private String[] Keys()
@@ -243,7 +253,7 @@ public class DatabaseManager {
 
         if(file.length() > 0)
         {
-            if(file.toString().contains("-"))
+            if(file.toString().contains(DatabaseOperation.DELIMITER))
             {
                 String[] keys = file.toString().split(DatabaseOperation.DELIMITER);
                 Arrays.sort(keys);
@@ -318,7 +328,6 @@ public class DatabaseManager {
     public void wipe()
     {
         alterFile(DatabaseOperation.REPLACE_OPERATION, "", dataFilePath);
-        alterFile(DatabaseOperation.REPLACE_OPERATION, "", logFilePath);
     }
 
     private void LOG(String operation, String keyId,  String timestamp)
