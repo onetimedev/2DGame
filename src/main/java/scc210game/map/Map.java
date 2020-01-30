@@ -39,11 +39,11 @@ public class Map extends Component {
 	}
 
 	public int getTileMaxX() {
-		return mapTiles.length;
+		return mapTiles.length-1;
 	}
 
 	public int getTileMaxY() {
-		return mapTiles[0].length;
+		return mapTiles[0].length-1;
 	}
 
 

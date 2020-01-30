@@ -27,8 +27,9 @@ public class GenerateMap {
 			JsonArray tileValues = (JsonArray) jsonData.get("data");
 
 			int cnt = 0;  // Count to get each tile value from tileValues
-			for(int y=0; y<mapSize.y/2; y++)  // TODO: Current mapdata only for 1/4 of the map
-				for (int x=0; x<mapSize.x /2; x++) {
+			for(int y=0; y<mapSize.y; y++)
+				for (int x=0; x<mapSize.x; x++) {
+					System.out.println("Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileTypes(tileValues.getInteger(cnt), x, y));
 					cnt++;
 				}
@@ -123,12 +124,17 @@ public class GenerateMap {
 			}
 			case 13: {  // Basalt
 				tileData.put("texture", "basalt.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 14: {  // Basalt_Light
+				tileData.put("texture", "light_basalt.png");
 				break;
 			}
 
 		}
 
-		System.out.println(tileData);
+		//System.out.println(tileData);
 		return tileData;
 	}
 
