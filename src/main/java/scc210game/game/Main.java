@@ -56,7 +56,7 @@ public class Main {
     public static void runForever() {
         var engine = new Main();
         engine.mainLoop();
-	}
+    }
 
     /**
      * Runs the game loop from the createWindow method
