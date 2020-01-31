@@ -7,6 +7,8 @@ import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
 import scc210game.engine.ui.spawners.DialogueSpawner;
 import scc210game.engine.ui.spawners.DraggableBoxSpawner;
 import scc210game.engine.ui.spawners.DroppableBoxSpawner;
+import scc210game.game.spawners.PlayerSpawner;
+import scc210game.game.spawners.ui.HealthBarSpawner;
 
 public class MainGameState extends BaseInGameState {
 	@Override
@@ -19,5 +21,7 @@ public class MainGameState extends BaseInGameState {
 			var trans = w.fetchComponent(e, UITransform.class);
 			trans.xPos += 0.01;
 		})).build();
+		var player = world.entityBuilder().with(new PlayerSpawner()).build();
+		world.entityBuilder().with(new HealthBarSpawner(0.025f, 0.01f, 0.95f, 0.01f, player)).build();
 	}
 }
