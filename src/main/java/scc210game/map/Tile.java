@@ -83,6 +83,10 @@ public class Tile {
       return tileTexture;
   }
 
+  public String getTextureName() {
+		return fileName;
+  }
+
 	public Boolean hasChest() {
 		return hasChest;
 	}

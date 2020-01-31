@@ -24,7 +24,7 @@ public class PlayerSpawner implements Spawner {
 	public World.EntityBuilder inject(World.EntityBuilder builder) {
 		return builder
 				.with(new Player())
-				.with(new Position(10, 10))
+				.with(new Position(15, 111))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 				(Entity entity, RenderWindow window, World world) -> {
 
@@ -35,7 +35,9 @@ public class PlayerSpawner implements Spawner {
 						var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
 						var position = world.fetchComponent(playerEnt, Position.class);
 						var view = world.fetchGlobalResource(MainViewResource.class);
+
 						pl.setPosition(view.mainView.getCenter().x , view.mainView.getCenter().y);
+
 						window.draw(pl);
 					}
 					catch (IOException e) {
