@@ -4,9 +4,9 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.Jsoner;
 import org.junit.Test;
-import scc210game.ecs.System;
-import scc210game.ecs.*;
-import scc210game.state.State;
+import scc210game.engine.ecs.System;
+import scc210game.engine.ecs.*;
+import scc210game.engine.state.State;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
@@ -117,7 +117,7 @@ public class ECSTest {
                     .build();
 
             @Override
-            public void run(@Nonnull World world, @Nonnull Class<? extends State> currentState, @Nonnull Duration timeDelta) {
+            public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
                 final Stream<Entity> entities = world.applyQuery(this.q);
 
                 entities.forEach(e -> {

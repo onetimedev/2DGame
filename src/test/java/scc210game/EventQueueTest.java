@@ -1,8 +1,8 @@
 package scc210game;
 
 import org.junit.Test;
-import scc210game.events.Event;
-import scc210game.events.EventQueue;
+import scc210game.engine.events.Event;
+import scc210game.engine.events.EventQueue;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -14,13 +14,13 @@ import static org.junit.Assert.assertEquals;
 public class EventQueueTest {
     @Test
     public void testEventQueue() {
-        class Event0 implements Event {
+        class Event0 extends Event {
             @Nonnull
             final
             String msg = "event0";
         }
 
-        class Event1 implements Event {
+        class Event1 extends Event {
             @Nonnull
             final
             String msg = "event1";
