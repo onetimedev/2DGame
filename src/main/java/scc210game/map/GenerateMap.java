@@ -131,6 +131,15 @@ public class GenerateMap {
 				tileData.put("texture", "light_basalt.png");
 				break;
 			}
+			case 15: {  // Ice
+				tileData.put("texture", "ice.png");
+				break;
+			}
+			case 16: {  // Snowy Forest
+				tileData.put("texture", "snow_forest.png");
+				tileData.put("collision", true);
+				break;
+			}
 
 		}
 
