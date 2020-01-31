@@ -36,6 +36,14 @@ public class ECS {
     }
 
     /**
+     * Test if the ecs is running
+     * @return True if the engine is running, False if it is not
+     */
+    public boolean isRunning() {
+        return this.stateMachine.isRunning();
+    }
+
+    /**
      * Start the game
      */
     public void start() {
