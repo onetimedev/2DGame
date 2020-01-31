@@ -8,7 +8,6 @@ public class MainViewResource extends Resource {
 	public View mainView;
 
 	public MainViewResource(View mv) {
-		System.out.println(mv);
 		mainView = mv;
 	}
 

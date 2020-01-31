@@ -1,5 +1,7 @@
 package scc210game.movement;
 
+import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 import scc210game.ecs.System;
 import scc210game.ecs.World;
 import scc210game.ecs.Query;
@@ -15,59 +17,64 @@ import java.time.Duration;
 import java.util.Iterator;
 
 public class Movement implements System {
-    private final EventQueueReader eventReader;
+  private final EventQueueReader eventReader;
 
-    public Movement() {
-        this.eventReader = EventQueue.makeReader();
-        EventQueue.listen(this.eventReader, KeyPressedEvent.class);
+  public Movement() {
+    this.eventReader = EventQueue.makeReader();
+    EventQueue.listen(this.eventReader, KeyPressedEvent.class);
+  }
+
+  @Override
+  public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
+    for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+      Event e = it.next();
+      this.handleEvent(world, e);
     }
+  }
 
-    @Override
-    public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-        for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
-            Event e = it.next();
-            this.handleEvent(world, e);
+  private void handleEvent(@Nonnull World world, Event e) {
+    var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+    var view = world.fetchGlobalResource(MainViewResource.class);
+
+    if (e instanceof KeyPressedEvent) {
+      KeyPressedEvent e1 = (KeyPressedEvent) e;
+      var position = world.fetchComponent(playerEnt, Position.class);
+
+      //int moveX = 64;
+      //int moveY = 64;
+
+      switch (e1.key) {
+        case A: {
+          position.xPos -= 1;
+          //moveX = -64;
+          //moveY = 0;
+          break;
         }
-    }
-
-    private void handleEvent(@Nonnull World world, Event e) {
-        var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
-        var view = world.fetchGlobalResource(MainViewResource.class); // TODO: broken currently, waiting for fetchGlobalResource method
-        java.lang.System.out.println(view);
-
-        if (e instanceof KeyPressedEvent) {
-            KeyPressedEvent e1 = (KeyPressedEvent) e;
-
-            int hMove = 0;
-            int vMove = 0;
-
-            switch (e1.key) {
-                case A: {
-                    hMove -= 1;
-                    break;
-                }
-                case S: {
-                    vMove += 1;
-                    break;
-                }
-                case D: {
-                    hMove += 1;
-                    break;
-                }
-                case W: {
-                    vMove -= 1;
-                    break;
-                }
-                default:
-                    //throw new IllegalStateException("Unexpected value: " + e1.key);
-            }
-
-            var position = world.fetchComponent(playerEnt, Position.class);
-            position.xPos += hMove;
-            position.yPos += vMove;
-            view.mainView.setCenter(position.xPos*10, position.yPos*10);
+        case S: {
+          position.yPos += 1;
+          //moveX = 0;
+          break;
         }
+        case D: {
+          position.xPos += 1;
+          //moveY = 0;
+          break;
+        }
+        case W: {
+          position.yPos -= 1;
+          //moveY = -64;
+          //moveX = 0;
+          break;
+        }
+        default:
+          //throw new IllegalStateException("Unexpected value: " + e1.key);
+      }
+
+      java.lang.System.out.println("Player Pos: " + position.xPos + "," + position.yPos);
+      //view.mainView.setCenter(view.mainView.getCenter().x + moveX, view.mainView.getCenter().y + moveY);
+
     }
+  }
 
 
 }

@@ -34,11 +34,11 @@ public class EngineSetup {
 
     private EngineSetup() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1280, 720), "SCC210 Game");
+        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
-            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
-           this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(0, 0)));
+          this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(EngineSetup.this.mainWindow.getSize())));
+          this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(0, 0)));
         }};
         final var systems = List.of(
                 new HandleInteraction(),
@@ -49,7 +49,6 @@ public class EngineSetup {
                 new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new BasicState());
-        System.out.println(this.views.get(ViewType.MAIN));
         this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
         this.ecs.start();
     }
@@ -88,7 +87,6 @@ public class EngineSetup {
                         break;
                     }
                     case KEY_PRESSED: {
-                        System.out.println("Key Pressed!");
                         KeyEvent keyEvent = event.asKeyEvent();
                         se = new scc210game.state.event.KeyPressedEvent(keyEvent.key);
                         break;
