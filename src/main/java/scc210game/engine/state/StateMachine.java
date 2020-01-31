@@ -91,6 +91,15 @@ public class StateMachine {
             oldS.state.onStop(oldS.world);
             this.states.addLast(newS);
             newS.state.onStart(newS.world);
+        } else if (t instanceof TransReplaceAll) {
+            var p = (TransReplaceAll) t;
+            var newS = new StateData(p.newState, this.ecs);
+            while (!this.states.isEmpty()) {
+                var oldS = this.states.removeLast();
+                oldS.state.onStop(oldS.world);
+            }
+            this.states.addLast(newS);
+            newS.state.onStart(newS.world);
         } else if (t instanceof TransQuit) {
             this.running = false;
         } else {

@@ -56,7 +56,7 @@ public class Main {
     public static void runForever() {
         var engine = new Main();
         engine.mainLoop();
-	}
+    }
 
     /**
      * Runs the game loop from the createWindow method
@@ -75,7 +75,7 @@ public class Main {
 
         var screenSize = this.mainWindow.getSize();
 
-        while (this.mainWindow.isOpen()) {
+        while (this.mainWindow.isOpen() && this.ecs.isRunning()) {
             this.tilesInWindow();
             this.mainWindow.clear(Color.BLACK);
             for (final Event event : this.mainWindow.pollEvents()) {

@@ -1,6 +1,5 @@
 package scc210game.engine.ui.spawners;
 
-import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Text;
@@ -9,24 +8,16 @@ import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.engine.ui.Font;
 import scc210game.engine.ui.components.UIHovered;
 import scc210game.engine.ui.components.UIText;
 import scc210game.engine.ui.components.UITransform;
-import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Set;
 
 public class DialogueSpawner implements Spawner {
-    private static final Font font = new Font() {{
-        try {
-            this.loadFromFile(ResourceLoader.resolve("font/FreeSans.ttf"));
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }};
     private final String message;
 
     public DialogueSpawner(String message) {
@@ -52,7 +43,7 @@ public class DialogueSpawner implements Spawner {
 
                     rw.draw(rect);
 
-                    var text = new Text(textContent.text, DialogueSpawner.font, 24) {{
+                    var text = new Text(textContent.text, Font.freesans, 24) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
                     }};
 
