@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
-class BasicState implements State {
+class BasicState extends State {
     public Entity e;
 
     @Override

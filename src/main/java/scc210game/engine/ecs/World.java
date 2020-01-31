@@ -20,7 +20,7 @@ public class World {
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
     @Nonnull
-    private final ECS ecs;
+    public final ECS ecs;
 
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;

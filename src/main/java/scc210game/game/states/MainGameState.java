@@ -2,14 +2,13 @@ package scc210game.game.states;
 
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
-import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
 import scc210game.engine.ui.spawners.DialogueSpawner;
 import scc210game.engine.ui.spawners.DraggableBoxSpawner;
 import scc210game.engine.ui.spawners.DroppableBoxSpawner;
 
-public class MainGameState extends InputHandlingState {
+public class MainGameState extends BaseInGameState {
 	@Override
 	public void onStart(World world) {
 		world.entityBuilder().with(new DialogueSpawner("Test")).build();
