@@ -113,7 +113,10 @@ public class Tile {
 	  catch(IOException e) {
 		  throw new RuntimeException(e);
 	  }
+  }
 
+  public void setHasCollision(Boolean b) {
+		hasCollision = b;
   }
 
 }

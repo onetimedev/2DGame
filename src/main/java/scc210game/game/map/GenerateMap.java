@@ -36,7 +36,7 @@ public class GenerateMap {
 				for (int x=0; x<mapSize.x; x++) {
 					System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
-					if(allTiles[x][y].canHaveEnemy())
+					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().equals("enemy.png"))
 						possEnemyTiles.add(allTiles[x][y].getXYPos());
 					cnt++;
 				}
@@ -140,6 +140,43 @@ public class GenerateMap {
 				tileData.put("collision", true);
 				break;
 			}
+			case 17: {  // Final Boss
+				tileData.put("texture", "boss_final.png");
+				tileData.put("collision", true);
+				tileData.put("enemy", true);
+				break;
+			}
+			case 18: {  // Fire Boss
+				tileData.put("texture", "boss_fire.png");
+				tileData.put("collision", true);
+				tileData.put("enemy", true);
+				break;
+			}
+			case 19: {  // Grass Boss
+				tileData.put("texture", "boss_grass.png");
+				tileData.put("collision", true);
+				tileData.put("enemy", true);
+				break;
+			}
+			case 20: {  // Water Boss
+				tileData.put("texture", "boss_water.png");
+				tileData.put("collision", true);
+				tileData.put("enemy", true);
+				break;
+			}
+			case 21: {  // Snow Boss
+				tileData.put("texture", "boss_snow.png");
+				tileData.put("collision", true);
+				tileData.put("enemy", true);
+				break;
+			}
+			case 22: {  // Barrier
+				tileData.put("texture", "barrier.png");
+				tileData.put("collision", true);
+				break;
+			}
+
+
 
 		}
 
