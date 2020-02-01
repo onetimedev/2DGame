@@ -9,7 +9,6 @@ import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.game.map.Player;
 import scc210game.engine.movement.Position;
-import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 
@@ -25,7 +24,7 @@ public class PlayerSpawner implements Spawner {
 	public World.EntityBuilder inject(World.EntityBuilder builder) {
 		return builder
 				.with(new Player())
-				.with(new Position(90, 20))
+				.with(new Position(8, 111))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 				(Entity entity, RenderWindow window, World world) -> {
 

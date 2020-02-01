@@ -5,18 +5,23 @@ import com.github.cliftonlabs.json_simple.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class GenerateMap {
 
 	private Tile[][] allTiles;
 	private Vector2i mapSize;
-	private int[] tileValues;
+	private ArrayList<Vector2i> possEnemyTiles = new ArrayList<>();
+	private Vector2i[] enemyTiles;
+
 
 	// Read from object map tile values that are already preset
 	public GenerateMap() {
 		mapSize = new Vector2i(120, 120);
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
+		addEnemies();
 	}
 
 
@@ -30,7 +35,9 @@ public class GenerateMap {
 			for(int y=0; y<mapSize.y; y++)
 				for (int x=0; x<mapSize.x; x++) {
 					System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
-					allTiles[x][y] = Tile.deserialize(tileTypes(tileValues.getInteger(cnt), x, y));
+					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
+					if(allTiles[x][y].canHaveEnemy())
+						possEnemyTiles.add(allTiles[x][y].getXYPos());
 					cnt++;
 				}
 
@@ -40,13 +47,6 @@ public class GenerateMap {
 		}
 	}
 
-	/*
-	Texture index, texture name, collision, chest, enemy
-	{1, "forest", true, false, false}, {2, "grass", false, false, false},
-	{3, "path", false, false, false}, {4, "chest", true, true, false},
-	{5, "enemy", true, false, true}, {6, "tree", true, false, false},
-	{7, "story", false, false, false}, {8, "border", true, false, false}
-	*/
 
 	/**
 	 * Creates a JSON object with the specific data for the tiles type
@@ -55,7 +55,7 @@ public class GenerateMap {
 	 * @param y
 	 * @return
 	 */
-	private JsonObject tileTypes(int tileType, int x, int y) {
+	private JsonObject tileData(int tileType, int x, int y) {
 		JsonObject tileData = new JsonObject();
 		tileData.put("texture", "null");
 		tileData.put("x", x);
@@ -143,7 +143,6 @@ public class GenerateMap {
 
 		}
 
-		//System.out.println(tileData);
 		return tileData;
 	}
 
@@ -154,6 +153,44 @@ public class GenerateMap {
 
 	public Vector2i getMapSize() {
 		return mapSize;
+	}
+
+	public Vector2i[] getEnemyTiles() {
+		return enemyTiles;
+	}
+
+	/*
+		Method to assign the spawn points of enemies on the map based on other spawn points and
+		the number of enemies to be place on the map.
+	*/
+	private void addEnemies() {
+		int minEnemyTiles = 30;
+		int checkWithin = 20;
+		int placedCount = 0;
+		ArrayList<Vector2i> tempList = new ArrayList<>();
+
+		while (minEnemyTiles > placedCount) {
+			for (Vector2i coords : possEnemyTiles) {
+				int count = 0;
+				int rng = (int) (Math.random() * 10 + 1);
+				if (rng > 7) {
+					System.out.println("Coords: " + coords);
+					for (Vector2i altCoords : possEnemyTiles)
+						if ((coords.x - checkWithin > altCoords.x || coords.x + checkWithin < altCoords.x) || (coords.y - checkWithin > altCoords.y || coords.y + checkWithin < altCoords.y))
+							count++;
+
+					if (count == possEnemyTiles.size() - 1) {
+						allTiles[coords.x][coords.y].setTexture("enemySpawn.png");
+						tempList.add(coords);
+						placedCount++;
+					}
+				}
+			}
+			checkWithin -= 2;
+		}
+
+		enemyTiles = new Vector2i[tempList.size()];
+		enemyTiles = tempList.toArray(enemyTiles);
 	}
 
 

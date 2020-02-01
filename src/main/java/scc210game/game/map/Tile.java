@@ -15,8 +15,8 @@ public class Tile {
 	private int yPos;
 	private Boolean hasCollision;
 	private String fileName;
-	private Boolean hasChest;
-	private Boolean hasEnemy;
+	private Boolean canHaveChest;
+	private Boolean canHaveEnemy;
 
 
 	public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
@@ -25,8 +25,8 @@ public class Tile {
 		xPos = x;
 		yPos = y;
 		hasCollision = collision;
-		hasChest = chest;
-		hasEnemy = enemy;
+		canHaveChest = chest;
+		canHaveEnemy = enemy;
 
 		try {
 			tileTexture.loadFromFile(Paths.get(assetsPath, fileName));
@@ -47,10 +47,11 @@ public class Tile {
 		json.put("x", xPos);
 		json.put("y", yPos);
 		json.put("collision", hasCollision);
-		json.put("chest", hasChest);
-		json.put("enemy", hasEnemy);
+		json.put("chest", canHaveChest);
+		json.put("enemy", canHaveEnemy);
 		return json;
 	}
+
 
 	/**
 	 * Method to load a tile from a JSON object
@@ -79,6 +80,8 @@ public class Tile {
       return yPos;
   }
 
+  public Vector2i getXYPos() { return new Vector2i(xPos, yPos); }
+
   public Texture getTexture() {
       return tileTexture;
   }
@@ -87,9 +90,11 @@ public class Tile {
 		return fileName;
   }
 
-	public Boolean hasChest() {
-		return hasChest;
+	public Boolean canHaveChest() {
+		return canHaveChest;
 	}
+
+	public Boolean canHaveEnemy() { return canHaveEnemy; }
 
   public Boolean hasCollision() {
         return hasCollision;
@@ -98,4 +103,17 @@ public class Tile {
   public Vector2i getTextureSize() {
         return textureSize;
     }
+
+  public void setTexture(String fn) {
+	  String assetsPath = "./src/main/resources/textures/";
+	  try {
+		  tileTexture.loadFromFile(Paths.get(assetsPath, fn));
+		  textureSize = tileTexture.getSize();
+	  }
+	  catch(IOException e) {
+		  throw new RuntimeException(e);
+	  }
+
+  }
+
 }
