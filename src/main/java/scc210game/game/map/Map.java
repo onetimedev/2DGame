@@ -33,7 +33,6 @@ public class Map extends Component {
       return genMap.getMapSize().y;
   }
 
-
 	public Tile getTile(int xPos, int yPos) {
 		return mapTiles[xPos][yPos];
 	}
@@ -46,14 +45,5 @@ public class Map extends Component {
 		return mapTiles[0].length-1;
 	}
 
-
-	/**
-	 * Method to create chests on tiles pseudo-random
-	 * Creating an entity with position component, renderable component and inventory component
-	 * giving position to entity based on the available spawnable tiles
-	 */
-	private void placeChests() {
-
-	}
 
 }

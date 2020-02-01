@@ -2,12 +2,13 @@ package scc210game.game.map;
 
 import org.jsfml.system.Vector2i;
 import com.github.cliftonlabs.json_simple.*;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Vector;
 
+/**
+ * Class to Generate the maps tiles given mapdata.json.
+ */
 public class GenerateMap {
 
 	private Tile[][] allTiles;
@@ -25,6 +26,9 @@ public class GenerateMap {
 	}
 
 
+	/**
+	 * Deserialises all tiles from mapdata.json and adds them to a 2D array of tiles.
+	 */
 	private void jsonToTiles() {
 		try {
 			FileReader fr = new FileReader("./mapdata.json");
@@ -50,10 +54,10 @@ public class GenerateMap {
 
 	/**
 	 * Creates a JSON object with the specific data for the tiles type
-	 * @param tileType
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param tileType the number corresponding to the type of tile
+	 * @param x the X position
+	 * @param y the Y position
+	 * @return a formatted JSON object representing the tile
 	 */
 	private JsonObject tileData(int tileType, int x, int y) {
 		JsonObject tileData = new JsonObject();
@@ -175,11 +179,7 @@ public class GenerateMap {
 				tileData.put("collision", true);
 				break;
 			}
-
-
-
 		}
-
 		return tileData;
 	}
 
