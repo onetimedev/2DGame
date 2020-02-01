@@ -3,11 +3,11 @@
  */
 package scc210game;
 
-import scc210game.render.EngineSetup;
+import scc210game.game.Main;
 
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world");
-        EngineSetup.runForever();
+        Main.runForever();
     }
 }
