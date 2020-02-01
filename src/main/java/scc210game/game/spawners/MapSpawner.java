@@ -22,7 +22,7 @@ public class MapSpawner implements Spawner {
   public World.EntityBuilder inject(World.EntityBuilder builder) {
     return builder
       .with(new Map())
-      .with(new Renderable(Set.of(ViewType.MAIN, ViewType.MINIMAP), 0,
+      .with(new Renderable(Set.of(ViewType.MAIN), 0,
       (Entity entity, RenderWindow window, World world) -> {
         Map m = world.fetchComponent(entity, Map.class);
 
@@ -33,11 +33,11 @@ public class MapSpawner implements Spawner {
         // Number of tiles that can fit in windows X and Y
         int tilesX = (int) Math.ceil(window.getView().getSize().x / 64.0);
         int tilesY = (int) Math.ceil(window.getView().getSize().y / 64.0);
-        //System.out.println("X fits: " + tilesX + " Y fits: " + tilesY);
+        System.out.println("X fits: " + tilesX + " Y fits: " + tilesY);
 
-        //System.out.println("View Size: " + window.getView().getSize());
-        //System.out.println("View Center: " + window.getView().getCenter());
-        //System.out.println("Window Size: " + window.getSize());
+        System.out.println("View Size: " + window.getView().getSize());
+        System.out.println("View Center: " + window.getView().getCenter());
+        System.out.println("Window Size: " + window.getSize());
 
         int tilesLeft = (int) Math.floor(tilesX / 2.0);  // Number of tiles left of player X coord
         int startX = (int) (playerCoords.x - tilesLeft);  // First tile X coord to be rendered from
@@ -91,6 +91,7 @@ public class MapSpawner implements Spawner {
 
           positionX = 0;
           positionY += 64;
+
         }
 
       }));
