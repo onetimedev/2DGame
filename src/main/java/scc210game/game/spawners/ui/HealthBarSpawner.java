@@ -50,9 +50,9 @@ public class HealthBarSpawner implements Spawner {
                     var health = w.fetchComponent(player, Health.class);
 
                     var innerTrans = trans.clone();
-                    innerTrans.height *= 0.95;
-                    innerTrans.width *= (0.95 * health.hpPercent());
-                    innerTrans.updateOrigin(innerTrans.xPos * 1.025f, innerTrans.yPos * 1.025f);
+                    innerTrans.height *= 0.90;
+                    innerTrans.width *= (0.99375 * health.hpPercent());
+                    innerTrans.updateOrigin(innerTrans.xPos + 0.003125f, innerTrans.yPos + 0.00125f);
 
                     var innerRect = new RectangleShape(UiUtils.convertUiSize(rw, innerTrans.size())) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, innerTrans.pos()));
