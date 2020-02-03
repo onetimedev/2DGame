@@ -38,7 +38,7 @@ Look at the existing test cases for examples.
 
 ## Jargon
 
-- State (`scc210game.state.State`) :: A state the game can be in, such as
+- State (`scc210game.engine.state.State`) :: A state the game can be in, such as
   'Paused', 'MainMenu', 'MainGame', 'ViewingInventory'. States have associated
   data and determine how events and inputs are routed. Only one state can be
   active at any one time. The event handlers for states return 'Transitions'
@@ -46,31 +46,31 @@ Look at the existing test cases for examples.
   moving to a new state, pushing a new state onto the state stack, and popping a
   state of the state stack.
 
-- World (`scc210game.ecs.World`) :: A container for entities to exist in.
+- World (`scc210game.engine.ecs.World`) :: A container for entities to exist in.
 - Entity :: A unique identifier, has associated components. Entities are unique
   to a world.
-- Component (`scc210game.ecs.Component`) :: A piece of data that is associated
-  with an Entity, such as: Position, `scc210game.render.Renderable`. Empty
+- Component (`scc210game.engine.ecs.Component`) :: A piece of data that is associated
+  with an Entity, such as: Position, `scc210game.engine.render.Renderable`. Empty
   Components may also be used to add flags to entities, such as:
-  `scc210game.ui.components.UIInteractive`. Flag components may be added at game startup, or
+  `scc210game.engine.ui.components.UIInteractive`. Flag components may be added at game startup, or
   may be added/removed dynamically by other systems.
-- Resource (`scc210game.ecs.Resource`) :: Similar to a component, but has no
+- Resource (`scc210game.engine.ecs.Resource`) :: Similar to a component, but has no
   associated Entity.
-- System (`scc210game.ecs.System`) :: Functions that run on every input/ game
-  frame. They use Queries (`scc210game.ecs.Query`) to select the entities
+- System (`scc210game.engine.ecs.System`) :: Functions that run on every input/ game
+  frame. They use Queries (`scc210game.engine.ecs.Query`) to select the entities
   that have a given set of components, the idea is to break all game logic into
   systems that operate independently from each other. Examples are:
-  `scc210game.render.RenderSystem`.
-- Spawners (`scc210game.ecs.Spawner`) :: Functions that construct a 'type' of
+  `scc210game.engine.render.RenderSystem`.
+- Spawners (`scc210game.engine.ecs.Spawner`) :: Functions that construct a 'type' of
   entity by adding all the required components as one, for example an entity
   used in the UI will be created using a spawner that attaches the required
   components for being a UI entity, such as `UIText`, `UITransform`, and
-  `Renderable`. Examples are: `scc210game.ui.spawners.DialogueSpawner` and
-  `scc210game.spawners.MapSpawner`.
+  `Renderable`. Examples are: `scc210game.engine.ui.spawners.DialogueSpawner` and
+  `scc210game.game.spawners.MapSpawner`.
   
 ## Common components
 
-### scc210game.render.Renderable
+### scc210game.engine.render.Renderable
 
 This component is used to allow entities to be rendered to the screen.
 
@@ -81,17 +81,17 @@ It takes three parameters:
      render above those with lower.
 3.	renderFn :: The function to call to render this entity
 
-An example construction is located at: `scc210game.ui.spawners.DialogueSpawner`
+An example construction is located at: `scc210game.engine.ui.spawners.DialogueSpawner`
 
 ## Common spawners
 
-### scc210game.ui.spawners.DialogueSpawner
+### scc210game.engine.ui.spawners.DialogueSpawner
 
 This spawner creates a dialogue box with a given piece of text.
 
 ## Creating components
 
-A component is any class extending `scc210game.ecs.Component`, there is one
+A component is any class extending `scc210game.engine.ecs.Component`, there is one
 method that needs implementing which is `String serialize()`, but for now this
 can be left as just returning null, eventually this will be used to allow the
 entire game state to be stored in a database for later restoration.
@@ -144,7 +144,7 @@ To fetch a resource, use:
 ## Creating entities
 
 You can create an entity anywhere you have access to a `World` by using the
-`entityBuilder()` method, which returns a `scc210game.ecs.World.EntityBuilder`
+`entityBuilder()` method, which returns a `scc210game.engine.ecs.World.EntityBuilder`
 object.
 
 To add components to the entity you are building, call the `with(Component c)`
@@ -190,7 +190,7 @@ world.entityBuilder()
 
 ## Creating systems
 
-To create a system, make a class that implements the `scc210game.ecs.System`
+To create a system, make a class that implements the `scc210game.engine.ecs.System`
 interface.
 
 The required method is `run`:
@@ -214,7 +214,7 @@ Inside `run` you should do stuff such as:
 
 #### A system that just processes entities
 
-The render (`scc210game.render.RenderSystem`) system is a good example of a system that just operates on a list of
+The render (`scc210game.engine.render.RenderSystem`) system is a good example of a system that just operates on a list of
 entities matching criteria (the criteria being that they need to be rendered).
 
 First a Query is constructed, this is used to fetch entities from the world:
@@ -254,7 +254,7 @@ To loop over every item in the stream, use the `.forEach` method of the stream:
 #### A system that processes events
 
 An example of a system that processes events is the UI Interaction Handler
-System (`scc210game.ui.systems.HandleInteraction`).
+System (`scc210game.engine.ui.systems.HandleInteraction`).
 
 It receives user input events from JSFML and turns them into events that target
 specific entities, such as clicking an entity, dragging an entity, and hovering

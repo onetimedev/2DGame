@@ -4,9 +4,9 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.Jsoner;
 import org.junit.Test;
-import scc210game.ecs.System;
-import scc210game.ecs.*;
-import scc210game.state.State;
+import scc210game.engine.ecs.System;
+import scc210game.engine.ecs.*;
+import scc210game.engine.state.State;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
-class BasicState implements State {
+class BasicState extends State {
     public Entity e;
 
     @Override
