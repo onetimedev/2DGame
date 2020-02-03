@@ -32,8 +32,7 @@ public class Movement implements System {
 
     private void handleEvent(@Nonnull World world, Event e) {
         var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
-        var view = world.fetchGlobalResource(MainViewResource.class); // TODO: broken currently, waiting for fetchGlobalResource method
-        java.lang.System.out.println(view);
+        //java.lang.System.out.println(view);
 
         if (e instanceof KeyPressedEvent) {
             KeyPressedEvent e1 = (KeyPressedEvent) e;
@@ -65,7 +64,7 @@ public class Movement implements System {
             var position = world.fetchComponent(playerEnt, Position.class);
             position.xPos += hMove;
             position.yPos += vMove;
-            view.mainView.setCenter(position.xPos*10, position.yPos*10);
+
         }
     }
 

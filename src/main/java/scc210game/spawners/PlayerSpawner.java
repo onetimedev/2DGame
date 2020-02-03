@@ -11,6 +11,7 @@ import scc210game.ecs.World;
 import scc210game.map.Map;
 import scc210game.map.Player;
 import scc210game.movement.Position;
+import scc210game.render.MainViewResource;
 import scc210game.render.Renderable;
 import scc210game.render.ViewType;
 
@@ -35,9 +36,11 @@ public class PlayerSpawner implements Spawner {
 						Sprite pl = new Sprite(t);
 						var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
 						var position = world.fetchComponent(playerEnt, Position.class);
+						var view = world.fetchGlobalResource(MainViewResource.class); // TODO: broken currently, waiting for fetchGlobalResource method
 						//TODO: Set offset for the player so that 1/2 view width and height is subtracted, as currently the
 						//TODO: top left of the map / what is rendered, starts in the middle of the view
-						pl.setPosition(position.xPos*10, position.yPos*10);
+						pl.setPosition(position.xPos*64, position.yPos*64);
+						view.mainView.setCenter(pl.getPosition());
 						window.draw(pl);
 					}
 					catch (IOException e) {
