@@ -31,7 +31,7 @@ public class ECS {
      */
     public ECS(@Nonnull List<? extends System> systems, @Nonnull State initialState) {
         this.systems = systems;
-        this.stateMachine = new StateMachine(initialState);
+        this.stateMachine = new StateMachine(initialState, this);
         this.globalResources = new HashMap<>();
     }
 
@@ -73,7 +73,7 @@ public class ECS {
      *
      * @param event the {@link StateEvent} to handle
      */
-    public void runWithUpdateOnce(StateEvent event) {
+    public void acceptEvent(StateEvent event) {
         assert this.stateMachine.isRunning() : "State machine is not running";
 
         this.stateMachine.handle(event);

@@ -10,5 +10,5 @@ import scc210game.events.Event;
  * For raw input events ({@link InputEvent}), these will probably all be forwarded to the event queue for the interaction handler
  * system to interpret into {@link scc210game.events.UiEvent} events.
  */
-public interface StateEvent extends Event {
+public abstract class StateEvent extends Event {
 }

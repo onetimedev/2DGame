@@ -49,10 +49,38 @@ public class UiUtils {
 
     /**
      * Transform a {@link java.awt.Color} colour into a {@link Color} colour.
+     *
      * @param c the {@link java.awt.Color} input colour
      * @return the {@link Color} transformed colour
      */
     public static Color transformColor(java.awt.Color c) {
         return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    }
+
+    /**
+     * Correct a size assuming a 1:1 aspect ratio into one that works for 16:9 aspect ratio
+     *
+     * @param values the size assuming a 1:1 aspect ratio
+     * @return a size that has the same ratio for 16:9 aspect ratio
+     */
+    public static Vector2f correctAspectRatio(Vector2f values) {
+        var aspectRatio = 16f / 9f;
+
+        return new Vector2f(values.x, values.y * aspectRatio);
+    }
+
+    /**
+     * Get a position that will have the given size object appear at the center of the given targetPos and targetSize
+     *
+     * @param size       size of rectangle to center
+     * @param targetPos  position of rectangle to center on
+     * @param targetSize size of rectangle to center on
+     * @return position needed to have the given size rectangle appear centered
+     */
+    public static Vector2f centerTransforms(Vector2f size, Vector2f targetPos, Vector2f targetSize) {
+        var leftBorder = (targetSize.x - size.x) / 2f;
+        var topBorder = (targetSize.y - size.y) / 2f;
+
+        return new Vector2f(targetPos.x + leftBorder, targetPos.y + topBorder);
     }
 }

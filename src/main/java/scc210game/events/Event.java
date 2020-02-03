@@ -1,7 +1,7 @@
 package scc210game.events;
 
 /**
- * An empty interface to signal classes that should be used as 'Events'
+ * An empty abstract class to signal classes that should be used as 'Events'
  */
-public interface Event {
+public abstract class Event {
 }

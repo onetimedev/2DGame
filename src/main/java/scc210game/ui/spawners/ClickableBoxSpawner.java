@@ -1,48 +1,50 @@
 package scc210game.ui.spawners;
 
-import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.Text;
+import org.jsfml.system.Vector2f;
 import scc210game.ecs.Entity;
 import scc210game.ecs.Spawner;
 import scc210game.ecs.World;
 import scc210game.render.Renderable;
 import scc210game.render.ViewType;
+import scc210game.ui.components.UIClickable;
+import scc210game.ui.components.UIDroppable;
 import scc210game.ui.components.UIHovered;
-import scc210game.ui.components.UIText;
 import scc210game.ui.components.UITransform;
-import scc210game.utils.ResourceLoader;
 import scc210game.utils.UiUtils;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Set;
 
-public class DialogueSpawner implements Spawner {
-    private static final Font font = new Font() {{
-        try {
-            this.loadFromFile(ResourceLoader.resolve("font/FreeSans.ttf"));
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }};
-    private final String message;
+public class ClickableBoxSpawner implements Spawner {
+    private final float x;
+    private final float y;
+    private final float width;
+    private final float height;
 
-    public DialogueSpawner(String message) {
-        this.message = message;
+    public ClickableBoxSpawner(float x, float y, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
+        var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
+        var correctedSize = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
+
         return builder
-                .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))
-                .with(new UIText(this.message))
+                .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
+                .with(new UIClickable((Entity thisEntity, World w) -> {
+                    var trans = w.fetchComponent(thisEntity, UITransform.class);
+                    trans.xPos += 0.01;
+                }))
                 .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
-                    var textContent = w.fetchComponent(e, UIText.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;
+                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.blue : Color.magenta;
 
                     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
@@ -51,13 +53,6 @@ public class DialogueSpawner implements Spawner {
                     }};
 
                     rw.draw(rect);
-
-                    var text = new Text(textContent.text, DialogueSpawner.font, 24) {{
-                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-                    }};
-
-                    rw.draw(text);
                 }));
     }
 }
-

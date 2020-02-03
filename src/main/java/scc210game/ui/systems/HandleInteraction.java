@@ -3,11 +3,14 @@ package scc210game.ui.systems;
 import scc210game.ecs.System;
 import scc210game.ecs.*;
 import scc210game.events.*;
+import scc210game.state.event.InputEvent;
 import scc210game.state.event.MouseButtonDepressedEvent;
 import scc210game.state.event.MouseButtonPressedEvent;
 import scc210game.state.event.MouseMovedEvent;
-import scc210game.state.event.StateEvent;
-import scc210game.ui.UITransform;
+import scc210game.ui.components.UIClickable;
+import scc210game.ui.components.UIDraggable;
+import scc210game.ui.components.UIDroppable;
+import scc210game.ui.components.UITransform;
 import scc210game.utils.Tuple2;
 
 import javax.annotation.Nonnull;
@@ -16,8 +19,11 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.stream.Stream;
 
+
+/*
+ * NOTE: all x/y values in this class are in percentages of the screen
+ */
 
 /**
  * The system to handle user interaction with UI components
@@ -30,21 +36,32 @@ public class HandleInteraction implements System {
             .require(UITransform.class)
             .build();
 
+    private final Query draggableUIEntityQuery = Query.builder()
+            .require(UITransform.class)
+            .require(UIDraggable.class)
+            .build();
+
+    private final Query droppableUIEntityQuery = Query.builder()
+            .require(UITransform.class)
+            .require(UIDroppable.class)
+            .build();
+
+    private final Query clickableUIEntityQuery = Query.builder()
+            .require(UITransform.class)
+            .require(UIClickable.class)
+            .build();
+
     public HandleInteraction() {
         this.eventReader = EventQueue.makeReader();
-        EventQueue.listen(this.eventReader, StateEvent.class);
+        EventQueue.listen(this.eventReader, InputEvent.class);
     }
 
-    private Stream<Entity> getUIEntities(@Nonnull World world) {
-        return world.applyQuery(this.uiEntityQuery);
+    private Optional<Tuple2<Entity, UITransform>> getEntityAtPosition(float x, float y, @Nonnull World world, Query q) {
+        return this.getEntityAtPosition(x, y, world, q, null);
     }
 
-    private Optional<Tuple2<Entity, UITransform>> getEntityAtPosition(float x, float y, @Nonnull World world) {
-        return this.getEntityAtPosition(x, y, world, null);
-    }
-
-    private Optional<Tuple2<Entity, UITransform>> getEntityAtPosition(float x, float y, @Nonnull World world, @Nullable Entity ignoring) {
-        return this.getUIEntities(world)
+    private Optional<Tuple2<Entity, UITransform>> getEntityAtPosition(float x, float y, @Nonnull World world, Query q, @Nullable Entity ignoring) {
+        return world.applyQuery(q)
                 .filter(e -> e != ignoring)
                 .map(e -> new Tuple2<>(e, world.fetchComponent(e, UITransform.class)))
                 .filter(t -> t.r.contains(x, y))
@@ -65,22 +82,26 @@ public class HandleInteraction implements System {
 
         if (e instanceof MouseButtonPressedEvent) {
             MouseButtonPressedEvent e1 = (MouseButtonPressedEvent) e;
-            var entAtClickP = this.getEntityAtPosition(e1.x, e1.y, world);
+            var entAtClickP = this.getEntityAtPosition(e1.x, e1.y, world, this.uiEntityQuery);
 
             if (!entAtClickP.isPresent()) {
                 return;
             }
 
-            // begin 'dragging' this entity
             var entAtClick = entAtClickP.get();
-            state.draggingEntityData = new DraggingData(entAtClick.l, e1.x, e1.y);
+
+            if (world.hasComponent(entAtClick.l, UIDraggable.class)) {
+                // begin 'dragging' this entity, if it can be dragged
+                state.draggingEntityData = new DraggingData(entAtClick.l, e1.x, e1.y);
+            }
         } else if (e instanceof MouseButtonDepressedEvent) {
             // if dragging an entity, emit an EntityDropped, if not, emit an EntitiesClick
             MouseButtonDepressedEvent e1 = (MouseButtonDepressedEvent) e;
 
             if (state.draggingEntityData == null || (state.draggingEntityData.dragStartX == e1.x && state.draggingEntityData.dragStartY == e1.y)) {
+                state.draggingEntityData = null;
                 // wasn't dragging anything or the 'drag' wasn't a drag, emit a click
-                var entAtClickP = this.getEntityAtPosition(e1.x, e1.y, world);
+                var entAtClickP = this.getEntityAtPosition(e1.x, e1.y, world, this.clickableUIEntityQuery);
 
                 // nothing to click on
                 if (!entAtClickP.isPresent()) {
@@ -88,18 +109,28 @@ public class HandleInteraction implements System {
                 }
 
                 var entAtClick = entAtClickP.get();
-                Event evt = new EntitiesClickEvent(e1.x, e1.y, entAtClick.l);
-                EventQueue.broadcast(evt);
-            } else {
-                var entAtDropP = this.getEntityAtPosition(e1.x, e1.y, world, state.draggingEntityData.draggingEntity);
 
-                // nothing to drop on, emit failed drop
+                if (world.hasComponent(entAtClick.l, UIClickable.class)) {
+                    Event evt = new EntityClickEvent(e1.x, e1.y, entAtClick.l);
+                    EventQueue.broadcast(evt);
+                }
+            } else {
+                var entAtDropP = this.getEntityAtPosition(e1.x, e1.y, world, this.droppableUIEntityQuery, state.draggingEntityData.draggingEntity);
+
                 if (!entAtDropP.isPresent()) {
-                    Event evt = new EntitiesFailedDroppedEvent(state.draggingEntityData.draggingEntity);
+                    Event evt = new EntityFailedDroppedEvent(state.draggingEntityData.draggingEntity,
+                            state.draggingEntityData.dragStartX,
+                            state.draggingEntityData.dragStartY,
+                            state.draggingEntityData.lastXPosition - state.draggingEntityData.dragStartX,
+                            state.draggingEntityData.lastYPosition - state.draggingEntityData.dragStartY);
                     EventQueue.broadcast(evt);
                 } else {
                     var entAtDrop = entAtDropP.get();
-                    Event evt = new EntitiesDroppedEvent(state.draggingEntityData.draggingEntity, entAtDrop.l);
+                    Event evt = new EntityDroppedEvent(state.draggingEntityData.draggingEntity, entAtDrop.l,
+                            state.draggingEntityData.dragStartX,
+                            state.draggingEntityData.dragStartY,
+                            state.draggingEntityData.lastXPosition - state.draggingEntityData.dragStartX,
+                            state.draggingEntityData.lastYPosition - state.draggingEntityData.dragStartY);
                     EventQueue.broadcast(evt);
                 }
 
@@ -108,9 +139,7 @@ public class HandleInteraction implements System {
         } else if (e instanceof MouseMovedEvent) {
             MouseMovedEvent e1 = (MouseMovedEvent) e;
 
-            // possible hire hover events
-
-            var entAtHoverP = this.getEntityAtPosition(e1.x, e1.y, world,
+            var entAtHoverP = this.getEntityAtPosition(e1.x, e1.y, world, this.uiEntityQuery,
                     state.draggingEntityData != null ?
                             state.draggingEntityData.draggingEntity :
                             null);
@@ -142,12 +171,15 @@ public class HandleInteraction implements System {
             // now go on to handling dragged entities
 
             if (state.draggingEntityData != null) {
-                EventQueue.broadcast(new EntitiesDraggedEvent(
+                EventQueue.broadcast(new EntityDraggedEvent(
                         state.draggingEntityData.draggingEntity,
                         state.draggingEntityData.dragStartX,
                         state.draggingEntityData.dragStartY,
-                        e1.dx,
-                        e1.dy));
+                        e1.x - state.draggingEntityData.dragStartX,
+                        e1.y - state.draggingEntityData.dragStartY,
+                        e1.dx, e1.dy));
+                state.draggingEntityData.lastXPosition = e1.x;
+                state.draggingEntityData.lastYPosition = e1.y;
             }
         }
     }
@@ -156,11 +188,15 @@ public class HandleInteraction implements System {
         final Entity draggingEntity;
         final float dragStartX;
         final float dragStartY;
+        float lastXPosition;
+        float lastYPosition;
 
         public DraggingData(Entity draggingEntity, float dragStartX, float dragStartY) {
             this.draggingEntity = draggingEntity;
             this.dragStartX = dragStartX;
             this.dragStartY = dragStartY;
+            this.lastXPosition = dragStartX;
+            this.lastYPosition = dragStartY;
         }
     }
 
