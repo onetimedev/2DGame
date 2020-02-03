@@ -35,7 +35,11 @@ public class PlayerSpawner implements Spawner {
 						var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
 						var position = world.fetchComponent(playerEnt, Position.class);
 						//var view = world.fetchGlobalResource(MainViewResource.class);
+
 						pl.setPosition(window.getView().getCenter().x, window.getView().getCenter().y);
+						//pl.setPosition(position.xPos, position.yPos);
+
+
 						//System.out.println("View: " + view.mainView.getCenter());
 						window.draw(pl);
 					}
