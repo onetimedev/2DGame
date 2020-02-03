@@ -11,6 +11,7 @@ import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
+import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.render.RenderSystem;
 import scc210game.engine.render.ViewType;
@@ -47,6 +48,7 @@ public class Main {
                 new HandleHovered(),
                 new HandleDragDrop(),
                 new HandleClicked(),
+                new AnimationUpdater(),
                 new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
