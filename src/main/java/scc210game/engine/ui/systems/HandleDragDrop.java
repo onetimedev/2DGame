@@ -1,5 +1,6 @@
 package scc210game.engine.ui.systems;
 
+import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
 import scc210game.engine.events.*;
@@ -17,16 +18,16 @@ import java.util.Iterator;
 public class HandleDragDrop implements System {
     private final EventQueueReader eventReader;
 
-    public HandleDragDrop() {
-        this.eventReader = EventQueue.makeReader();
-        EventQueue.listen(this.eventReader, EntityDraggedEvent.class);
-        EventQueue.listen(this.eventReader, EntityDroppedEvent.class);
-        EventQueue.listen(this.eventReader, EntityFailedDroppedEvent.class);
+    public HandleDragDrop(ECS ecs) {
+        this.eventReader = ecs.eventQueue.makeReader();
+        ecs.eventQueue.listen(this.eventReader, EntityDraggedEvent.class);
+        ecs.eventQueue.listen(this.eventReader, EntityDroppedEvent.class);
+        ecs.eventQueue.listen(this.eventReader, EntityFailedDroppedEvent.class);
     }
 
     @Override
     public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-        for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+        for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
             Event e = it.next();
 
             if (e instanceof EntityDraggedEvent) {
