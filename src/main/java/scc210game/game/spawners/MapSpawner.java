@@ -34,7 +34,6 @@ public class MapSpawner implements Spawner {
         // Number of tiles that can fit in windows X and Y
         Vector2f mapSize = window.getView().getSize();
         Vector2f origin = window.getView().getCenter();
-        //System.out.println("X fits: " + tilesX + " Y fits: " + tilesY);
 
         int mapLeft = (int) (origin.x - (mapSize.x /2)) /64;
         int mapRight = (int) (origin.x + (mapSize.x /2)) /64;
@@ -47,17 +46,10 @@ public class MapSpawner implements Spawner {
         //int tileCount = 0;
         for (int y = 0; y <  m.getTileMaxY(); y++) {
           for (int x = 0; x < m.getTileMaxX(); x++) {
-
-            //System.out.println("Left: " + mapLeft);
-            //System.out.println("Right: " + mapRight);
-            //System.out.println("Top: " + mapTop);
-            //System.out.println("Bottom: " + mapBottom);
-
             if(x < mapLeft || x > mapRight || y < mapTop || y > mapBottom)
               continue;
 
             Sprite tile = new Sprite(m.getTile(x, y).getTexture());
-            //tile.setOrigin(window.getView().getSize().x/2, window.getView().getSize().y/2);
             tile.setPosition(x*64, y*64);
             //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
             window.draw(tile);
