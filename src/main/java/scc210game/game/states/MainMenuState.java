@@ -14,10 +14,8 @@ import scc210game.game.states.events.StartGameEvent;
 public class MainMenuState extends InputHandlingState {
     @Override
     public void onStart(World world) {
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Start Game",
-                (Entity e, World w) -> world.ecs.acceptEvent(new StartGameEvent()))).build();
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Quit Game",
-                (Entity e, World w) -> world.ecs.acceptEvent(new QuitGameEvent()))).build();
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Start Game", (Entity e, World w) -> world.ecs.acceptEvent(new StartGameEvent()))).build();
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Quit Game", (Entity e, World w) -> world.ecs.acceptEvent(new QuitGameEvent()))).build();
     }
 
     @Override

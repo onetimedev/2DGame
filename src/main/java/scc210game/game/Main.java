@@ -21,6 +21,7 @@ import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.states.MainMenuState;
+import scc210game.game.states.events.CombatState;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class Main {
                 new AnimationUpdater(),
                 new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
-        this.ecs = new ECS(systems, new MainMenuState());
+        this.ecs = new ECS(systems, new CombatState());
         this.ecs.start();
     }
 
