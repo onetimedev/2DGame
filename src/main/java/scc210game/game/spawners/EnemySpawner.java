@@ -3,7 +3,6 @@ package scc210game.game.spawners;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
-import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
@@ -21,36 +20,56 @@ import java.util.Set;
 
 public class EnemySpawner implements Spawner {
   private Tile enemyTile;
+  private int xSpawn;
+  private int ySpawn;
 
-    EnemySpawner(Tile t) {
+    public EnemySpawner(Tile t) {
       enemyTile = t;
+      setType(enemyTile.getTextureName());
+      xSpawn = enemyTile.getXPos();
+      ySpawn = enemyTile.getYPos();
+    }
+
+    public void setType(String textureName) {
+      switch (textureName) {
+        case "enemy_basalt.png": {
+          enemyTile.setTexture("enemy.png");  //TODO: change to correct biomeEnemy.png
+          enemyTile.setHasCollision(true);
+          break;
+        }
+        case "enemy_sand.png": {
+          enemyTile.setTexture("enemy.png");  //TODO: change to correct biomeEnemy.png
+          enemyTile.setHasCollision(true);
+          break;
+        }
+        case "enemy_grass.png": {
+          enemyTile.setTexture("enemy.png");   //TODO: change to correct biomeEnemy.png
+          enemyTile.setHasCollision(true);
+          break;
+        }
+        case "enemy_snow": {
+          enemyTile.setTexture("enemy.png");   //TODO: change to correct biomeEnemy.png
+          enemyTile.setHasCollision(true);
+          break;
+        }
+      }
+
+
+
     }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
         return builder
                 .with(new Enemy())
-                .with(new Position(15, 106))
+                .with(new Position(xSpawn, ySpawn))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
                         (Entity entity, RenderWindow window, World world) -> {
-                            Texture t = new Texture();
-                            try {
-                                t.loadFromFile(Paths.get("./src/main/resources/textures/lava.png"));
 
-                              var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
-                              var map = world.fetchComponent(mapEnt, Map.class);
+                          Sprite en = new Sprite(enemyTile.getTexture());
+                          en.setPosition(xSpawn*64, ySpawn*64);
 
-
-                              Sprite en = new Sprite(t);
-                              en.setPosition(0, 0);
-
-                              window.draw(en);
-
-                            }
-                            catch (IOException e) {
-                                throw new RuntimeException();
-                            }
-
+                          window.draw(en);
 
 
                         }));

@@ -12,6 +12,7 @@ import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.map.Map;
+import scc210game.game.map.Tile;
 import scc210game.game.spawners.EnemySpawner;
 import scc210game.game.spawners.MapSpawner;
 import scc210game.game.spawners.PlayerSpawner;
@@ -25,16 +26,23 @@ public class BaseInGameState extends InputHandlingState {
 
     @Override
     public void onStart(World world) {
+        System.out.println("onStart");
         world.entityBuilder().with(new MapSpawner()).build();
+        System.out.println("After map");
         world.entityBuilder().with(new PlayerSpawner()).build();
+
 
         var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
         var map = world.fetchComponent(mapEnt, Map.class);
 
-        for(Vector2i v : map.getEnemyTiles()) {
-            world.entityBuilder().with(new EnemySpawner()).build();
-            // Sprite enemy = new Sprite(map.getTile(x, y).getTexture());
+        System.out.println("Before FOR");
+
+        for(Tile tile : map.getEnemyTiles()) {
+            world.entityBuilder().with(new EnemySpawner(tile)).build();
         }
+
+        System.out.println("Made it out");
+
     }
 
 

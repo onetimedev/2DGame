@@ -22,7 +22,9 @@ public class GenerateMap {
 		mapSize = new Vector2i(120, 120);
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
+		System.out.println("JSON to tiles done");
 		addEnemies();
+		System.out.println("Add enemies done");
 	}
 
 
@@ -40,7 +42,7 @@ public class GenerateMap {
 				for (int x=0; x<mapSize.x; x++) {
 					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
-					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().equals("enemy.png"))
+					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().contains("enemy_"))
 						possEnemyTiles.add(allTiles[x][y].getXYPos());
 					cnt++;
 				}
@@ -179,6 +181,26 @@ public class GenerateMap {
 				tileData.put("collision", true);
 				break;
 			}
+			case 23: {  // Enemy Basalt
+				tileData.put("texture", "enemy_basalt.png");
+				tileData.put("enemy", true);
+				break;
+			}
+			case 24: {  // Enemy Sand
+				tileData.put("texture", "enemy_sand.png");
+				tileData.put("enemy", true);
+				break;
+			}
+			case 25: {  // Enemy Grass
+				tileData.put("texture", "enemy_grass.png");
+				tileData.put("enemy", true);
+				break;
+			}
+			case 26: {  // Enemy Snow
+				tileData.put("texture", "enemy_snow.png");
+				tileData.put("enemy", true);
+				break;
+			}
 		}
 		return tileData;
 	}
@@ -206,6 +228,7 @@ public class GenerateMap {
 		int placedCount = 0;
 		ArrayList<Vector2i> tempList = new ArrayList<>();
 
+		System.out.println("Before addEnemiesLoop");
 		while (minEnemyTiles > placedCount) {
 			for (Vector2i coords : possEnemyTiles) {
 				int count = 0;
@@ -217,7 +240,6 @@ public class GenerateMap {
 							count++;
 
 					if (count == possEnemyTiles.size() - 1) {
-						allTiles[coords.x][coords.y].setTexture("enemySpawn.png");
 						tempList.add(coords);
 						placedCount++;
 					}
@@ -226,6 +248,7 @@ public class GenerateMap {
 			checkWithin -= 2;
 		}
 
+		System.out.println("Before change in EnemySpawns");
 		enemyTiles = new Vector2i[tempList.size()];
 		enemyTiles = tempList.toArray(enemyTiles);
 	}

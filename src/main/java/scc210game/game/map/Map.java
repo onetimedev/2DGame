@@ -9,7 +9,7 @@ import scc210game.engine.ecs.Component;
 public class Map extends Component {
   private Tile[][] mapTiles;
   private GenerateMap genMap;
-  private Vector2i[] enemyTiles;
+  private Tile[] enemyTiles;
 
 
   @Override
@@ -21,7 +21,7 @@ public class Map extends Component {
   public Map() {
       genMap = new GenerateMap();
       mapTiles = genMap.getAllTiles();
-      enemyTiles = genMap.getEnemyTiles();
+      enemyTiles = enemyTiles(genMap.getEnemyTiles());
   }
 
   public Tile[][] getMap() {
@@ -48,7 +48,15 @@ public class Map extends Component {
 		return mapTiles[0].length-1;
 	}
 
-	public Vector2i[] getEnemyTiles() {
+	private Tile[] enemyTiles(Vector2i[] eTiles) {
+  	Tile[] tempTiles = new Tile[eTiles.length];
+		for(int i=0; i < tempTiles.length; i++) {
+			tempTiles[i] = getTile(eTiles[i].x, eTiles[i].y);
+		}
+  	return tempTiles;
+	}
+
+	public Tile[] getEnemyTiles() {
       return enemyTiles;
     }
 
