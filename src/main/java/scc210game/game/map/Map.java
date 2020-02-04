@@ -1,5 +1,6 @@
 package scc210game.game.map;
 
+import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Component;
 
 /**
@@ -8,6 +9,7 @@ import scc210game.engine.ecs.Component;
 public class Map extends Component {
   private Tile[][] mapTiles;
   private GenerateMap genMap;
+  private Vector2i[] enemyTiles;
 
 
   @Override
@@ -19,6 +21,7 @@ public class Map extends Component {
   public Map() {
       genMap = new GenerateMap();
       mapTiles = genMap.getAllTiles();
+      enemyTiles = genMap.getEnemyTiles();
   }
 
   public Tile[][] getMap() {
@@ -44,6 +47,10 @@ public class Map extends Component {
 	public int getTileMaxY() {
 		return mapTiles[0].length-1;
 	}
+
+	public Vector2i[] getEnemyTiles() {
+      return enemyTiles;
+    }
 
 
 }
