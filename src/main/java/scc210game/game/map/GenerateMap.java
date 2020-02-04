@@ -22,9 +22,7 @@ public class GenerateMap {
 		mapSize = new Vector2i(120, 120);
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
-		System.out.println("JSON to tiles done");
 		addEnemies();
-		System.out.println("Add enemies done");
 	}
 
 
@@ -228,7 +226,6 @@ public class GenerateMap {
 		int placedCount = 0;
 		ArrayList<Vector2i> tempList = new ArrayList<>();
 
-		System.out.println("Before addEnemiesLoop");
 		while (minEnemyTiles > placedCount) {
 			for (Vector2i coords : possEnemyTiles) {
 				int count = 0;
@@ -248,7 +245,6 @@ public class GenerateMap {
 			checkWithin -= 2;
 		}
 
-		System.out.println("Before change in EnemySpawns");
 		enemyTiles = new Vector2i[tempList.size()];
 		enemyTiles = tempList.toArray(enemyTiles);
 	}

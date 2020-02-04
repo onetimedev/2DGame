@@ -22,57 +22,64 @@ public class EnemySpawner implements Spawner {
   private Tile enemyTile;
   private int xSpawn;
   private int ySpawn;
+  private Texture enemyTexture = new Texture();
+  private String assetsPath = "./src/main/resources/textures/";
 
-    public EnemySpawner(Tile t) {
-      enemyTile = t;
-      setType(enemyTile.getTextureName());
-      xSpawn = enemyTile.getXPos();
-      ySpawn = enemyTile.getYPos();
+
+  public EnemySpawner(Tile t) {
+    enemyTile = t;
+    xSpawn = enemyTile.getXPos();
+    ySpawn = enemyTile.getYPos();
+    setTexture(t.getTextureName());
+  }
+
+  public void loadTexture(String fileName) {
+    try {
+      enemyTexture.loadFromFile(Paths.get(assetsPath, fileName));
     }
+    catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-    public void setType(String textureName) {
-      switch (textureName) {
-        case "enemy_basalt.png": {
-          enemyTile.setTexture("enemy.png");  //TODO: change to correct biomeEnemy.png
-          enemyTile.setHasCollision(true);
-          break;
-        }
-        case "enemy_sand.png": {
-          enemyTile.setTexture("enemy.png");  //TODO: change to correct biomeEnemy.png
-          enemyTile.setHasCollision(true);
-          break;
-        }
-        case "enemy_grass.png": {
-          enemyTile.setTexture("enemy.png");   //TODO: change to correct biomeEnemy.png
-          enemyTile.setHasCollision(true);
-          break;
-        }
-        case "enemy_snow": {
-          enemyTile.setTexture("enemy.png");   //TODO: change to correct biomeEnemy.png
-          enemyTile.setHasCollision(true);
-          break;
-        }
+  public void setTexture(String type) {
+    switch (type) {
+      case "enemy_basalt.png": {
+        enemyTile.setHasCollision(true);
+        loadTexture("fireEnemy.png");
+        break;
       }
-
-
-
+      case "enemy_sand.png": {
+        enemyTile.setHasCollision(true);
+        loadTexture("waterEnemy.png");
+        break;
+      }
+      case "enemy_grass.png": {
+        enemyTile.setHasCollision(true);
+        loadTexture("grassEnemy.png");
+        break;
+      }
+      case "enemy_snow": {
+        enemyTile.setHasCollision(true);
+        loadTexture("enemy.png");
+        break;
+      }
     }
-
-    @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
-        return builder
-                .with(new Enemy())
-                .with(new Position(xSpawn, ySpawn))
-                .with(new Renderable(Set.of(ViewType.MAIN), 5,
-                        (Entity entity, RenderWindow window, World world) -> {
-
-                          Sprite en = new Sprite(enemyTile.getTexture());
-                          en.setPosition(xSpawn*64, ySpawn*64);
-
-                          window.draw(en);
+  }
 
 
-                        }));
+  @Override
+  public World.EntityBuilder inject(World.EntityBuilder builder) {
+    return builder
+      .with(new Enemy())
+      .with(new Position(xSpawn, ySpawn))
+      .with(new Renderable(Set.of(ViewType.MAIN), 5,
+        (Entity entity, RenderWindow window, World world) -> {
 
-    }
+          Sprite en = new Sprite(enemyTexture);
+          en.setPosition(xSpawn*64, ySpawn*64);
+
+          window.draw(en);
+        }));
+  }
 }
