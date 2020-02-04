@@ -13,11 +13,11 @@ public class Item extends ItemComponent {
     public World world;
     public ArrayList<Entity> itemsList = new ArrayList<>();
 
-    public Item(String name, int level, String desc) {
-        super(name, level, desc);
+    public Item(int id, int level) {
+        super(id, level);
 
         itemsList.add(world.entityBuilder()
-                .with(new ItemComponent(name, level, desc))
+                .with(new ItemComponent(id, level))
                 .build());
 
 

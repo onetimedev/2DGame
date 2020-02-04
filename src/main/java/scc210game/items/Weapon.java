@@ -1,19 +1,29 @@
 package scc210game.items;
 
+import org.jsfml.graphics.Texture;
+
+import java.io.IOException;
+
 public class Weapon extends Item{
 
     private int damage;
     private int level;
-    private String element;
-    private int speed;
+    private String desc;
+    WeaponGenerator w;
 
-    public Weapon(String name, int level, int damage, String desc, String element, int speed) {
 
-        super(name, level, desc);
+    public Weapon(int id, int level, int damage, String desc){
+
+        super(id, level);
+
+
         this.damage = damage;
-        this.element = element;
-        this.speed = speed;
+        this.desc = desc;
 
+    }
+
+    public String getName(){
+        return w.randomised;
     }
 
     private void setDamage(int damage){
@@ -32,23 +42,24 @@ public class Weapon extends Item{
         return level;
     }
 
-    private void setElement(String element){
-        this.element = element;
-        //fire, water, earth
+    public String getDesc(){
+        return desc;
+    }
+
+    public void setDesc(String desc){
+        this.desc = desc;
+    }
+
+    public void getWeapon() throws IOException {
+        w = new WeaponGenerator(level);
 
     }
 
-    private String getElement(){
-        return element;
+    public Texture getTexture(){
+        return w.t;
     }
 
-    private void setSpeed(int speed){
-        this.speed = speed;
-    }
 
-    private int getSpeed(){
-        return speed;
-    }
 
 }
 

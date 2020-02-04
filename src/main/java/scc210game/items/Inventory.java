@@ -59,12 +59,11 @@ public class Inventory {
     }
 
 
-    public Item addItem(String name, int level, String desc, String textureFileName) throws IOException {
-        Item newItem = new Item(name, level, desc);
+    public Item addItem(int id, int level, int damage, String desc) throws IOException {
+
+        Weapon newItem = new Weapon(id, level, damage, desc );
         inventory.add(newItem);
-        Texture t = new Texture();
-        t.loadFromFile(new File(textureFileName).toPath());
-        squares.get(inventory.indexOf(newItem)).setTexture(t);
+        squares.get(inventory.indexOf(newItem)).setTexture(newItem.getTexture());
         return newItem;
 
     }
