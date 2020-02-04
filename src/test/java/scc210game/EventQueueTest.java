@@ -1,8 +1,8 @@
 package scc210game;
 
 import org.junit.Test;
-import scc210game.events.Event;
-import scc210game.events.EventQueue;
+import scc210game.engine.events.Event;
+import scc210game.engine.events.EventQueue;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
