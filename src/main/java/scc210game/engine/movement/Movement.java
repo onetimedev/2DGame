@@ -34,12 +34,13 @@ public class Movement implements System {
 
   private void handleEvent(@Nonnull World world, Event e) {
     var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+    var position = world.fetchComponent(playerEnt, Position.class);
     var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
     var map = world.fetchComponent(mapEnt, Map.class);
 
+
     if (e instanceof KeyPressedEvent) {
       KeyPressedEvent e1 = (KeyPressedEvent) e;
-      var position = world.fetchComponent(playerEnt, Position.class);
 
       switch (e1.key) {
         case A: {
@@ -65,6 +66,8 @@ public class Movement implements System {
       }
       //java.lang.System.out.println("Player Pos: " + position.xPos + "," + position.yPos);
     }
+    var view = world.fetchGlobalResource(MainViewResource.class);
+    view.mainView.setCenter(position.xPos*64, position.yPos*64);
   }
 
 

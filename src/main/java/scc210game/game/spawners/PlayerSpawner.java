@@ -28,7 +28,6 @@ public class PlayerSpawner implements Spawner {
 				.with(new Position(15, 106))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 				(Entity entity, RenderWindow window, World world) -> {
-
 					Texture t = new Texture();
 					try {
 						t.loadFromFile(Paths.get("./src/main/resources/textures/basalt.png"));
@@ -39,14 +38,11 @@ public class PlayerSpawner implements Spawner {
 						var position = world.fetchComponent(playerEnt, Position.class);
 
 						pl.setPosition(position.xPos*64, position.yPos*64);
-						//System.out.println("player: " + position.xPos + "," + position.yPos);
-						//pl.setPosition(position.xPos, position.yPos);
-						var view = world.fetchGlobalResource(MainViewResource.class);
 
+						var view = world.fetchGlobalResource(MainViewResource.class);
 						view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
 						window.draw(pl);
-
 
 					}
 					catch (IOException e) {
