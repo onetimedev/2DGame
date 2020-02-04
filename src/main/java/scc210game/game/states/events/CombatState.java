@@ -3,6 +3,8 @@ package scc210game.game.states.events;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
+import scc210game.engine.events.Event;
+import scc210game.engine.events.EventQueue;
 import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.Transition;
@@ -15,18 +17,37 @@ import java.time.Duration;
 public class CombatState extends InputHandlingState {
 
 
+
+
+
     @Override
     public void onStart(World world) {
+
         world.entityBuilder().with(new CombatPlayer(true)).build();
         world.entityBuilder().with(new CombatPlayer(false)).build();
 
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.5f, 0.0f, 0.1f, 0.1f, "fight", (Entity e, World w) -> {
 
+            class MoveEvent extends Event
+            {
+
+
+                public MoveEvent(Entity e, World w)
+                {
+                    UITransform pAttributes = w.fetchComponent(e, UITransform.class);
+
+                    pAttributes.xPos += 0.01f;
+                }
+
+
+            }
+
             var player = w.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+            /*
             var pAttributes = w.fetchComponent(player, UITransform.class);
 
-            var enemy = w.applyQuery(Query.builder().require(Enemy.class).build()).findFirst().get();
-            var eAttributes = w.fetchComponent(enemy, UITransform.class);
+            Entity enemy = w.applyQuery(Query.builder().require(Enemy.class).build()).findFirst().get();
+            UITransform eAttributes = w.fetchComponent(enemy, UITransform.class);
 
             pAttributes.xPos += 0.03f;
 
@@ -34,6 +55,15 @@ public class CombatState extends InputHandlingState {
             {
                 System.out.println("collided");
             }
+            */
+
+            int counter = 0;
+
+
+                var queue = new EventQueue();
+                var ev = queue.makeReader();
+                queue.listen(ev, MoveEvent.class);
+                queue.broadcastIn(new MoveEvent(player, w), Duration.ofSeconds(1));
 
 
 
