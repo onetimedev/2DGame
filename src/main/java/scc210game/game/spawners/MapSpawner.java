@@ -14,6 +14,7 @@ import scc210game.engine.render.ViewType;
 import scc210game.game.map.Player;
 
 import java.util.Set;
+import java.util.Vector;
 
 
 public class MapSpawner implements Spawner {
@@ -31,51 +32,38 @@ public class MapSpawner implements Spawner {
         Vector2f playerCoords = new Vector2f(position.xPos, position.yPos);
 
         // Number of tiles that can fit in windows X and Y
-        int tilesX = (int) Math.ceil(window.getView().getSize().x / 64.0);
-        int tilesY = (int) Math.ceil(window.getView().getSize().y / 64.0);
+        Vector2f mapSize = window.getView().getSize();
+        Vector2f origin = window.getView().getCenter();
         //System.out.println("X fits: " + tilesX + " Y fits: " + tilesY);
 
-        int tilesLeft = (int) Math.floor(tilesX / 2.0);  // Number of tiles left of player X coord
-        int startX = (int) (playerCoords.x - tilesLeft);  // First tile X coord to be rendered from
-        int tilesTop = (int) Math.floor(tilesY / 2.0);  // Number of tiles above player Y coord
-        int startY = (int) (playerCoords.y - tilesTop);  // First tile Y coord to be rendered from
+        int mapLeft = (int) (origin.x - (mapSize.x /2)) /64;
+        int mapRight = (int) (origin.x + (mapSize.x /2)) /64;
+        int mapTop = (int) (origin.y - (mapSize.y /2)) /64;
+        int mapBottom = (int) (origin.y + (mapSize.y /2)) /64;
 
-        if (startX < 0)
-            startX = 0;
-        else if (startX > m.getTileMaxX())
-            startX = m.getTileMaxX() - tilesX;
-        if (startY < 0)
-            startY = 0;
-        else if (startY > m.getTileMaxY())
-            startY = m.getTileMaxY() - tilesY;
-
-
-        int positionX = 0;  // Sprites X Position in window
-        int positionY = 0;  // Sprites Y Position in window
 
         // Goes through each X,Y coordinate around the player that can be rendered and
         // renders the tile at this X,Y coordinate
         //int tileCount = 0;
-        for (int y = 0; y < tilesY; y++) {
-          for (int x = 0; x < tilesX; x++) {
-            if (startX <= m.getTileMaxX() && startY <= m.getTileMaxY()) {  // Only render tile if its X,Y is valid
-              Sprite tile = new Sprite(m.getTile(startX, startY).getTexture());
-              tile.setOrigin(window.getView().getSize().x/2, window.getView().getSize().y/2);
-              tile.setPosition(positionX, positionY);
-              //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
-              window.draw(tile);
-              //tileCount++;
-            }
-            startX++;
-            positionX += 64;
-          }
-          startX = (int) (playerCoords.x - tilesLeft);
-          if(startX < 0)
-            startX = 0;
-          startY++;
+        for (int y = 0; y <  m.getTileMaxY(); y++) {
+          for (int x = 0; x < m.getTileMaxX(); x++) {
 
-          positionX = 0;
-          positionY += 64;
+            //System.out.println("Left: " + mapLeft);
+            //System.out.println("Right: " + mapRight);
+            //System.out.println("Top: " + mapTop);
+            //System.out.println("Bottom: " + mapBottom);
+
+            if(x < mapLeft || x > mapRight || y < mapTop || y > mapBottom)
+              continue;
+
+            Sprite tile = new Sprite(m.getTile(x, y).getTexture());
+            //tile.setOrigin(window.getView().getSize().x/2, window.getView().getSize().y/2);
+            tile.setPosition(x*64, y*64);
+            //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
+            window.draw(tile);
+            //tileCount++;
+            }
+
         }
       }));
     }

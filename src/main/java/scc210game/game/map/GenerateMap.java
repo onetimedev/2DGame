@@ -38,7 +38,7 @@ public class GenerateMap {
 			int cnt = 0;  // Count to get each tile value from tileValues
 			for(int y=0; y<mapSize.y; y++)
 				for (int x=0; x<mapSize.x; x++) {
-					System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
+					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
 					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().equals("enemy.png"))
 						possEnemyTiles.add(allTiles[x][y].getXYPos());

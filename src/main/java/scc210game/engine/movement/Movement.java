@@ -8,6 +8,7 @@ import scc210game.engine.events.EventQueue;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.state.event.KeyPressedEvent;
+import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 
 
@@ -33,7 +34,8 @@ public class Movement implements System {
 
   private void handleEvent(@Nonnull World world, Event e) {
     var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
-    var view = world.fetchGlobalResource(MainViewResource.class);
+    var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
+    var map = world.fetchComponent(mapEnt, Map.class);
 
     if (e instanceof KeyPressedEvent) {
       KeyPressedEvent e1 = (KeyPressedEvent) e;
@@ -41,19 +43,23 @@ public class Movement implements System {
 
       switch (e1.key) {
         case A: {
-          position.xPos -= 1;
+          if(!map.getTile(position.xPos-1, position.yPos).hasCollision())
+            position.xPos -= 1;
           break;
         }
         case S: {
-          position.yPos += 1;
+          if(!map.getTile(position.xPos, position.yPos+1).hasCollision())
+            position.yPos += 1;
           break;
         }
         case D: {
-          position.xPos += 1;
+          if(!map.getTile(position.xPos+1, position.yPos).hasCollision())
+            position.xPos += 1;
           break;
         }
         case W: {
-          position.yPos -= 1;
+          if(!map.getTile(position.xPos, position.yPos-1).hasCollision())
+            position.yPos -= 1;
           break;
         }
       }
