@@ -5,37 +5,38 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 public class WeaponGenerator{
-    public String[] material = new String[]{"Wooden", "Bronze", "Gold", "Steel"};
-    public String[] weapon = new String[]{"Staff", "Sword", "Axe"};
-
-    public String[] enchantment = new String[]{"Hellfire", "Frozen", "Alpha", "Fury"};
-    public String[] named = new String[]{"Lazarus", "Poseidon", "Excalibur", "Kusanagi"};
-    public String[] title = new String[]{"The Untamed", "The Cursed", "The Possessed", "The Hope",
+    private String[] material = new String[]{"Wooden", "Bronze", "Gold", "Steel"};
+    private String[] weapon = new String[]{"Staff", "Sword", "Axe"};
+    private String[] enchantment = new String[]{"Hellfire", "Frozen", "Alpha", "Fury"};
+    private String[] named = new String[]{"Lazarus", "Poseidon", "Excalibur", "Kusanagi"};
+    private String[] title = new String[]{"The Untamed", "The Cursed", "The Possessed", "The Hope",
             "The Enchanted", "The Unyielding", "The Blessed"};
-    public String[] element = new String[]{"Flames", "Water", "Earth"};
-
-    public int x;
-    public int y;
-    public int z;
+    private String[] element = new String[]{"Flames", "Water", "Earth", "Ice"};
+    private int x;
+    private int y;
+    private int z;
     public String randomised = new String();
-    Random r = new Random();
-    Texture t = new Texture();
+    public String weaponLore = new String();
+    public int damage;
+    private Random r = new Random();
+    public Texture t = new Texture();
+
 
     public WeaponGenerator(int level) throws IOException {
 
         createWeapon(level);
         generateSprite(randomised);
 
-
     }
 
-    public String CommonWeapon(int level){
+    private String CommonWeapon(int level){
 
         if (level <= 10){
             x = r.nextInt(material.length);
             y = r.nextInt(weapon.length);
             z = r.nextInt(element.length);
-            randomised = material[x] + " " + weapon[y] + " " + element[z];
+            //randomised = material[x] + " " + weapon[y] + " " + element[z];
+            randomised = material[1] + " " + weapon[1] + " " + element[1];
         }
         else if (level >= 11 && level <= 20){
             x = r.nextInt(enchantment.length);
@@ -50,11 +51,22 @@ public class WeaponGenerator{
         return randomised;
     }
 
-    public String rareWeapon(){
+    private String rareWeapon(){
         x = r.nextInt(named.length);
         y = r.nextInt(title.length);
         z = r.nextInt(element.length);
         return randomised = named[x] + " " + title[y] + " " + element[z];
+
+    }
+
+    private void createWeapon(int level){
+        CommonWeapon(level);
+
+    }
+
+    public String lore(String lore){
+        weaponLore = lore;
+        return weaponLore;
 
     }
 
@@ -96,6 +108,8 @@ public class WeaponGenerator{
                 if (name.contains("Wooden")){
 
                     t.loadFromFile(new File("src/Basic-Sword.png").toPath());
+                    damage = 10;
+
                 }
                 if (name.contains("Steel")){
 
@@ -278,13 +292,5 @@ public class WeaponGenerator{
 
     }
 
-    private void createWeapon(int level){
-        CommonWeapon(level);
-
-    }
-
-    public void lore(){
-
-    }
 
 }

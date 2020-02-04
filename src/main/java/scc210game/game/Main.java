@@ -20,6 +20,7 @@ import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.states.MainMenuState;
+import scc210game.items.Weapon;
 
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +75,9 @@ public class Main {
         }
 
         var screenSize = this.mainWindow.getSize();
+        Weapon w = new Weapon(1,1);
+        Weapon e = new Weapon(2,1);
+        System.out.println(w.itemsList);
 
         while (this.mainWindow.isOpen() && this.ecs.isRunning()) {
             this.tilesInWindow();

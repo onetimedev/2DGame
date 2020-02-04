@@ -1,28 +1,42 @@
 package scc210game.items;
 
-import scc210game.ecs.Entity;
-import scc210game.ecs.World;
-
+import org.jsfml.graphics.RectangleShape;
+import org.jsfml.graphics.RenderWindow;
+import org.jsfml.graphics.Text;
+import scc210game.engine.ecs.Entity;
+import scc210game.engine.ecs.Spawner;
+import scc210game.engine.ecs.System;
+import scc210game.engine.ecs.World;
 
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class Item extends ItemComponent {
 
-
-    public World world;
     public ArrayList<Entity> itemsList = new ArrayList<>();
+    private World world;
+
 
     public Item(int id, int level) {
         super(id, level);
 
-        itemsList.add(world.entityBuilder()
-                .with(new ItemComponent(id, level))
-                .build());
+
 
 
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

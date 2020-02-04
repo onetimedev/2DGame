@@ -6,19 +6,16 @@ import java.io.IOException;
 
 public class Weapon extends Item{
 
-    private int damage;
+
     private int level;
-    private String desc;
-    WeaponGenerator w;
+    private WeaponGenerator w;
 
 
-    public Weapon(int id, int level, int damage, String desc){
+    public Weapon(int id, int level){
 
         super(id, level);
 
 
-        this.damage = damage;
-        this.desc = desc;
 
     }
 
@@ -26,12 +23,9 @@ public class Weapon extends Item{
         return w.randomised;
     }
 
-    private void setDamage(int damage){
-        this.damage = damage;
-    }
 
     private int getDamage(){
-        return damage;
+        return w.damage;
     }
 
     public void setLevel(int level){
@@ -43,11 +37,8 @@ public class Weapon extends Item{
     }
 
     public String getDesc(){
-        return desc;
-    }
+        return w.weaponLore;
 
-    public void setDesc(String desc){
-        this.desc = desc;
     }
 
     public void getWeapon() throws IOException {

@@ -1,13 +1,9 @@
 package scc210game.items;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
-
-
 import org.jsfml.window.*;
 import org.jsfml.graphics.*;
 import org.jsfml.window.event.Event;
@@ -16,7 +12,6 @@ import org.jsfml.window.event.Event;
 public class Inventory {
 
     public ArrayList<Item> inventory = new ArrayList<Item>(5);
-    public CircleShape circle;
     public ArrayList<Square> squares = new ArrayList<>();
     protected RenderWindow window;
 
@@ -61,7 +56,7 @@ public class Inventory {
 
     public Item addItem(int id, int level, int damage, String desc) throws IOException {
 
-        Weapon newItem = new Weapon(id, level, damage, desc );
+        Weapon newItem = new Weapon(id, level);
         inventory.add(newItem);
         squares.get(inventory.indexOf(newItem)).setTexture(newItem.getTexture());
         return newItem;

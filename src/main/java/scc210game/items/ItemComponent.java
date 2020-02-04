@@ -1,13 +1,10 @@
 package scc210game.items;
 
-import scc210game.ecs.Component;
+import scc210game.engine.ecs.Component;
 
+public class ItemComponent extends Component {
 
-
-public class ItemComponent extends Component{
-
-
-    public int id;
+    private int id;
     private int level;
 
     public ItemComponent(int id, int level) {
