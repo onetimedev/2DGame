@@ -10,7 +10,6 @@ import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
-
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.movement.Movement;
 import scc210game.engine.render.MainViewResource;
@@ -44,6 +43,7 @@ public class Main {
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
                 //this.zoom(0.f);
             }});
+            this.put(ViewType.UI, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
         final var systems = List.of(
