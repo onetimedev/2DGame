@@ -2,10 +2,7 @@ package scc210game.engine.events;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * An event queue that allows events to be distributed to listeners.
@@ -19,13 +16,13 @@ public class EventQueue {
 
     private long lastReaderID = 0;
     @Nonnull
-    private final HashMap<EventQueueReader, ArrayDeque<Event>> queues;
+    private final Map<EventQueueReader, ArrayDeque<Event>> queues;
     @Nonnull
-    private final HashMap<Class<? extends Event>, HashSet<EventQueueReader>> registered;
+    private final Map<Class<? extends Event>, Set<EventQueueReader>> registered;
 
     public EventQueue() {
-        this.queues = new HashMap<>();
-        this.registered = new HashMap<>();
+        this.queues = new WeakHashMap<>();
+        this.registered = new WeakHashMap<>();
     }
 
     /**
@@ -47,7 +44,7 @@ public class EventQueue {
     public static void listen(EventQueueReader r, Class<? extends Event> on) {
         var instance = getInstance();
         instance.queues.computeIfAbsent(r, k -> new ArrayDeque<>());
-        instance.registered.computeIfAbsent(on, k -> new HashSet<>()).add(r);
+        instance.registered.computeIfAbsent(on, k -> Collections.newSetFromMap(new WeakHashMap<>())).add(r);
     }
 
     /**
@@ -58,7 +55,7 @@ public class EventQueue {
      */
     public static void unListen(EventQueueReader r, Class<? extends Event> on) {
         EventQueue instance = getInstance();
-        HashSet<EventQueueReader> set = instance.registered.get(on);
+        Set<EventQueueReader> set = instance.registered.get(on);
 
         if (set == null) {
             return;
@@ -83,7 +80,7 @@ public class EventQueue {
         Class<?> c = evt.getClass();
 
         while (c != null) {
-            HashSet<EventQueueReader> listeners = instance.registered.get(c);
+            Set<EventQueueReader> listeners = instance.registered.get(c);
 
             if (listeners != null) {
                 for (final EventQueueReader r : listeners) {

@@ -152,5 +152,8 @@ public class ECSTest {
         Position testPos = new Position(100, -100);
 
         assertEquals(testPos, Component.deserialize(testPos.serialize(), Position.class));
+
+        ecs.getCurrentWorld().removeEntity(s.e);
+        s.e = null;
     }
 }

@@ -25,23 +25,34 @@ public class World {
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;
         this.entities = new ArrayList<>();
-        this.entityComponents = new HashMap<>();
-        this.componentMaps = new HashMap<>();
-        this.resourceMap = new HashMap<>();
+        this.entityComponents = new WeakHashMap<>();
+        this.componentMaps = new WeakHashMap<>();
+        this.resourceMap = new WeakHashMap<>();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.entities.add(e);
 
-        HashSet<Class<? extends Component>> componentTypes = components.stream()
+        Set<Class<? extends Component>> componentTypes = components.stream()
                 .map(Component::getClass)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(() -> Collections.newSetFromMap(new WeakHashMap<>())));
 
         this.entityComponents.put(e, componentTypes);
 
         for (final Component component : components) {
             this.addComponentToEntity(e, component);
         }
+    }
+
+    /**
+     * Remove an entity from the World
+     * @param e the Entity to remove
+     */
+    public void removeEntity(Entity e) {
+        this.entities.remove(e);
+        // NOTE(ben): we don't need to remove anything from entityComponents, etc
+        // because they are weak key maps and so the entry is removed as soon as
+        // the Entity to be removed is deallocated
     }
 
     /**
