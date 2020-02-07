@@ -24,7 +24,7 @@ public class MainMenuState extends InputHandlingState {
     public Transition handleEvent(StateEvent evt, World world) {
         if (evt instanceof StartGameEvent) {
             // transition to the main game state
-            return new TransPush(new MainGameState());
+            return new TransPush(new BaseInGameState());
         }
 
         if (evt instanceof QuitGameEvent) {
