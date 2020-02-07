@@ -1,14 +1,10 @@
 package scc210game.engine.movement;
 
-<<<<<<< HEAD
 import scc210game.engine.ecs.ECS;
-=======
 import scc210game.engine.ecs.Query;
->>>>>>> 2c047a4... Fix crashing on pause, add new view for UI
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
 import scc210game.engine.events.Event;
-import scc210game.engine.events.EventQueue;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.state.event.KeyPressedEvent;

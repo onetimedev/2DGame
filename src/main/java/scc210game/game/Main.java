@@ -10,11 +10,7 @@ import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
-<<<<<<< HEAD
-
 import scc210game.engine.animation.AnimationUpdater;
-=======
->>>>>>> 2c047a4... Fix crashing on pause, add new view for UI
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Movement;
