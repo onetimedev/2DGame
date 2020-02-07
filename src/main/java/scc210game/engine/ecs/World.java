@@ -36,6 +36,10 @@ public class World {
         this.eventQueue = new EventQueue();
     }
 
+    public Stream<Component> componentsOfEntity(Entity e) {
+        return componentMaps.get(e).values().stream().map((meta) -> meta.component);
+    }
+
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.entities.add(e);
 
@@ -271,14 +275,14 @@ public class World {
         /**
          * Add a {@link Component} to the initial components of the entity
          *
-         * @param component the {@link Component} to add
+         * @param components the {@link Component}s to add
          * @return the current {@link EntityBuilder} instance (to allow chaining)
          */
         @Nonnull
-        public EntityBuilder with(Component component) {
+        public EntityBuilder with(Component... components) {
             assert !this.built : "EntityBuilder already built";
 
-            this.components.add(component);
+            this.components.addAll(Arrays.asList(components));
 
             return this;
         }
