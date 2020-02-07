@@ -29,7 +29,7 @@ public class DialogueSpawner implements Spawner {
         return builder
                 .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))
                 .with(new UIText(this.message))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var textContent = w.fetchComponent(e, UIText.class);
 
