@@ -1,5 +1,6 @@
 package scc210game.game.states;
 
+<<<<<<< HEAD
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
@@ -12,10 +13,16 @@ import scc210game.game.components.Health;
 import scc210game.game.components.Player;
 import scc210game.game.spawners.PlayerSpawner;
 import scc210game.game.spawners.ui.HealthBarSpawner;
+=======
+import scc210game.engine.ecs.World;
+import scc210game.game.spawners.MapSpawner;
+import scc210game.game.spawners.PlayerSpawner;
+>>>>>>> 2c047a4... Fix crashing on pause, add new view for UI
 
 public class MainGameState extends BaseInGameState {
 	@Override
 	public void onStart(World world) {
+<<<<<<< HEAD
 		world.entityBuilder().with(new DialogueSpawner("Test")).build();
 		world.entityBuilder().with(new DraggableBoxSpawner(0, 0, 0.1f, 0.1f)).build();
 		world.entityBuilder().with(new DroppableBoxSpawner(0.5f, 0.1f, 0.15f, 0.15f)).build();
@@ -30,5 +37,9 @@ public class MainGameState extends BaseInGameState {
 		})).build();
 		var player = world.entityBuilder().with(new PlayerSpawner()).build();
 		world.entityBuilder().with(new HealthBarSpawner(0.025f, 0.01f, 0.95f, 0.01f, player)).build();
+=======
+		world.entityBuilder().with(new MapSpawner()).build();
+		world.entityBuilder().with(new PlayerSpawner()).build();
+>>>>>>> 2c047a4... Fix crashing on pause, add new view for UI
 	}
 }

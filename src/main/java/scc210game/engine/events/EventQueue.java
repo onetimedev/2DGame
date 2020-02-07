@@ -14,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 public class EventQueue {
     private static long lastReaderID = 0;
     @Nonnull
-    private final HashMap<EventQueueReader, ArrayDeque<Event>> queues;
+    private final Map<EventQueueReader, ArrayDeque<Event>> queues;
     @Nonnull
     private final DelayQueue<DelayedEvent> delayedEvents;
 
     @Nonnull
-    private static final HashMap<Class<? extends Event>, HashSet<EventQueueReader>> registered = new HashMap<>();
+    private static final Map<Class<? extends Event>, Set<EventQueueReader>> registered = new HashMap<>();
     @Nonnull
     private static final Set<EventQueue> instances = Collections.newSetFromMap(
             new WeakHashMap<>());
@@ -59,7 +59,7 @@ public class EventQueue {
         for (var q: instances) {
             q.queues.computeIfAbsent(r, k -> new ArrayDeque<>());
         }
-        registered.computeIfAbsent(on, k -> new HashSet<>()).add(r);
+        registered.computeIfAbsent(on, k -> Collections.newSetFromMap(new WeakHashMap<>())).add(r);
     }
 
     /**
@@ -69,7 +69,7 @@ public class EventQueue {
      * @param on The type of event to stop listening on
      */
     public void unListen(EventQueueReader r, Class<? extends Event> on) {
-        HashSet<EventQueueReader> set = registered.get(on);
+        Set<EventQueueReader> set = registered.get(on);
 
         if (set == null) {
             return;
@@ -94,7 +94,7 @@ public class EventQueue {
         Class<?> c = evt.getClass();
 
         while (c != null) {
-            HashSet<EventQueueReader> listeners = registered.get(c);
+            Set<EventQueueReader> listeners = registered.get(c);
 
             if (listeners != null) {
                 for (final EventQueueReader r : listeners) {
