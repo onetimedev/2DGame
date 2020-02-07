@@ -51,9 +51,9 @@ public class HandleInteraction implements System {
             .require(UIClickable.class)
             .build();
 
-    public HandleInteraction() {
-        this.eventReader = EventQueue.makeReader();
-        EventQueue.listen(this.eventReader, InputEvent.class);
+    public HandleInteraction(ECS ecs) {
+        this.eventReader = ecs.eventQueue.makeReader();
+        ecs.eventQueue.listen(this.eventReader, InputEvent.class);
     }
 
     private Optional<Tuple2<Entity, UITransform>> getEntityAtPosition(float x, float y, @Nonnull World world, Query q) {
@@ -71,7 +71,7 @@ public class HandleInteraction implements System {
 
     @Override
     public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-        for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+        for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
             Event e = it.next();
             this.handleEvent(world, e);
         }
@@ -112,7 +112,7 @@ public class HandleInteraction implements System {
 
                 if (world.hasComponent(entAtClick.l, UIClickable.class)) {
                     Event evt = new EntityClickEvent(e1.x, e1.y, entAtClick.l);
-                    EventQueue.broadcast(evt);
+                    world.ecs.eventQueue.broadcast(evt);
                 }
             } else {
                 var entAtDropP = this.getEntityAtPosition(e1.x, e1.y, world, this.droppableUIEntityQuery, state.draggingEntityData.draggingEntity);
@@ -123,7 +123,7 @@ public class HandleInteraction implements System {
                             state.draggingEntityData.dragStartY,
                             state.draggingEntityData.lastXPosition - state.draggingEntityData.dragStartX,
                             state.draggingEntityData.lastYPosition - state.draggingEntityData.dragStartY);
-                    EventQueue.broadcast(evt);
+                    world.ecs.eventQueue.broadcast(evt);
                 } else {
                     var entAtDrop = entAtDropP.get();
                     Event evt = new EntityDroppedEvent(state.draggingEntityData.draggingEntity, entAtDrop.l,
@@ -131,7 +131,7 @@ public class HandleInteraction implements System {
                             state.draggingEntityData.dragStartY,
                             state.draggingEntityData.lastXPosition - state.draggingEntityData.dragStartX,
                             state.draggingEntityData.lastYPosition - state.draggingEntityData.dragStartY);
-                    EventQueue.broadcast(evt);
+                    world.ecs.eventQueue.broadcast(evt);
                 }
 
                 state.draggingEntityData = null;
@@ -152,10 +152,10 @@ public class HandleInteraction implements System {
                     // new hover or changed hovers
 
                     if (state.hoveringEntity != null) {
-                        EventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
+                        world.ecs.eventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
                     }
 
-                    EventQueue.broadcast(new EntityHoverStartEvent(entAtHover.l));
+                    world.ecs.eventQueue.broadcast(new EntityHoverStartEvent(entAtHover.l));
                 }
 
                 state.hoveringEntity = entAtHover.l;
@@ -163,7 +163,7 @@ public class HandleInteraction implements System {
                 // not hovering over anything, discard the old hover if there was one
 
                 if (state.hoveringEntity != null) {
-                    EventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
+                    world.ecs.eventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
                     state.hoveringEntity = null;
                 }
             }
@@ -171,7 +171,7 @@ public class HandleInteraction implements System {
             // now go on to handling dragged entities
 
             if (state.draggingEntityData != null) {
-                EventQueue.broadcast(new EntityDraggedEvent(
+                world.ecs.eventQueue.broadcast(new EntityDraggedEvent(
                         state.draggingEntityData.draggingEntity,
                         state.draggingEntityData.dragStartX,
                         state.draggingEntityData.dragStartY,

@@ -13,6 +13,7 @@ import org.jsfml.window.event.MouseEvent;
 
 import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
+import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Movement;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.RenderSystem;
@@ -27,6 +28,7 @@ import scc210game.game.states.MainMenuState;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 
 /**
@@ -47,14 +49,14 @@ public class Main {
             }});
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
-        final var systems = List.of(
-                new HandleInteraction(),
-                new HandleHovered(),
-                new HandleDragDrop(),
-                new HandleClicked(),
-                new AnimationUpdater(),
-                new Movement(),
-                new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
+        final List<Function<ECS, ? extends System>> systems = List.of(
+                HandleInteraction::new,
+                HandleHovered::new,
+                HandleDragDrop::new,
+                HandleClicked::new,
+                (ecs) -> new AnimationUpdater(),
+                Movement::new,
+                (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
         this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
