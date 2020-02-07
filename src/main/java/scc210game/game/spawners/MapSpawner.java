@@ -8,13 +8,12 @@ import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
-import scc210game.game.map.Map;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 
 import java.util.Set;
-import java.util.Vector;
 
 
 public class MapSpawner implements Spawner {
@@ -27,7 +26,7 @@ public class MapSpawner implements Spawner {
       (Entity entity, RenderWindow window, World world) -> {
         Map m = world.fetchComponent(entity, Map.class);
 
-        var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+        var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
         var position = world.fetchComponent(playerEnt, Position.class);
         Vector2f playerCoords = new Vector2f(position.xPos, position.yPos);
 

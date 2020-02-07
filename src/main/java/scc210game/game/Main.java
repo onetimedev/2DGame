@@ -47,6 +47,7 @@ public class Main {
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
                 //this.zoom(0.f);
             }});
+            this.put(ViewType.UI, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
         final List<Function<ECS, ? extends System>> systems = List.of(

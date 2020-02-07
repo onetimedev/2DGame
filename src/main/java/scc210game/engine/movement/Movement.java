@@ -1,17 +1,15 @@
 package scc210game.engine.movement;
 
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
-import scc210game.engine.ecs.Query;
 import scc210game.engine.events.Event;
-import scc210game.engine.events.EventQueue;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
-
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
@@ -34,9 +32,18 @@ public class Movement implements System {
   }
 
   private void handleEvent(@Nonnull World world, Event e) {
-    var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().get();
+    var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
+    if (!playerEntO.isPresent())
+      return;
+    var playerEnt = playerEntO.get();
+
     var position = world.fetchComponent(playerEnt, Position.class);
-    var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
+
+    var mapEntO = world.applyQuery(Query.builder().require(Map.class).build()).findFirst();
+    if (!mapEntO.isPresent())
+      return;
+    var mapEnt = mapEntO.get();
+
     var map = world.fetchComponent(mapEnt, Map.class);
 
 
