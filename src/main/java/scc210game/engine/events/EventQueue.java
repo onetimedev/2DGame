@@ -1,41 +1,52 @@
 package scc210game.engine.events;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An event queue that allows events to be distributed to listeners.
- * <p>
- * This is a singleton class, use like: `EventQueue.listen`, etc.
  */
 public class EventQueue {
-    @Nullable
-    private static EventQueue instance = null;
-
-
-    private long lastReaderID = 0;
+    private static long lastReaderID = 0;
     @Nonnull
     private final HashMap<EventQueueReader, ArrayDeque<Event>> queues;
     @Nonnull
-    private final HashMap<Class<? extends Event>, HashSet<EventQueueReader>> registered;
+    private final DelayQueue<DelayedEvent> delayedEvents;
+
+    @Nonnull
+    private static final HashMap<Class<? extends Event>, HashSet<EventQueueReader>> registered = new HashMap<>();
+    @Nonnull
+    private static final Set<EventQueue> instances = Collections.newSetFromMap(
+            new WeakHashMap<>());
 
     public EventQueue() {
-        this.queues = new HashMap<>();
-        this.registered = new HashMap<>();
+        this.queues = new HashMap<>() {{
+            registered.forEach((k, v) -> {
+                v.forEach((r) -> {
+                    listen(r, k);
+                });
+            });
+        }};
+        this.delayedEvents = new DelayQueue<>();
+        instances.add(this);
     }
 
     /**
      * Get an event queue reader that can be used to register
      * listeners and collect fired events
      *
+     * NOTE: event queue readers are usable on all instances of EventQueue
+     * such that registering a reader on one event queue makes it usable on any other event queue
+     *
      * @return a new {@link EventQueueReader}
      */
-    public static EventQueueReader makeReader() {
-        return new EventQueueReader(getInstance().lastReaderID++);
+    public EventQueueReader makeReader() {
+        return new EventQueueReader(lastReaderID++);
     }
 
     /**
@@ -44,10 +55,11 @@ public class EventQueue {
      * @param r  The {@link EventQueueReader} that is listening
      * @param on The type of {@link Event} to listen on
      */
-    public static void listen(EventQueueReader r, Class<? extends Event> on) {
-        var instance = getInstance();
-        instance.queues.computeIfAbsent(r, k -> new ArrayDeque<>());
-        instance.registered.computeIfAbsent(on, k -> new HashSet<>()).add(r);
+    public void listen(EventQueueReader r, Class<? extends Event> on) {
+        for (var q: instances) {
+            q.queues.computeIfAbsent(r, k -> new ArrayDeque<>());
+        }
+        registered.computeIfAbsent(on, k -> new HashSet<>()).add(r);
     }
 
     /**
@@ -56,9 +68,8 @@ public class EventQueue {
      * @param r  The {@link EventQueueReader} that is listening
      * @param on The type of event to stop listening on
      */
-    public static void unListen(EventQueueReader r, Class<? extends Event> on) {
-        EventQueue instance = getInstance();
-        HashSet<EventQueueReader> set = instance.registered.get(on);
+    public void unListen(EventQueueReader r, Class<? extends Event> on) {
+        HashSet<EventQueueReader> set = registered.get(on);
 
         if (set == null) {
             return;
@@ -67,8 +78,10 @@ public class EventQueue {
         set.remove(r);
 
         if (set.isEmpty()) {
-            instance.queues.remove(r);
-            instance.registered.remove(on);
+            for (var q: instances) {
+                q.queues.remove(r);
+            }
+            registered.remove(on);
         }
     }
 
@@ -77,21 +90,52 @@ public class EventQueue {
      *
      * @param evt The event to broadcast
      */
-    public static void broadcast(@Nonnull Event evt) {
-        var instance = getInstance();
-
+    public void broadcast(@Nonnull Event evt) {
         Class<?> c = evt.getClass();
 
         while (c != null) {
-            HashSet<EventQueueReader> listeners = instance.registered.get(c);
+            HashSet<EventQueueReader> listeners = registered.get(c);
 
             if (listeners != null) {
                 for (final EventQueueReader r : listeners) {
-                    instance.queues.get(r).add(evt);
+                    this.queues.get(r).add(evt);
                 }
             }
 
             c = c.getSuperclass();
+        }
+    }
+
+    /**
+     * Broadcast an event to all listeners at the specified Instant.
+     *
+     * @param evt The event to broadcast
+     * @param ins When to broadcast the event
+     */
+    public void broadcastAt(@Nonnull Event evt, @Nonnull Instant ins) {
+        this.delayedEvents.add(new DelayedEvent(evt, ins));
+    }
+
+    /**
+     * Broadcast an event to all listeners after the specified Duration.
+     *
+     * @param evt The event to broadcast
+     * @param delay How long to wait before broadcasting the event
+     */
+    public void broadcastIn(@Nonnull Event evt, @Nonnull Duration delay) {
+        broadcastAt(evt, Instant.now().plus(delay));
+    }
+
+    private void updateDelayedEvents() {
+        DelayedEvent evt;
+        while ((evt = this.delayedEvents.poll()) != null) {
+            broadcast(evt.e);
+        }
+    }
+
+    public void patchDelayDelta(Duration td) {
+        for (var evt: this.delayedEvents) {
+            evt.end = evt.end.plus(td);
         }
     }
 
@@ -102,27 +146,43 @@ public class EventQueue {
      * @return An iterator of events for this entity
      */
     @Nonnull
-    public static Iterator<Event> getEventsFor(EventQueueReader r) {
-        var q = getInstance().queues.get(r);
+    public Iterator<Event> getEventsFor(EventQueueReader r) {
+        var q = this.queues.get(r);
 
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
+                updateDelayedEvents();
                 return !q.isEmpty();
             }
 
             @Override
             public Event next() {
+                updateDelayedEvents();
                 return q.poll();
             }
         };
     }
 
-    @Nonnull
-    private static EventQueue getInstance() {
-        if (EventQueue.instance == null)
-            EventQueue.instance = new EventQueue();
+    private static class DelayedEvent implements Delayed {
+        public final Event e;
+        public Instant end;
 
-        return EventQueue.instance;
+
+        private DelayedEvent(Event e, Instant end) {
+            this.e = e;
+            this.end = end;
+        }
+
+        @Override
+        public long getDelay(TimeUnit unit) {
+            return Instant.now().until(this.end, unit.toChronoUnit());
+        }
+
+        @Override
+        public int compareTo(@Nonnull Delayed o) {
+            var de = (DelayedEvent) o;
+            return this.end.compareTo(de.end);
+        }
     }
 }

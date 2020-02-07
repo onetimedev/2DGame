@@ -1,6 +1,8 @@
 package scc210game.engine.ecs;
 
 
+import scc210game.engine.events.EventQueue;
+
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Supplier;
@@ -19,8 +21,11 @@ public class World {
     private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
+
     @Nonnull
     public final ECS ecs;
+    @Nonnull
+    public final EventQueue eventQueue;
 
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;
@@ -28,6 +33,7 @@ public class World {
         this.entityComponents = new HashMap<>();
         this.componentMaps = new HashMap<>();
         this.resourceMap = new HashMap<>();
+        this.eventQueue = new EventQueue();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
