@@ -10,6 +10,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.engine.utils.MapHelper;
 import scc210game.game.map.Enemy;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
@@ -23,7 +24,6 @@ public class EnemySpawner implements Spawner {
   private int xSpawn;
   private int ySpawn;
   private Texture enemyTexture = new Texture();
-  private String assetsPath = "./src/main/resources/textures/";
 
 
   public EnemySpawner(Tile t) {
@@ -33,36 +33,27 @@ public class EnemySpawner implements Spawner {
     setTexture(t.getTextureName());
   }
 
-  //TODO: Move this method / its other occurrences in Boss Spawner to a helper class
-  public void loadTexture(String fileName) {
-    try {
-      enemyTexture.loadFromFile(Paths.get(assetsPath, fileName));
-    }
-    catch(IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   public void setTexture(String type) {
     switch (type) {
       case "enemy_basalt.png": {
         enemyTile.setHasCollision(true);
-        loadTexture("fireEnemy.png");
+        enemyTexture = MapHelper.loadTexture("fireEnemy.png");
         break;
       }
       case "enemy_sand.png": {
         enemyTile.setHasCollision(true);
-        loadTexture("waterEnemy.png");
+        enemyTexture = MapHelper.loadTexture("waterEnemy.png");
         break;
       }
       case "enemy_grass.png": {
         enemyTile.setHasCollision(true);
-        loadTexture("grassEnemy.png");
+        enemyTexture = MapHelper.loadTexture("grassEnemy.png");
         break;
       }
       case "enemy_snow": {
         enemyTile.setHasCollision(true);
-        loadTexture("enemy.png");
+        enemyTexture = MapHelper.loadTexture("enemy.png");
         break;
       }
     }

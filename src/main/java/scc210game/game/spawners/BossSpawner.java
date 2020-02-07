@@ -10,6 +10,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.engine.utils.MapHelper;
 import scc210game.game.map.Boss;
 import scc210game.game.map.Enemy;
 
@@ -19,45 +20,37 @@ import java.util.Set;
 
 public class BossSpawner implements Spawner {
 	private Texture bossTexture = new Texture();
-	private String assetsPath = "./src/main/resources/textures/";
 	private int bossNum;
 	private Vector2i[] bossCoords;
 
 	/*
-	Grass = 0, Water = 1, Fire = 2, Ice = 3
+		Create the boss texture based on coordinates and boss number.
+		Grass = 0, Water = 1, Fire = 2, Ice = 3
 	*/
 	public BossSpawner(Vector2i[] bc, int bn) {
 		bossCoords = bc;
 		bossNum = bn;
 		switch(bossNum) {
 			case 0: {
-				loadTexture("boss_grass.png");
+				bossTexture = MapHelper.loadTexture("boss_grass.png");
 				break;
 			}
 			case 1: {
-				loadTexture("boss_water.png");
+				bossTexture = MapHelper.loadTexture("boss_water.png");
 				break;
 			}
 			case 2: {
-				loadTexture("boss_fire.png");
+				bossTexture = MapHelper.loadTexture("boss_fire.png");
 				break;
 			}
 			case 3: {
-				loadTexture("boss_snow.png");
+				bossTexture = MapHelper.loadTexture("boss_snow.png");
 				break;
 			}
 		}
 	}
 
 
-	public void loadTexture(String fileName) {
-		try {
-			bossTexture.loadFromFile(Paths.get(assetsPath, fileName));
-		}
-		catch(IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 
 	@Override

@@ -218,12 +218,11 @@ public class GenerateMap {
 	}
 
 
-	/* TL-TR-BL-BR
-	Grass: (8,65), (9,65), (8,66), (9,66)
-	Water: (25,23), (26,23), (25,24), (26,24)
-	Fire: (107,5), (108,5), (107,6), (108,6)
-	Ice: (101,100), (102,100), (101,101), (102,101)
-	*/
+	/**
+	 * 	Method that stores the boss enemy coordinates and returns them in an ArrayList
+	 * 	0 = grass, 1 = water, 2 = fire, 3 = ice
+	 * @return
+	 */
 	public ArrayList<Vector2i[]> getBossCoords() {
 		Vector2i[] grassBoss = new Vector2i[4];
 		grassBoss[0] = new Vector2i(8,65);
@@ -243,21 +242,23 @@ public class GenerateMap {
 		fireBoss[2] = new Vector2i(107,6);
 		fireBoss[3] = new Vector2i(108,6);
 
-		Vector2i[] iceBoss = new Vector2i[4];
-		iceBoss[0] = new Vector2i(101,100);
-		iceBoss[1] = new Vector2i(102,100);
-		iceBoss[2] = new Vector2i(101,101);
-		iceBoss[3] = new Vector2i(102,101);
+		Vector2i[] snowBoss = new Vector2i[4];
+		snowBoss[0] = new Vector2i(101,100);
+		snowBoss[1] = new Vector2i(102,100);
+		snowBoss[2] = new Vector2i(101,101);
+		snowBoss[3] = new Vector2i(102,101);
 
 		ArrayList<Vector2i[]> allBossCoords = new ArrayList<>();
 		allBossCoords.add(grassBoss);
 		allBossCoords.add(waterBoss);
 		allBossCoords.add(fireBoss);
-		allBossCoords.add(iceBoss);
+		allBossCoords.add(snowBoss);
 
 
-		// TODO: Take the 128 texture and split it among the four tiles
-
+		/*
+		* Looping through all boss coordinates and assigning the tile textures below the bosses to the
+		* correct biome.
+		*/
 		for(int i=0; i< allBossCoords.size(); i++) {
 			for (int j = 0; j < allBossCoords.get(i).length; j++) {
 				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasCollision(true);
@@ -287,6 +288,7 @@ public class GenerateMap {
 	}
 
 
+	//TODO
 	//private void addFinalBoss() {
 
 	//}
