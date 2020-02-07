@@ -4,7 +4,6 @@ import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.Event;
@@ -12,6 +11,7 @@ import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
 
+import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Movement;
@@ -54,7 +54,8 @@ public class Main {
                 HandleHovered::new,
                 HandleDragDrop::new,
                 HandleClicked::new,
-                (ecs) -> new Movement(),
+                (ecs) -> new AnimationUpdater(),
+                Movement::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());

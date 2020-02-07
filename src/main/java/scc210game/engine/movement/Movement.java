@@ -1,5 +1,6 @@
 package scc210game.engine.movement;
 
+import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ecs.Query;
@@ -19,14 +20,14 @@ import java.util.Iterator;
 public class Movement implements System {
   private final EventQueueReader eventReader;
 
-  public Movement() {
-    this.eventReader = EventQueue.makeReader();
-    EventQueue.listen(this.eventReader, KeyPressedEvent.class);
+  public Movement(ECS ecs) {
+    this.eventReader = ecs.eventQueue.makeReader();
+    ecs.eventQueue.listen(this.eventReader, KeyPressedEvent.class);
   }
 
   @Override
   public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-    for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+    for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
       Event e = it.next();
       this.handleEvent(world, e);
     }
