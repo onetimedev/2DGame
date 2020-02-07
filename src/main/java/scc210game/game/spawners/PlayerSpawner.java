@@ -19,8 +19,6 @@ import java.util.Set;
 
 
 public class PlayerSpawner implements Spawner {
-
-
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder) {
 		return builder
@@ -48,9 +46,6 @@ public class PlayerSpawner implements Spawner {
 					catch (IOException e) {
 						throw new RuntimeException();
 					}
-
-
-
 				}));
 
 	}

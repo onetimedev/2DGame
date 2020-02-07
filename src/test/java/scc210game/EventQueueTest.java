@@ -26,33 +26,35 @@ public class EventQueueTest {
             String msg = "event1";
         }
 
-        var r0 = EventQueue.makeReader();
-        var r1 = EventQueue.makeReader();
+        var queue = new EventQueue();
 
-        EventQueue.listen(r0, Event0.class);
-        EventQueue.listen(r0, Event1.class);
+        var r0 = queue.makeReader();
+        var r1 = queue.makeReader();
 
-        EventQueue.listen(r1, Event0.class);
+        queue.listen(r0, Event0.class);
+        queue.listen(r0, Event1.class);
 
-        EventQueue.broadcast(new Event0());
-        EventQueue.broadcast(new Event1());
+        queue.listen(r1, Event0.class);
+
+        queue.broadcast(new Event0());
+        queue.broadcast(new Event1());
 
         ArrayList<Event> ent0Events = StreamSupport.stream(
-                ((Iterable<Event>) () -> EventQueue.getEventsFor(r0)).spliterator(), false)
+                ((Iterable<Event>) () -> queue.getEventsFor(r0)).spliterator(), false)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         ArrayList<Event> ent1Events = StreamSupport.stream(
-                ((Iterable<Event>) () -> EventQueue.getEventsFor(r1)).spliterator(), false)
+                ((Iterable<Event>) () -> queue.getEventsFor(r1)).spliterator(), false)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         assertEquals(ent0Events.size(), 2);
         assertEquals(ent1Events.size(), 1);
 
-        EventQueue.unListen(r0, Event0.class);
-        EventQueue.broadcast(new Event0());
+        queue.unListen(r0, Event0.class);
+        queue.broadcast(new Event0());
 
         ArrayList<Event> ent0Events1 = StreamSupport.stream(
-                ((Iterable<Event>) () -> EventQueue.getEventsFor(r0)).spliterator(), false)
+                ((Iterable<Event>) () -> queue.getEventsFor(r0)).spliterator(), false)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         assertEquals(ent0Events1.size(), 0);
