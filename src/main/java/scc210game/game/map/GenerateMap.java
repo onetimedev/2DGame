@@ -1,5 +1,6 @@
 package scc210game.game.map;
 
+import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
 import com.github.cliftonlabs.json_simple.*;
 import java.io.FileNotFoundException;
@@ -215,6 +216,83 @@ public class GenerateMap {
 	public Vector2i[] getEnemyTiles() {
 		return enemyTiles;
 	}
+
+
+	/* TL-TR-BL-BR
+	Grass: (8,65), (9,65), (8,66), (9,66)
+	Water: (25,23), (26,23), (25,24), (26,24)
+	Fire: (107,5), (108,5), (107,6), (108,6)
+	Ice: (101,100), (102,100), (101,101), (102,101)
+	*/
+	public ArrayList<Vector2i[]> getBossCoords() {
+		Vector2i[] grassBoss = new Vector2i[4];
+		grassBoss[0] = new Vector2i(8,65);
+		grassBoss[1] = new Vector2i(9,65);
+		grassBoss[2] = new Vector2i(8,66);
+		grassBoss[3] = new Vector2i(9,66);
+
+		Vector2i[] waterBoss = new Vector2i[4];
+		waterBoss[0] = new Vector2i(25,23);
+		waterBoss[1] = new Vector2i(26,23);
+		waterBoss[2] = new Vector2i(25,24);
+		waterBoss[3] = new Vector2i(26,24);
+
+		Vector2i[] fireBoss = new Vector2i[4];
+		fireBoss[0] = new Vector2i(107,5);
+		fireBoss[1] = new Vector2i(108,5);
+		fireBoss[2] = new Vector2i(107,6);
+		fireBoss[3] = new Vector2i(108,6);
+
+		Vector2i[] iceBoss = new Vector2i[4];
+		iceBoss[0] = new Vector2i(101,100);
+		iceBoss[1] = new Vector2i(102,100);
+		iceBoss[2] = new Vector2i(101,101);
+		iceBoss[3] = new Vector2i(102,101);
+
+		ArrayList<Vector2i[]> allBossCoords = new ArrayList<>();
+		allBossCoords.add(grassBoss);
+		allBossCoords.add(waterBoss);
+		allBossCoords.add(fireBoss);
+		allBossCoords.add(iceBoss);
+
+
+		// TODO: Take the 128 texture and split it among the four tiles
+
+		for(int i=0; i< allBossCoords.size(); i++) {
+			for (int j = 0; j < allBossCoords.get(i).length; j++) {
+				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasCollision(true);
+				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasEnemy(true);
+				switch (i) {
+					case 0: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass2.png");
+						break;
+					}
+					case 1: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("sand.png");
+						break;
+					}
+					case 2: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("light_basalt.png");
+						break;
+					}
+					case 3: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
+						break;
+					}
+				}
+			}
+		}
+
+		return allBossCoords;
+	}
+
+
+	//private void addFinalBoss() {
+
+	//}
+
+
+
 
 	/*
 		Method to assign the spawn points of enemies on the map based on other spawn points and

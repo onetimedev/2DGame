@@ -13,6 +13,7 @@ import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
+import scc210game.game.spawners.BossSpawner;
 import scc210game.game.spawners.EnemySpawner;
 import scc210game.game.spawners.MapSpawner;
 import scc210game.game.spawners.PlayerSpawner;
@@ -35,13 +36,20 @@ public class BaseInGameState extends InputHandlingState {
         var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
         var map = world.fetchComponent(mapEnt, Map.class);
 
-        System.out.println("Before FOR");
+
 
         for(Tile tile : map.getEnemyTiles()) {
             world.entityBuilder().with(new EnemySpawner(tile)).build();
         }
 
-        System.out.println("Made it out");
+        int count = 0;
+        for(Vector2i[] v : map.getBossCoords()) {
+            world.entityBuilder().with(new BossSpawner(v, count)).build();
+            count++;
+        }
+
+        //TODO: Add spawning for Bosses
+
 
     }
 

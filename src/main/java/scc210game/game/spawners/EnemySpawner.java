@@ -33,6 +33,7 @@ public class EnemySpawner implements Spawner {
     setTexture(t.getTextureName());
   }
 
+  //TODO: Move this method / its other occurrences in Boss Spawner to a helper class
   public void loadTexture(String fileName) {
     try {
       enemyTexture.loadFromFile(Paths.get(assetsPath, fileName));
