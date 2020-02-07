@@ -1,7 +1,6 @@
 package scc210game.engine.state;
 
 import scc210game.engine.ecs.World;
-import scc210game.engine.events.EventQueue;
 import scc210game.engine.state.event.InputEvent;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransNop;
@@ -14,7 +13,7 @@ public class InputHandlingState extends State {
     @Override
     public Transition handleEvent(StateEvent evt, World world) {
         if (evt instanceof InputEvent) {
-            EventQueue.broadcast(evt);
+            world.ecs.eventQueue.broadcast(evt);
         }
 
         return TransNop.getInstance();

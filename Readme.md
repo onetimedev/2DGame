@@ -260,11 +260,15 @@ It receives user input events from JSFML and turns them into events that target
 specific entities, such as clicking an entity, dragging an entity, and hovering
 over an entity.
 
-First it creates a listener on the event queue:
+In the game engine, there are several event queue instances.
+The global event queue (`ecs.eventQueue`),
+and an event queue that is local to each world (`world.eventQueue`)
+
+First it creates a listener on an instance of event queue:
 
 ```java
-this.eventReader = EventQueue.makeReader();
-EventQueue.listen(this.eventReader, StateEvent.class);
+this.eventReader = world.ecs.eventQueue.makeReader();
+world.ecs.eventQueue.listen(this.eventReader, StateEvent.class);
 ```
 
 This creates an Event Queue Reader object, and then using `EventQueue.listen`
@@ -274,7 +278,7 @@ instances of the `StateEvent` class.
 To then loop over all the `StateEvent`s the following code is used:
 
 ```java
-for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
     Event e = it.next();
     this.handleEvent(world, e);
 }
