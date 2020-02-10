@@ -10,9 +10,9 @@ import java.util.function.BiConsumer;
  * Component that flags entities that can be clicked
  */
 public class UIClickable extends Component {
-    static {
-        register(UIClickable.class, s -> new UIInteractive());
-    }
+//    static {
+//        register(UIClickable.class, s -> new UIClickable());
+//    }
 
     /**
      * The function to call to accept this entity being clicked

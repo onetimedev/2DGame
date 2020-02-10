@@ -17,9 +17,25 @@ import java.util.stream.Stream;
 
 public class Inventory extends Component {
     public final int slotCount;
-    private final Map<Integer, Entity> items;
-    private final Map<Entity, Integer> itemSlots;
+
+    /**
+     * map of item id to item entity
+     */
+    private final Map<Integer, Entity> itemIDEntities;
+
+    /**
+     * map of item entity to slot id
+     */
+    private final Map<Entity, Integer> itemEntSlotID;
+
+    /**
+     * map of slot id to slot
+     */
     private final Map<Integer, Slot> slots;
+
+    /**
+     * set of slots not currently occupied
+     */
     private final SortedSet<Integer> freeSlots;
 
     public Inventory(int slotCount) {
@@ -28,8 +44,8 @@ public class Inventory extends Component {
                 .boxed()
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        this.items = new HashMap<>();
-        this.itemSlots = new HashMap<>();
+        this.itemIDEntities = new HashMap<>();
+        this.itemEntSlotID = new HashMap<>();
 
         this.slots = IntStream.range(0, slotCount)
                 .boxed()
@@ -51,8 +67,8 @@ public class Inventory extends Component {
         this.freeSlots.remove(slotID);
 
         this.slots.get(slotID).itemID = i.itemID;
-        this.items.put(i.itemID, e);
-        this.itemSlots.put(e, slotID);
+        this.itemIDEntities.put(i.itemID, e);
+        this.itemEntSlotID.put(e, slotID);
 
         return true;
     }
@@ -63,7 +79,7 @@ public class Inventory extends Component {
      * @return null if the item isn't in a slot of this inventory, the slot id if it is
      */
     @Nullable public Integer getItemSlot(Entity e) {
-        return this.itemSlots.get(e);
+        return this.itemEntSlotID.get(e);
     }
 
     /**
@@ -79,9 +95,9 @@ public class Inventory extends Component {
             return false;
 
         this.freeSlots.remove(slot.slotID);
-        this.items.put(i.itemID, e);
+        this.itemIDEntities.put(i.itemID, e);
         slot.itemID = i.itemID;
-        this.itemSlots.put(e, slot.slotID);
+        this.itemEntSlotID.put(e, slot.slotID);
 
         return true;
     }
@@ -93,16 +109,35 @@ public class Inventory extends Component {
      * @return true if the item was removed, false if the item wasn't in this inventory
      */
     public boolean removeItem(Entity e, Item i) {
-        if (!this.items.containsKey(i.itemID))
+        if (!this.itemIDEntities.containsKey(i.itemID))
             return false;
 
-        this.items.remove(i.itemID);
-        var slotID = this.itemSlots.get(e);
+        this.itemIDEntities.remove(i.itemID);
+        var slotID = this.itemEntSlotID.get(e);
         this.slots.get(slotID).itemID = null;
         this.freeSlots.add(slotID);
-        this.itemSlots.remove(e);
+        this.itemEntSlotID.remove(e);
 
         return true;
+    }
+
+    /**
+     * Test if a slot contains an item
+     * @param slotID the slot id to test
+     * @return true if the slot is full, false otherwise
+     */
+    public boolean slotFull(Integer slotID) {
+        return this.slots.get(slotID).itemID != null;
+    }
+
+    /**
+     * Get the item entity from a slot
+     * @param slotID the slotID to get the entity from
+     * @return the Entity representing the item in the slot
+     */
+    public Entity getSlotEntity(Integer slotID) {
+        var slot = this.slots.get(slotID);
+        return this.itemIDEntities.get(slot.itemID);
     }
 
     /**
@@ -113,7 +148,7 @@ public class Inventory extends Component {
         return this.slots.values()
                 .stream()
                 .filter(i -> i.itemID != null)
-                .map(i -> new Tuple2<>(i.slotID, this.items.get(i.itemID)));
+                .map(i -> new Tuple2<>(i.slotID, this.itemIDEntities.get(i.itemID)));
     }
 
     @Override

@@ -50,7 +50,7 @@ public class MapSpawner implements Spawner {
 
             Sprite tile = new Sprite(m.getTile(x, y).getTexture());
             tile.setPosition(x*64, y*64);
-            //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
+            //System.out.println("["+ tileCount + "] " + "TextureStorage: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
             window.draw(tile);
             //tileCount++;
             }

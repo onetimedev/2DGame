@@ -52,7 +52,7 @@ Look at the existing test cases for examples.
 - Component (`scc210game.engine.ecs.Component`) :: A piece of data that is associated
   with an Entity, such as: Position, `scc210game.engine.render.Renderable`. Empty
   Components may also be used to add flags to entities, such as:
-  `scc210game.engine.ui.components.UIInteractive`. Flag components may be added at game startup, or
+  `scc210game.engine.ui.components.UIHovered`. Flag components may be added at game startup, or
   may be added/removed dynamically by other systems.
 - Resource (`scc210game.engine.ecs.Resource`) :: Similar to a component, but has no
   associated Entity.

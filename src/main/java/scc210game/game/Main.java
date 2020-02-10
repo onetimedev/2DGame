@@ -10,7 +10,6 @@ import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
-
 import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
@@ -24,7 +23,7 @@ import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.states.MainMenuState;
-import scc210game.items.Weapon;
+import scc210game.game.systems.ItemMoveHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +57,7 @@ public class Main {
                 HandleClicked::new,
                 (ecs) -> new AnimationUpdater(),
                 Movement::new,
+                ItemMoveHandler::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
@@ -86,9 +86,6 @@ public class Main {
         }
 
         var screenSize = this.mainWindow.getSize();
-        Weapon w = new Weapon(1,1);
-        Weapon e = new Weapon(2,1);
-        System.out.println(w.itemsList);
 
         while (this.mainWindow.isOpen() && this.ecs.isRunning()) {
             this.mainWindow.clear(Color.BLACK);
