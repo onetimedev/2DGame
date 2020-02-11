@@ -27,6 +27,10 @@ public class MainGameState extends BaseInGameState {
 			world.entityBuilder().with(new EnemySpawner(tile)).build();
 		}
 
+		for(Tile tile : map.getNPCTiles()) {
+			world.entityBuilder().with(new NPCSpawner(tile)).build();
+		}
+
 		int count = 0;
 		for(Vector2i[] v : map.getBossCoords()) {
 			world.entityBuilder().with(new BossSpawner(v, count)).build();

@@ -15,7 +15,9 @@ public class GenerateMap {
 	private Tile[][] allTiles;
 	private Vector2i mapSize;
 	private ArrayList<Vector2i> possEnemyTiles = new ArrayList<>();
+	private ArrayList<Vector2i> possNPCTiles = new ArrayList<>();
 	private Vector2i[] enemyTiles;
+	private Vector2i[] npcTiles;
 	private ArrayList<Tile> chestTiles = new ArrayList<>();
 
 
@@ -25,6 +27,7 @@ public class GenerateMap {
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
 		addEnemies();
+		addNPCs();
 	}
 
 
@@ -44,9 +47,15 @@ public class GenerateMap {
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
 					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().contains("enemy_"))
 						possEnemyTiles.add(allTiles[x][y].getXYPos());
+
+					if(allTiles[x][y].getTextureName().contains("story.png"))
+						possNPCTiles.add(allTiles[x][y].getXYPos());
+
 					if(allTiles[x][y].canHaveChest() && allTiles[x][y].getTextureName().equals("chest.png"))
 						chestTiles.add(allTiles[x][y]);
+
 					cnt++;
+
 				}
 
 		}
@@ -220,6 +229,10 @@ public class GenerateMap {
 		return enemyTiles;
 	}
 
+	public Vector2i[] getNPCTiles() {
+		return npcTiles;
+	}
+
 
 	/**
 	 * 	Method that stores the boss enemy coordinates and returns them in an ArrayList
@@ -328,6 +341,16 @@ public class GenerateMap {
 
 		enemyTiles = new Vector2i[tempList.size()];
 		enemyTiles = tempList.toArray(enemyTiles);
+	}
+
+	private void addNPCs() {
+		ArrayList<Vector2i> npcList = new ArrayList<>();
+
+		npcList.addAll(possNPCTiles);
+
+		npcTiles = new Vector2i[npcList.size()];
+		npcTiles = npcList.toArray(npcTiles);
+
 	}
 
 

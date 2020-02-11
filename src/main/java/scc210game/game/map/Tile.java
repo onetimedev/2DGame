@@ -90,11 +90,13 @@ public class Tile {
 		return fileName;
   }
 
-	public Boolean canHaveChest() {
+  public Boolean canHaveChest() {
 		return canHaveChest;
-	}
+  }
 
-	public Boolean canHaveEnemy() { return canHaveEnemy; }
+  public Boolean canHaveEnemy() {
+		return canHaveEnemy;
+  }
 
   public Boolean hasCollision() {
         return hasCollision;
