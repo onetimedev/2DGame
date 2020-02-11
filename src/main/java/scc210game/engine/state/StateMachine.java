@@ -129,6 +129,7 @@ public class StateMachine {
             var now = Instant.now();
             assert this.tOnPause != null;
             var td = Duration.between(this.tOnPause, now);
+            this.world.eventQueue.patchDelayDelta(td);
             this.tLastRun = this.tLastRun.plus(td);
             this.state.onResume();
         }

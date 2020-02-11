@@ -139,7 +139,7 @@ public class ECSTest {
 
         var s = new BasicState();
 
-        ECS ecs = new ECS(List.of(new System0()), s);
+        ECS ecs = new ECS(List.of((ecs_) -> new System0()), s);
 
         ecs.start();
 
@@ -152,5 +152,8 @@ public class ECSTest {
         Position testPos = new Position(100, -100);
 
         assertEquals(testPos, Component.deserialize(testPos.serialize(), Position.class));
+
+        ecs.getCurrentWorld().removeEntity(s.e);
+        s.e = null;
     }
 }

@@ -14,6 +14,7 @@ public class Map extends Component {
   private Tile[] enemyTiles;
   private Tile[] npcTiles;
   private ArrayList<Vector2i[]> bossCoords;
+  private ArrayList<Tile> chestTiles;
 
 
   @Override
@@ -28,6 +29,7 @@ public class Map extends Component {
       enemyTiles = enemyTiles(genMap.getEnemyTiles());
       npcTiles = npcTiles(genMap.getNPCTiles());
       bossCoords = genMap.getBossCoords();
+      chestTiles = genMap.getChestTiles();
   }
 
     public Tile[][] getMap() {
@@ -81,5 +83,8 @@ public class Map extends Component {
   	return bossCoords;
   }
 
+	public ArrayList<Tile> getChestTiles() {
+		return chestTiles;
+	}
 
 }

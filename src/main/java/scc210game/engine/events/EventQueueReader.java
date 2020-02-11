@@ -1,7 +1,5 @@
 package scc210game.engine.events;
 
-import java.util.Iterator;
-
 /**
  * A reader for an event queue
  */
@@ -10,15 +8,6 @@ public class EventQueueReader {
 
     EventQueueReader(long id) {
         this.id = id;
-    }
-
-    /**
-     * Get events for this reader
-     *
-     * @return an iterator of events that this reader has received
-     */
-    public Iterator<Event> getEvents() {
-        return EventQueue.getEventsFor(this);
     }
 
     @Override

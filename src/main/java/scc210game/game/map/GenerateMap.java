@@ -18,6 +18,7 @@ public class GenerateMap {
 	private ArrayList<Vector2i> possNPCTiles = new ArrayList<>();
 	private Vector2i[] enemyTiles;
 	private Vector2i[] npcTiles;
+	private ArrayList<Tile> chestTiles = new ArrayList<>();
 
 
 	// Read from object map tile values that are already preset
@@ -49,6 +50,9 @@ public class GenerateMap {
 
 					if(allTiles[x][y].getTextureName().contains("story.png"))
 						possNPCTiles.add(allTiles[x][y].getXYPos());
+
+					if(allTiles[x][y].canHaveChest() && allTiles[x][y].getTextureName().equals("chest.png"))
+						chestTiles.add(allTiles[x][y]);
 
 					cnt++;
 
@@ -300,11 +304,9 @@ public class GenerateMap {
 	}
 
 
-	//TODO
-	//private void addFinalBoss() {
-
-	//}
-
+	public ArrayList<Tile> getChestTiles() {
+		return chestTiles;
+	}
 
 
 
@@ -350,6 +352,7 @@ public class GenerateMap {
 		npcTiles = npcList.toArray(npcTiles);
 
 	}
+
 
 
 }
