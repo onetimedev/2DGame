@@ -119,4 +119,8 @@ public class Tile {
 		hasCollision = b;
   }
 
+	public void setHasEnemy(Boolean b) {
+		canHaveEnemy = b;
+	}
+
 }
