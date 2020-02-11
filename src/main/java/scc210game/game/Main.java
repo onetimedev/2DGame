@@ -13,6 +13,7 @@ import org.jsfml.window.event.MouseEvent;
 import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
+import scc210game.engine.movement.CombatMovement;
 import scc210game.engine.movement.Movement;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.RenderSystem;
@@ -56,6 +57,7 @@ public class Main {
                 HandleClicked::new,
                 (ecs) -> new AnimationUpdater(),
                 Movement::new,
+                CombatMovement::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());

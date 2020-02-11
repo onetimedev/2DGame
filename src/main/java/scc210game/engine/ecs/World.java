@@ -27,6 +27,8 @@ public class World {
     @Nonnull
     public final EventQueue eventQueue;
 
+    private boolean isCombatActive = false;
+
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;
         this.entities = new ArrayList<>();
@@ -310,5 +312,20 @@ public class World {
 
             return this.entity;
         }
+    }
+
+    public void activateCombat()
+    {
+        this.isCombatActive = true;
+    }
+
+    public void deactivateCombat()
+    {
+        this.isCombatActive = false;
+    }
+
+    public boolean getCombatStatus()
+    {
+        return isCombatActive;
     }
 }
