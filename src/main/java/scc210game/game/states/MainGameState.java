@@ -19,7 +19,9 @@ public class MainGameState extends BaseInGameState {
 		var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().get();
 		var map = world.fetchComponent(mapEnt, Map.class);
 
-
+		for(Tile t : map.getChestTiles()) {
+			world.entityBuilder().with(new ChestSpawner(t)).build();
+		}
 
 		for(Tile tile : map.getEnemyTiles()) {
 			world.entityBuilder().with(new EnemySpawner(tile)).build();
