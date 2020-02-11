@@ -63,4 +63,9 @@ public class BiMap<L, R> {
     public String toString() {
         return "BiMap{" + forward + '}';
     }
+
+    public void clear() {
+        this.forward.clear();
+        this.backward.clear();
+    }
 }

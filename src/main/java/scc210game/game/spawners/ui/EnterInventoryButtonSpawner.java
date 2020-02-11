@@ -58,7 +58,7 @@ public class EnterInventoryButtonSpawner implements Spawner {
                         inv.addItem(item.itemID);
                     }
 
-                    world.ecs.acceptEvent(new EnterInventoryEvent(inv));
+                    world.ecs.acceptEvent(new EnterInventoryEvent(inv, invEnt));
                 }))
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);

@@ -23,7 +23,7 @@ public class MainGameState extends BaseInGameState {
 	public Transition handleEvent(StateEvent evt, World world) {
 		if (evt instanceof EnterInventoryEvent) {
 			EnterInventoryEvent evt1 = (EnterInventoryEvent) evt;
-			return new TransPush(new InventoryViewState(world, evt1.inv));
+			return new TransPush(new InventoryViewState(world, evt1.invEnt, evt1.inv));
 		}
 
 		return super.handleEvent(evt, world);

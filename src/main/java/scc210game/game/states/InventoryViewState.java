@@ -18,6 +18,7 @@ import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.ui.components.UIDraggable;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.Tuple2;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Item;
@@ -37,11 +38,13 @@ public class InventoryViewState extends BaseInGameState {
             .build();
 
     private final World sourceWorld;
+    private final Entity sourceInventoryEnt;
     private final Inventory sourceInventory;
     private Inventory inventory;
 
-    public InventoryViewState(World sourceWorld, Inventory sourceInventory) {
+    public InventoryViewState(World sourceWorld, Entity sourceInventoryEnt, Inventory sourceInventory) {
         this.sourceWorld = sourceWorld;
+        this.sourceInventoryEnt = sourceInventoryEnt;
         this.sourceInventory = sourceInventory;
     }
 
@@ -97,7 +100,7 @@ public class InventoryViewState extends BaseInGameState {
         if (evt instanceof KeyDepressedEvent) {
             KeyDepressedEvent evt1 = (KeyDepressedEvent) evt;
             if (evt1.key == Keyboard.Key.ESCAPE) {
-                world.ecs.acceptEvent(new LeaveInventoryEvent(this.inventory));
+                world.ecs.acceptEvent(new LeaveInventoryEvent(new Tuple2<>(this.sourceInventoryEnt, this.inventory)));
                 return TransNop.getInstance();
             }
         }

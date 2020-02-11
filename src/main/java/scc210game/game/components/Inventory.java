@@ -111,6 +111,15 @@ public class Inventory extends Component {
     }
 
     /**
+     * Reset the state of the inventory to having no items, and every slot free
+     */
+    public void clear() {
+        this.itemsslots.clear();
+        for (var i = 0; i < slotCount; i++)
+            this.freeSlots.add(i);
+    }
+
+    /**
      * Get slots and items in this inventory, as a stream of tuples of (SlotID, ItemID)
      *
      * @return a stream of tuples of (ItemID, SlotID)
