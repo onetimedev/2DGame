@@ -44,7 +44,7 @@ public class DroppableBoxSpawner implements Spawner {
 
                     droppedTrans.updateOrigin(centerdPosition.x, centerdPosition.y);
                 }))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
                     var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;
