@@ -13,10 +13,7 @@ import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
-import scc210game.game.spawners.BossSpawner;
-import scc210game.game.spawners.EnemySpawner;
-import scc210game.game.spawners.MapSpawner;
-import scc210game.game.spawners.PlayerSpawner;
+import scc210game.game.spawners.*;
 import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 
@@ -40,6 +37,10 @@ public class BaseInGameState extends InputHandlingState {
 
         for(Tile tile : map.getEnemyTiles()) {
             world.entityBuilder().with(new EnemySpawner(tile)).build();
+        }
+
+        for(Tile tile : map.getNPCTiles()) {
+            world.entityBuilder().with(new NPCSpawner(tile)).build();
         }
 
         int count = 0;

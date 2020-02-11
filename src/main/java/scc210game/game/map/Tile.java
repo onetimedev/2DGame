@@ -17,6 +17,7 @@ public class Tile {
 	private String fileName;
 	private Boolean canHaveChest;
 	private Boolean canHaveEnemy;
+	private Boolean canHaveNPC;
 
 
 	public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
@@ -90,11 +91,13 @@ public class Tile {
 		return fileName;
   }
 
-	public Boolean canHaveChest() {
+  public Boolean canHaveChest() {
 		return canHaveChest;
-	}
+  }
 
-	public Boolean canHaveEnemy() { return canHaveEnemy; }
+  public Boolean canHaveEnemy() {
+		return canHaveEnemy;
+  }
 
   public Boolean hasCollision() {
         return hasCollision;
