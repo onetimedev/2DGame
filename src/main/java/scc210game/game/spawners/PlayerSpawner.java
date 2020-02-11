@@ -30,7 +30,7 @@ public class PlayerSpawner implements Spawner {
 				(Entity entity, RenderWindow window, World world) -> {
 					Texture t = new Texture();
 					try {
-						t.loadFromFile(Paths.get("./src/main/resources/textures/basalt.png"));
+						t.loadFromFile(Paths.get("./src/main/resources/textures/player.png"));
 						Sprite pl = new Sprite(t);
 
 

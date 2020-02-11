@@ -13,10 +13,7 @@ import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
-import scc210game.game.spawners.BossSpawner;
-import scc210game.game.spawners.EnemySpawner;
-import scc210game.game.spawners.MapSpawner;
-import scc210game.game.spawners.PlayerSpawner;
+import scc210game.game.spawners.*;
 import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 
@@ -48,7 +45,22 @@ public class BaseInGameState extends InputHandlingState {
             count++;
         }
 
-        //TODO: Add spawning for Bosses
+        //TODO: Move this to GenerateMap?
+        Vector2i[] finalBossCoords = new Vector2i[9];
+        finalBossCoords[0] = new Vector2i(59,59);
+        finalBossCoords[1] = new Vector2i(60,59);
+        finalBossCoords[2] = new Vector2i(61,59);
+        finalBossCoords[3] = new Vector2i(59,60);
+        finalBossCoords[4] = new Vector2i(60,60);
+        finalBossCoords[5] = new Vector2i(61,60);
+        finalBossCoords[6] = new Vector2i(59,61);
+        finalBossCoords[7] = new Vector2i(60,61);
+        finalBossCoords[8] = new Vector2i(61,61);
+
+        Tile[] finalBossTiles = new Tile[9];
+        for(int i=0; i < finalBossTiles.length; i++)  // Changing tile texture beneath FinalBoss
+          map.getTile(finalBossCoords[i].x, finalBossCoords[i].y).setTexture("light_basalt.png");
+        world.entityBuilder().with(new FinalBossSpawner()).build();
 
 
     }
