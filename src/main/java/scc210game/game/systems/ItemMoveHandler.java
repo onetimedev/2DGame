@@ -17,6 +17,9 @@ import java.util.Iterator;
 
 public class ItemMoveHandler implements System {
     private final EventQueueReader eventReader;
+    private final Query itemQuery = Query.builder()
+            .require(Item.class)
+            .build();
     private final Query inventoriesQuery = Query.builder()
             .require(Inventory.class)
             .build();
@@ -29,15 +32,23 @@ public class ItemMoveHandler implements System {
         ecs.eventQueue.listen(this.eventReader, ItemMoveEvent.class);
     }
 
-    private Entity findSourceInventory(Entity itemEntity, World world) {
-        return world.applyQuery(inventoriesQuery)
-                .filter(e -> world.fetchComponent(e, Inventory.class).getItemSlot(itemEntity) != null)
+    private Entity findSourceInventory(int itemID, World world) {
+        return world.applyQuery(this.inventoriesQuery)
+                .filter(e -> world.fetchComponent(e, Inventory.class).getSlotID(itemID).isPresent())
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private Entity findItem(int itemID, World world) {
+        return world.applyQuery(this.itemQuery)
+                .filter(e -> world.hasComponent(e, Item.class))
+                .filter(e -> world.fetchComponent(e, Item.class).itemID == itemID)
                 .findFirst()
                 .orElseThrow();
     }
 
     private Entity findSlot(Inventory inventory, int slotID, World world) {
-        return world.applyQuery(uiItemSlotQuery)
+        return world.applyQuery(this.uiItemSlotQuery)
                 .filter(e -> {
                     var slot = world.fetchComponent(e, ItemSlot.class);
                     return slot.inventory == inventory && slot.slotID == slotID;
@@ -53,20 +64,20 @@ public class ItemMoveHandler implements System {
 
             if (e instanceof ItemMoveEvent) {
                 ItemMoveEvent e1 = (ItemMoveEvent) e;
-                var item = world.fetchComponent(e1.item, Item.class);
+                var itemEnt = this.findItem(e1.itemID, world);
 
-                var srcInventoryEnt = this.findSourceInventory(e1.item, world);
+                var srcInventoryEnt = this.findSourceInventory(e1.itemID, world);
                 var srcInventory = world.fetchComponent(srcInventoryEnt, Inventory.class);
 
                 // move item from src
-                srcInventory.removeItem(e1.item, item);
+                srcInventory.removeItem(e1.itemID);
                 // to dst
-                e1.dstInventory.addItemToSlot(e1.item, item, e1.dstSlot);
+                e1.dstInventory.addItemToSlot(e1.itemID, e1.dstSlot);
 
                 // move the item to reflect the new position
                 var uiSlotEnt = this.findSlot(e1.dstInventory, e1.dstSlot, world);
 
-                var itemTrans = world.fetchComponent(e1.item, UITransform.class);
+                var itemTrans = world.fetchComponent(itemEnt, UITransform.class);
                 var slotTrans = world.fetchComponent(uiSlotEnt, UITransform.class);
 
                 var centerPosition = UiUtils.centerTransforms(itemTrans.size(), slotTrans.pos(), slotTrans.size());

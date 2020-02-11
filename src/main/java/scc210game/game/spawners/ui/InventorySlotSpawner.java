@@ -56,7 +56,9 @@ public class InventorySlotSpawner implements Spawner {
                     if (slot.inventory.slotFull(slot.slotID))
                         return;
 
-                    w.eventQueue.broadcast(new ItemMoveEvent(droppedEntity, slot.inventory, slot.slotID));
+                    var item = w.fetchComponent(droppedEntity, Item.class);
+
+                    w.eventQueue.broadcast(new ItemMoveEvent(item.itemID, slot.inventory, slot.slotID));
                 }))
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);

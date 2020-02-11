@@ -1,15 +1,13 @@
 package scc210game.game.components;
 
 import scc210game.engine.ecs.Component;
-import scc210game.engine.ecs.Entity;
 import scc210game.engine.utils.Tuple2;
+import scc210game.game.utils.BiMap;
+import scc210game.game.utils.NamedTypeParam;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -19,19 +17,9 @@ public class Inventory extends Component {
     public final int slotCount;
 
     /**
-     * map of item id to item entity
+     * bimap of item id to slot id
      */
-    private final Map<Integer, Entity> itemIDEntities;
-
-    /**
-     * map of item entity to slot id
-     */
-    private final Map<Entity, Integer> itemEntSlotID;
-
-    /**
-     * map of slot id to slot
-     */
-    private final Map<Integer, Slot> slots;
+    private final BiMap<Integer, Integer> itemsslots;
 
     /**
      * set of slots not currently occupied
@@ -43,128 +31,97 @@ public class Inventory extends Component {
         this.freeSlots = IntStream.range(0, slotCount)
                 .boxed()
                 .collect(Collectors.toCollection(TreeSet::new));
-
-        this.itemIDEntities = new HashMap<>();
-        this.itemEntSlotID = new HashMap<>();
-
-        this.slots = IntStream.range(0, slotCount)
-                .boxed()
-                .collect(Collectors.toMap(Function.identity(),
-                        (id) -> new Slot(id, null)));
+        this.itemsslots = new BiMap<>();
     }
 
     /**
      * Attempt to add an item to the inventory in any free slot
-     * @param e the entity of the item to add
-     * @param i the Item to add
+     *
+     * @param itemID the id of the item to add to the inventory
      * @return true if the item was inserted, false if the inventory was full
      */
-    public boolean addItem(Entity e, Item i) {
+    public boolean addItem(int itemID) {
         if (this.freeSlots.isEmpty())
             return false;
 
         var slotID = this.freeSlots.first();
         this.freeSlots.remove(slotID);
 
-        this.slots.get(slotID).itemID = i.itemID;
-        this.itemIDEntities.put(i.itemID, e);
-        this.itemEntSlotID.put(e, slotID);
+        this.itemsslots.put(itemID, slotID);
 
         return true;
     }
 
     /**
-     * Get the id of the slot an item is in, null if the item isn't in a slot of this inventory
-     * @param e the item to fetch the slot of
-     * @return null if the item isn't in a slot of this inventory, the slot id if it is
+     * Get the id of the slot an item is in, None if the item isn't in a slot of this inventory
+     *
+     * @param itemID the item id to fetch the slot of
+     * @return None if the item isn't in a slot of this inventory, the slot id if it is
      */
-    @Nullable public Integer getItemSlot(Entity e) {
-        return this.itemEntSlotID.get(e);
+    public Optional<Integer> getSlotID(int itemID) {
+        return Optional.ofNullable(this.itemsslots.getByLeft(itemID));
+    }
+
+    /**
+     * Get the id of the item a that is in a given slot, None if the item isn't in a slot of this inventory
+     *
+     * @param slotID the slot for which to get the itemID of
+     * @return None if the item isn't in a slot of this inventory, the slot id if it is
+     */
+    public Optional<Integer> getItemID(int slotID) {
+        return Optional.ofNullable(this.itemsslots.getByRight(slotID));
     }
 
     /**
      * Add an item to a specific slot
-     * @param e the Entity of the Item to add to the slot
-     * @param i the Item to add to the slot
-     * @param to the slot to add the item to
-     * @return true if the item was inserted, false if the slot already had an item
+     *
+     * @param itemID the id of the item to add to the slot
+     * @param slotID the id of the slot to add the item to
+     * @apiNote this assumes the slot exists in the inventory and is free
      */
-    public boolean addItemToSlot(Entity e, Item i, int to) {
-        var slot = this.slots.get(to);
-        if (slot.itemID != null)
-            return false;
-
-        this.freeSlots.remove(slot.slotID);
-        this.itemIDEntities.put(i.itemID, e);
-        slot.itemID = i.itemID;
-        this.itemEntSlotID.put(e, slot.slotID);
-
-        return true;
+    public void addItemToSlot(int itemID, int slotID) {
+        this.itemsslots.put(itemID, slotID);
     }
 
     /**
      * Remove an item from this inventory, if it is contained in this inventory
-     * @param e the entity of the item to remove
-     * @param i the item to remove
+     *
+     * @param itemID the id of the item to remove
      * @return true if the item was removed, false if the item wasn't in this inventory
      */
-    public boolean removeItem(Entity e, Item i) {
-        if (!this.itemIDEntities.containsKey(i.itemID))
+    public boolean removeItem(int itemID) {
+        if (!this.itemsslots.containsLeft(itemID))
             return false;
 
-        this.itemIDEntities.remove(i.itemID);
-        var slotID = this.itemEntSlotID.get(e);
-        this.slots.get(slotID).itemID = null;
+        var slotID = this.itemsslots.getByLeft(itemID);
+        this.itemsslots.removeByLeft(itemID);
         this.freeSlots.add(slotID);
-        this.itemEntSlotID.remove(e);
 
         return true;
     }
 
     /**
      * Test if a slot contains an item
+     *
      * @param slotID the slot id to test
      * @return true if the slot is full, false otherwise
      */
-    public boolean slotFull(Integer slotID) {
-        return this.slots.get(slotID).itemID != null;
+    public boolean slotFull(int slotID) {
+        return !this.freeSlots.contains(slotID);
     }
 
     /**
-     * Get the item entity from a slot
-     * @param slotID the slotID to get the entity from
-     * @return the Entity representing the item in the slot
+     * Get slots and items in this inventory, as a stream of tuples of (SlotID, ItemID)
+     *
+     * @return a stream of tuples of (SlotID, ItemID)
      */
-    public Entity getSlotEntity(Integer slotID) {
-        var slot = this.slots.get(slotID);
-        return this.itemIDEntities.get(slot.itemID);
-    }
-
-    /**
-     * Get items in this inventory, as a stream of tuples of (SlotID, Item)
-     * @return a stream of tuples of (SlotID, Item)
-     */
-    public Stream<Tuple2<Integer, Entity>> items() {
-        return this.slots.values()
-                .stream()
-                .filter(i -> i.itemID != null)
-                .map(i -> new Tuple2<>(i.slotID, this.itemIDEntities.get(i.itemID)));
+    public Stream<Tuple2<@NamedTypeParam(name = "slotID") Integer, @NamedTypeParam(name = "itemID") Integer>> items() {
+        return this.itemsslots.items();
     }
 
     @Override
     public String serialize() {
         return null;
-    }
-
-    public static class Slot {
-        private final int slotID;
-        @Nullable
-        public Integer itemID;
-
-        public Slot(int slotID, @Nullable Integer itemID) {
-            this.slotID = slotID;
-            this.itemID = itemID;
-        }
     }
 }
 

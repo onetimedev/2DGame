@@ -6,6 +6,7 @@ import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
@@ -31,6 +32,10 @@ public class InventoryViewState extends BaseInGameState {
     private static final float SLOT_SIZE = 0.05f;
     private static final float SLOT_SPACING = 0.005f;
 
+    private final Query itemQuery = Query.builder()
+            .require(Item.class)
+            .build();
+
     private final World sourceWorld;
     private final Inventory sourceInventory;
     private Inventory inventory;
@@ -38,6 +43,14 @@ public class InventoryViewState extends BaseInGameState {
     public InventoryViewState(World sourceWorld, Inventory sourceInventory) {
         this.sourceWorld = sourceWorld;
         this.sourceInventory = sourceInventory;
+    }
+
+    private Entity findItem(int itemID, World world) {
+        return world.applyQuery(this.itemQuery)
+                .filter(e -> world.hasComponent(e, Item.class))
+                .filter(e -> world.fetchComponent(e, Item.class).itemID == itemID)
+                .findFirst()
+                .orElseThrow();
     }
 
     @Override
@@ -52,9 +65,11 @@ public class InventoryViewState extends BaseInGameState {
                     .build();
 
             var slotTransform = world.fetchComponent(slot, UITransform.class);
+            var maybeItemID = this.inventory.getItemID(i);
 
-            if (this.inventory.slotFull(i)) {
-                var itemEnt = this.inventory.getSlotEntity(i);
+            if (maybeItemID.isPresent()) {
+                var itemID = maybeItemID.get();
+                var itemEnt = this.findItem(itemID, world);
                 var tex = world.fetchComponent(itemEnt, TextureStorage.class);
 
                 var mainView = world.fetchGlobalResource(MainViewResource.class);
@@ -107,17 +122,21 @@ public class InventoryViewState extends BaseInGameState {
 
         // clone all inventory
         this.sourceInventory.items().forEach(v -> {
-            var itemEnt = destWorld.entityBuilder()
-                    .with(this.sourceWorld.componentsOfEntity(v.r).map(c -> {
+            var srcItemEnt = this.findItem(v.r, this.sourceWorld);
+            var srcItemComponents = this.sourceWorld.componentsOfEntity(srcItemEnt)
+                    .map(c -> {
                         try {
                             return c.clone();
                         } catch (CloneNotSupportedException e) {
                             throw new RuntimeException(e);
                         }
-                    }).toArray(Component[]::new))
+                    }).toArray(Component[]::new);
+
+            destWorld.entityBuilder()
+                    .with(srcItemComponents)
                     .build();
-            var item = destWorld.fetchComponent(itemEnt, Item.class);
-            this.inventory.addItemToSlot(itemEnt, item, v.l);
+
+            this.inventory.addItemToSlot(v.r, v.l);
         });
     }
 }

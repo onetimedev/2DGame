@@ -55,7 +55,7 @@ public class EnterInventoryButtonSpawner implements Spawner {
                                 .with(new WeaponSpawner(i * 10))
                                 .build();
                         var item = world.fetchComponent(itemEnt, Item.class);
-                        inv.addItem(itemEnt, item);
+                        inv.addItem(item.itemID);
                     }
 
                     world.ecs.acceptEvent(new EnterInventoryEvent(inv));
