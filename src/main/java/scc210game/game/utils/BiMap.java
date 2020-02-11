@@ -58,4 +58,9 @@ public class BiMap<L, R> {
                 .stream()
                 .map(l -> new Tuple2<>(l, this.forward.get(l)));
     }
+
+    @Override
+    public String toString() {
+        return "BiMap{" + forward + '}';
+    }
 }

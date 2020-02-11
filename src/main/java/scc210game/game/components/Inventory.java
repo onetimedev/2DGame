@@ -113,15 +113,24 @@ public class Inventory extends Component {
     /**
      * Get slots and items in this inventory, as a stream of tuples of (SlotID, ItemID)
      *
-     * @return a stream of tuples of (SlotID, ItemID)
+     * @return a stream of tuples of (ItemID, SlotID)
      */
-    public Stream<Tuple2<@NamedTypeParam(name = "slotID") Integer, @NamedTypeParam(name = "itemID") Integer>> items() {
+    public Stream<Tuple2<@NamedTypeParam(name = "itemID") Integer, @NamedTypeParam(name = "slotID") Integer>> items() {
         return this.itemsslots.items();
     }
 
     @Override
     public String serialize() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "slotCount=" + slotCount +
+                ", itemsslots=" + itemsslots +
+                ", freeSlots=" + freeSlots +
+                '}';
     }
 }
 

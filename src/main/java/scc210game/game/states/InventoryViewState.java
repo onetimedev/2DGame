@@ -116,13 +116,13 @@ public class InventoryViewState extends BaseInGameState {
      */
     private void cloneContentInto(World destWorld) {
         this.inventory = new Inventory(this.sourceInventory.slotCount);
-        var inventoryEnt = destWorld.entityBuilder()
+        destWorld.entityBuilder()
                 .with(this.inventory)
                 .build();
 
         // clone all inventory
         this.sourceInventory.items().forEach(v -> {
-            var srcItemEnt = this.findItem(v.r, this.sourceWorld);
+            var srcItemEnt = this.findItem(v.l, this.sourceWorld);
             var srcItemComponents = this.sourceWorld.componentsOfEntity(srcItemEnt)
                     .map(c -> {
                         try {
@@ -136,7 +136,7 @@ public class InventoryViewState extends BaseInGameState {
                     .with(srcItemComponents)
                     .build();
 
-            this.inventory.addItemToSlot(v.r, v.l);
+            this.inventory.addItemToSlot(v.l, v.r);
         });
     }
 }
