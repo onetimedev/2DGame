@@ -8,6 +8,7 @@ import scc210game.game.spawners.MapSpawner;
 import scc210game.game.spawners.PlayerSpawner;
 import scc210game.game.spawners.ui.EnterInventoryButtonSpawner;
 import scc210game.game.states.events.EnterInventoryEvent;
+import scc210game.game.states.events.EnterTwoInventoryEvent;
 
 public class MainGameState extends BaseInGameState {
 	@Override
@@ -24,6 +25,11 @@ public class MainGameState extends BaseInGameState {
 		if (evt instanceof EnterInventoryEvent) {
 			EnterInventoryEvent evt1 = (EnterInventoryEvent) evt;
 			return new TransPush(new InventoryViewState(world, evt1.invEnt, evt1.inv));
+		}
+
+		if (evt instanceof EnterTwoInventoryEvent) {
+			EnterTwoInventoryEvent evt1 = (EnterTwoInventoryEvent) evt;
+			return new TransPush(new TwoInventoryViewState(world, evt1.inv0Ent, evt1.inv0, evt1.inv1Ent, evt1.inv1));
 		}
 
 		return super.handleEvent(evt, world);

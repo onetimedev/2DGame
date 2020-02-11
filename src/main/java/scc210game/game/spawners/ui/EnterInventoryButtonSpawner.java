@@ -18,7 +18,7 @@ import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Item;
 import scc210game.game.spawners.WeaponSpawner;
-import scc210game.game.states.events.EnterInventoryEvent;
+import scc210game.game.states.events.EnterTwoInventoryEvent;
 
 import java.awt.*;
 import java.util.Set;
@@ -58,7 +58,20 @@ public class EnterInventoryButtonSpawner implements Spawner {
                         inv.addItem(item.itemID);
                     }
 
-                    world.ecs.acceptEvent(new EnterInventoryEvent(inv, invEnt));
+                    var inv1 = new Inventory(14);
+                    var invEnt1 = world.entityBuilder()
+                            .with(inv1)
+                            .build();
+
+                    for (var i = 0; i < 4; i++) {
+                        var itemEnt = world.entityBuilder()
+                                .with(new WeaponSpawner(i * 10))
+                                .build();
+                        var item = world.fetchComponent(itemEnt, Item.class);
+                        inv1.addItem(item.itemID);
+                    }
+
+                    world.ecs.acceptEvent(new EnterTwoInventoryEvent(inv, inv1, invEnt, invEnt1));
                 }))
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
