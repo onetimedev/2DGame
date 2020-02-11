@@ -1,7 +1,7 @@
 package scc210game.engine.movement;
 
-import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.ECS;
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
 import scc210game.engine.events.Event;

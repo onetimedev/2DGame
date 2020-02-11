@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -90,11 +91,13 @@ public class Tile {
 		return fileName;
   }
 
-	public Boolean canHaveChest() {
+  public Boolean canHaveChest() {
 		return canHaveChest;
-	}
+  }
 
-	public Boolean canHaveEnemy() { return canHaveEnemy; }
+  public Boolean canHaveEnemy() {
+		return canHaveEnemy;
+  }
 
   public Boolean hasCollision() {
         return hasCollision;
@@ -118,5 +121,9 @@ public class Tile {
   public void setHasCollision(Boolean b) {
 		hasCollision = b;
   }
+
+	public void setHasEnemy(Boolean b) {
+		canHaveEnemy = b;
+	}
 
 }

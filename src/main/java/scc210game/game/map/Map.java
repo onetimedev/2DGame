@@ -1,6 +1,9 @@
 package scc210game.game.map;
 
+import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Component;
+
+import java.util.ArrayList;
 
 /**
  * Create map as part of the ECS
@@ -8,6 +11,10 @@ import scc210game.engine.ecs.Component;
 public class Map extends Component {
   private Tile[][] mapTiles;
   private GenerateMap genMap;
+  private Tile[] enemyTiles;
+  private Tile[] npcTiles;
+  private ArrayList<Vector2i[]> bossCoords;
+  private ArrayList<Tile> chestTiles;
 
 
   @Override
@@ -19,9 +26,13 @@ public class Map extends Component {
   public Map() {
       genMap = new GenerateMap();
       mapTiles = genMap.getAllTiles();
+      enemyTiles = enemyTiles(genMap.getEnemyTiles());
+      npcTiles = npcTiles(genMap.getNPCTiles());
+      bossCoords = genMap.getBossCoords();
+      chestTiles = genMap.getChestTiles();
   }
 
-  public Tile[][] getMap() {
+    public Tile[][] getMap() {
       return mapTiles;
   }
 
@@ -45,5 +56,35 @@ public class Map extends Component {
 		return mapTiles[0].length-1;
 	}
 
+	private Tile[] enemyTiles(Vector2i[] eTiles) {
+  	Tile[] tempTiles = new Tile[eTiles.length];
+		for(int i=0; i < tempTiles.length; i++) {
+			tempTiles[i] = getTile(eTiles[i].x, eTiles[i].y);
+		}
+  	return tempTiles;
+	}
+
+	public Tile[] getEnemyTiles() {
+      return enemyTiles;
+    }
+
+    private Tile[] npcTiles(Vector2i[] npcTiles) {
+      Tile[] tempTiles = new Tile[npcTiles.length];
+      for(int i=0; i < tempTiles.length; i++)
+          tempTiles[i] = getTile(npcTiles[i].x, npcTiles[i].y);
+      return tempTiles;
+    }
+
+    public Tile[] getNPCTiles() {
+      return npcTiles;
+    }
+
+  public ArrayList<Vector2i[]> getBossCoords() {
+  	return bossCoords;
+  }
+
+	public ArrayList<Tile> getChestTiles() {
+		return chestTiles;
+	}
 
 }

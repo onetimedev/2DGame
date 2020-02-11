@@ -1,7 +1,11 @@
 package scc210game.game.map;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonException;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsoner;
 import org.jsfml.system.Vector2i;
-import com.github.cliftonlabs.json_simple.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -14,7 +18,10 @@ public class GenerateMap {
 	private Tile[][] allTiles;
 	private Vector2i mapSize;
 	private ArrayList<Vector2i> possEnemyTiles = new ArrayList<>();
+	private ArrayList<Vector2i> possNPCTiles = new ArrayList<>();
 	private Vector2i[] enemyTiles;
+	private Vector2i[] npcTiles;
+	private ArrayList<Tile> chestTiles = new ArrayList<>();
 
 
 	// Read from object map tile values that are already preset
@@ -23,6 +30,7 @@ public class GenerateMap {
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
 		addEnemies();
+		addNPCs();
 	}
 
 
@@ -40,9 +48,17 @@ public class GenerateMap {
 				for (int x=0; x<mapSize.x; x++) {
 					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
-					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().equals("enemy.png"))
+					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().contains("enemy_"))
 						possEnemyTiles.add(allTiles[x][y].getXYPos());
+
+					if(allTiles[x][y].getTextureName().contains("story.png"))
+						possNPCTiles.add(allTiles[x][y].getXYPos());
+
+					if(allTiles[x][y].canHaveChest() && allTiles[x][y].getTextureName().equals("chest.png"))
+						chestTiles.add(allTiles[x][y]);
+
 					cnt++;
+
 				}
 
 		}
@@ -179,6 +195,26 @@ public class GenerateMap {
 				tileData.put("collision", true);
 				break;
 			}
+			case 23: {  // Enemy Basalt
+				tileData.put("texture", "enemy_basalt.png");
+				tileData.put("enemy", true);
+				break;
+			}
+			case 24: {  // Enemy Sand
+				tileData.put("texture", "enemy_sand.png");
+				tileData.put("enemy", true);
+				break;
+			}
+			case 25: {  // Enemy Grass
+				tileData.put("texture", "enemy_grass.png");
+				tileData.put("enemy", true);
+				break;
+			}
+			case 26: {  // Enemy Snow
+				tileData.put("texture", "enemy_snow.png");
+				tileData.put("enemy", true);
+				break;
+			}
 		}
 		return tileData;
 	}
@@ -195,6 +231,87 @@ public class GenerateMap {
 	public Vector2i[] getEnemyTiles() {
 		return enemyTiles;
 	}
+
+	public Vector2i[] getNPCTiles() {
+		return npcTiles;
+	}
+
+
+	/**
+	 * 	Method that stores the boss enemy coordinates and returns them in an ArrayList
+	 * 	0 = grass, 1 = water, 2 = fire, 3 = ice
+	 * @return
+	 */
+	public ArrayList<Vector2i[]> getBossCoords() {
+		Vector2i[] grassBoss = new Vector2i[4];
+		grassBoss[0] = new Vector2i(8,65);
+		grassBoss[1] = new Vector2i(9,65);
+		grassBoss[2] = new Vector2i(8,66);
+		grassBoss[3] = new Vector2i(9,66);
+
+		Vector2i[] waterBoss = new Vector2i[4];
+		waterBoss[0] = new Vector2i(25,23);
+		waterBoss[1] = new Vector2i(26,23);
+		waterBoss[2] = new Vector2i(25,24);
+		waterBoss[3] = new Vector2i(26,24);
+
+		Vector2i[] fireBoss = new Vector2i[4];
+		fireBoss[0] = new Vector2i(107,5);
+		fireBoss[1] = new Vector2i(108,5);
+		fireBoss[2] = new Vector2i(107,6);
+		fireBoss[3] = new Vector2i(108,6);
+
+		Vector2i[] snowBoss = new Vector2i[4];
+		snowBoss[0] = new Vector2i(101,100);
+		snowBoss[1] = new Vector2i(102,100);
+		snowBoss[2] = new Vector2i(101,101);
+		snowBoss[3] = new Vector2i(102,101);
+
+		ArrayList<Vector2i[]> allBossCoords = new ArrayList<>();
+		allBossCoords.add(grassBoss);
+		allBossCoords.add(waterBoss);
+		allBossCoords.add(fireBoss);
+		allBossCoords.add(snowBoss);
+
+
+		/*
+		* Looping through all boss coordinates and assigning the tile textures below the bosses to the
+		* correct biome.
+		*/
+		for(int i=0; i< allBossCoords.size(); i++) {
+			for (int j = 0; j < allBossCoords.get(i).length; j++) {
+				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasCollision(true);
+				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasEnemy(true);
+				switch (i) {
+					case 0: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass2.png");
+						break;
+					}
+					case 1: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("sand.png");
+						break;
+					}
+					case 2: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("light_basalt.png");
+						break;
+					}
+					case 3: {
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
+						break;
+					}
+				}
+			}
+		}
+
+		return allBossCoords;
+	}
+
+
+	public ArrayList<Tile> getChestTiles() {
+		return chestTiles;
+	}
+
+
 
 	/*
 		Method to assign the spawn points of enemies on the map based on other spawn points and
@@ -217,7 +334,6 @@ public class GenerateMap {
 							count++;
 
 					if (count == possEnemyTiles.size() - 1) {
-						allTiles[coords.x][coords.y].setTexture("enemySpawn.png");
 						tempList.add(coords);
 						placedCount++;
 					}
@@ -229,6 +345,17 @@ public class GenerateMap {
 		enemyTiles = new Vector2i[tempList.size()];
 		enemyTiles = tempList.toArray(enemyTiles);
 	}
+
+	private void addNPCs() {
+		ArrayList<Vector2i> npcList = new ArrayList<>();
+
+		npcList.addAll(possNPCTiles);
+
+		npcTiles = new Vector2i[npcList.size()];
+		npcTiles = npcList.toArray(npcTiles);
+
+	}
+
 
 
 }
