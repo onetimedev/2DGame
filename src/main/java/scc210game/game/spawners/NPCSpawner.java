@@ -34,7 +34,7 @@ public class NPCSpawner implements Spawner {
         switch (type) {
             case "story.png": {
                 npcTile.setHasCollision(true);
-                npcTexture = MapHelper.loadTexture("barrier.png");
+                npcTexture = MapHelper.loadTexture("story.png");
                 break;
             }
         }

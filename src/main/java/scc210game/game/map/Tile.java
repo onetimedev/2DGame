@@ -17,7 +17,6 @@ public class Tile {
 	private String fileName;
 	private Boolean canHaveChest;
 	private Boolean canHaveEnemy;
-	private Boolean canHaveNPC;
 
 
 	public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
