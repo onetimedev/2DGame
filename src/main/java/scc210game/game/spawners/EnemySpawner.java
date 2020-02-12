@@ -31,6 +31,7 @@ public class EnemySpawner implements Spawner {
     xSpawn = enemyTile.getXPos();
     ySpawn = enemyTile.getYPos();
     setTexture(t.getTextureName());
+    enemyTile.setHasEnemy(true);
   }
 
 

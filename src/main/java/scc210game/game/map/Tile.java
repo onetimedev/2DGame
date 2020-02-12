@@ -17,6 +17,8 @@ public class Tile {
 	private String fileName;
 	private Boolean canHaveChest;
 	private Boolean canHaveEnemy;
+	private Boolean hasEnemy;
+	private Boolean canHaveStory;
 
 
 	public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
@@ -27,6 +29,8 @@ public class Tile {
 		hasCollision = collision;
 		canHaveChest = chest;
 		canHaveEnemy = enemy;
+		canHaveStory = false;
+		hasEnemy = false;
 
 		try {
 			tileTexture.loadFromFile(Paths.get(assetsPath, fileName));
@@ -100,6 +104,14 @@ public class Tile {
         return hasCollision;
     }
 
+  public Boolean getHasEnemy() {
+		return hasEnemy;
+  }
+
+  public void setHasEnemy(Boolean en) {
+		hasEnemy = en;
+  }
+
   public Vector2i getTextureSize() {
         return textureSize;
     }
@@ -119,8 +131,16 @@ public class Tile {
 		hasCollision = b;
   }
 
-	public void setHasEnemy(Boolean b) {
+	public void setCanHaveEnemy(Boolean b) {
 		canHaveEnemy = b;
+	}
+
+	public void setCanHaveStory(Boolean b) {
+		canHaveStory = b;
+	}
+
+	public boolean canHaveStory() {
+		return canHaveStory;
 	}
 
 }
