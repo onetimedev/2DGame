@@ -81,6 +81,8 @@ public class Inventory extends Component {
      */
     public void addItemToSlot(int itemID, int slotID) {
         this.itemsslots.put(itemID, slotID);
+
+        this.freeSlots.remove(slotID);
     }
 
     /**

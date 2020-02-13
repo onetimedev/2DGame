@@ -30,7 +30,8 @@ import java.util.Set;
 
 public class InventoryViewState extends BaseInGameState {
     private static final int SLOTS_PER_ROW = 7;
-    private static final float SLOT_SIZE = 0.05f;
+    private static final float SLOT_SIZE = 0.13f;
+    private static final float SLOT_H_OFFSET = 0.0275f;
     private static final float SLOT_SPACING = 0.005f;
 
     private final Query itemQuery = Query.builder()
@@ -61,7 +62,7 @@ public class InventoryViewState extends BaseInGameState {
         this.cloneContentInto(world);
 
         for (int i = 0; i < this.inventory.slotCount; i++) {
-            var x = (i % SLOTS_PER_ROW) * (SLOT_SIZE + SLOT_SPACING);
+            var x = (i % SLOTS_PER_ROW) * (SLOT_SIZE + SLOT_SPACING) + SLOT_H_OFFSET;
             var y = (i / SLOTS_PER_ROW) * (SLOT_SIZE + SLOT_SPACING);
             var slot = world.entityBuilder()
                     .with(new InventorySlotSpawner(x, y, SLOT_SIZE, SLOT_SIZE, this.inventory, i))
@@ -73,21 +74,18 @@ public class InventoryViewState extends BaseInGameState {
             if (maybeItemID.isPresent()) {
                 var itemID = maybeItemID.get();
                 var itemEnt = this.findItem(itemID, world);
-                var tex = world.fetchComponent(itemEnt, TextureStorage.class);
 
-                var mainView = world.fetchGlobalResource(MainViewResource.class);
-
-                var realItemSize = new Vector2f(tex.texture.getSize());
-                var mainViewSize = mainView.mainView.getSize().x;
-                var itemSize = new Vector2f(realItemSize.x / mainViewSize, realItemSize.y / mainViewSize);
-                var position = UiUtils.centerTransforms(itemSize, slotTransform.pos(), slotTransform.size());
-
-                world.addComponentToEntity(itemEnt, new UITransform(position.x, position.y, 4, itemSize.x, itemSize.y));
+                world.addComponentToEntity(itemEnt, new UITransform(slotTransform.xPos, slotTransform.yPos, 4, slotTransform.width, slotTransform.height));
                 world.addComponentToEntity(itemEnt, new Renderable(Set.of(ViewType.UI), 3, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var itemTex = w.fetchComponent(e, TextureStorage.class);
                     var sprite = new Sprite(itemTex.texture);
                     sprite.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+
+                    var realItemSize = new Vector2f(itemTex.texture.getSize());
+                    var mainViewSize = rw.getDefaultView().getSize().x;
+                    var itemSize = new Vector2f(realItemSize.x / mainViewSize, realItemSize.y / mainViewSize);
+                    sprite.setScale(trans.width / itemSize.x, trans.width / itemSize.x);
                     rw.draw(sprite);
                 }));
                 world.addComponentToEntity(itemEnt, new UIDraggable());
