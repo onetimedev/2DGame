@@ -24,8 +24,9 @@ public class UITransform extends Component {
             BigDecimal zPos = (BigDecimal) json.get("zPos");
             BigDecimal width = (BigDecimal) json.get("width");
             BigDecimal height = (BigDecimal) json.get("height");
+            BigDecimal rotation = (BigDecimal) json.get("rotation");
 
-            return new UITransform(originXPos.floatValue(), originYPos.floatValue(), xPos.floatValue(), yPos.floatValue(), zPos.intValue(), width.floatValue(), height.floatValue());
+            return new UITransform(originXPos.floatValue(), originYPos.floatValue(), xPos.floatValue(), yPos.floatValue(), zPos.intValue(), width.floatValue(), height.floatValue(), rotation.floatValue());
         });
     }
 
@@ -84,6 +85,11 @@ public class UITransform extends Component {
      */
     public float height;
 
+    /**
+     * rotation in degrees
+     */
+    public float rotation;
+
     public UITransform(float originXPos, float originYPos, float xPos, float yPos, int zPos, float width, float height) {
         this.originXPos = originXPos;
         this.originYPos = originYPos;
@@ -103,6 +109,30 @@ public class UITransform extends Component {
         this.width = width;
         this.height = height;
     }
+
+
+    public UITransform(float xPos, float yPos, int zPos, float width, float height, float rotation) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.originXPos = xPos;
+        this.originYPos = yPos;
+        this.zPos = zPos;
+        this.width = width;
+        this.height = height;
+        this.rotation = rotation;
+    }
+
+    public UITransform(float originXPos, float originYPos, float xPos, float yPos, int zPos, float width, float height, float rotation) {
+        this.originXPos = originXPos;
+        this.originYPos = originYPos;
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.zPos = zPos;
+        this.width = width;
+        this.height = height;
+        this.rotation = rotation;
+    }
+
 
     public Vector2f pos() {
         return new Vector2f(this.xPos, this.yPos);
@@ -135,6 +165,7 @@ public class UITransform extends Component {
             this.put("zPos", UITransform.this.zPos);
             this.put("width", UITransform.this.width);
             this.put("height", UITransform.this.height);
+            this.put("rotation", UITransform.this.rotation);
         }};
 
         return json.toJson();
