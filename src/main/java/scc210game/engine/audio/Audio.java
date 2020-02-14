@@ -10,28 +10,19 @@ import java.nio.file.Paths;
 public class Audio {
     //String soundPath = "src/main/resources/sounds/walking.mp3";
 
-    public void walkingSound(String soundPath) {
-        Sound sound;
+    public void playSound(String soundPath) {
+        Sound sound = new Sound();
         SoundBuffer sB = new SoundBuffer();
         try {
             sB.loadFromFile(Paths.get(soundPath));
-            System.out.println("HEEEEEEEEEEEEEEEEEEEEY");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        sound = new Sound();
         sound.setBuffer(sB);
-        for(int i = 0; i < 100; i++) {
-            sound.play();
-            //System.out.println("PLLLLLLAAAAAAAAAAAAAAAY");
-        }
-
+        sound.setVolume(20.0f);
+        sound.play();
     }
-
-
-
-
 }
 
 
