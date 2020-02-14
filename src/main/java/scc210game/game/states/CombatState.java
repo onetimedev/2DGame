@@ -5,6 +5,7 @@ import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.spawners.CombatSpawner;
+import scc210game.game.spawners.CombatWeapon;
 
 public class CombatState extends InputHandlingState {
 
@@ -13,6 +14,9 @@ public class CombatState extends InputHandlingState {
         world.activateCombat();
         world.entityBuilder().with(new CombatSpawner(true)).build();
         world.entityBuilder().with(new CombatSpawner(false)).build();
+
+        world.entityBuilder().with(new CombatWeapon(true, world)).build();
+        world.entityBuilder().with(new CombatWeapon(false, world)).build();
 
     }
 
