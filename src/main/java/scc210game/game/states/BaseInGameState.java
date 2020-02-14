@@ -9,7 +9,6 @@ import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
-
 import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 

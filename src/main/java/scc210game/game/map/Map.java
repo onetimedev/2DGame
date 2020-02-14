@@ -12,6 +12,7 @@ public class Map extends Component {
   private Tile[][] mapTiles;
   private GenerateMap genMap;
   private Tile[] enemyTiles;
+  private Tile[] npcTiles;
   private ArrayList<Vector2i[]> bossCoords;
   private ArrayList<Tile> chestTiles;
 
@@ -26,11 +27,12 @@ public class Map extends Component {
       genMap = new GenerateMap();
       mapTiles = genMap.getAllTiles();
       enemyTiles = enemyTiles(genMap.getEnemyTiles());
+      npcTiles = npcTiles(genMap.getNPCTiles());
       bossCoords = genMap.getBossCoords();
       chestTiles = genMap.getChestTiles();
   }
 
-  public Tile[][] getMap() {
+    public Tile[][] getMap() {
       return mapTiles;
   }
 
@@ -64,6 +66,17 @@ public class Map extends Component {
 
 	public Tile[] getEnemyTiles() {
       return enemyTiles;
+    }
+
+    private Tile[] npcTiles(Vector2i[] npcTiles) {
+      Tile[] tempTiles = new Tile[npcTiles.length];
+      for(int i=0; i < tempTiles.length; i++)
+          tempTiles[i] = getTile(npcTiles[i].x, npcTiles[i].y);
+      return tempTiles;
+    }
+
+    public Tile[] getNPCTiles() {
+      return npcTiles;
     }
 
   public ArrayList<Vector2i[]> getBossCoords() {
