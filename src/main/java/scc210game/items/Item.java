@@ -1,8 +1,5 @@
 package scc210game.items;
 
-import org.jsfml.graphics.RectangleShape;
-import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.Text;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.System;
@@ -16,7 +13,6 @@ public class Item extends ItemComponent {
 
     public ArrayList<Entity> itemsList = new ArrayList<>();
     private World world;
-
 
     public Item(int id, int level) {
         super(id, level);

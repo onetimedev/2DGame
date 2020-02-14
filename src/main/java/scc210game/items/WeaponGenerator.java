@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Random;
 public class WeaponGenerator{
     private String[] material = new String[]{"Wooden", "Bronze", "Gold", "Steel"};
-    private String[] weapon = new String[]{"Staff", "Sword", "Axe"};
+    private String[] weapon = new String[]{"Staff", "Sword"};
     private String[] enchantment = new String[]{"Hellfire", "Frozen", "Alpha", "Fury"};
     private String[] named = new String[]{"Lazarus", "Poseidon", "Excalibur", "Kusanagi"};
     private String[] title = new String[]{"The Untamed", "The Cursed", "The Possessed", "The Hope",
@@ -42,7 +42,7 @@ public class WeaponGenerator{
             x = r.nextInt(enchantment.length);
             y = r.nextInt(weapon.length);
             z = r.nextInt(enchantment.length);
-            randomised = enchantment[x] + " " + weapon[y] + " " + element[z];
+            randomised = enchantment[x] + " Sword of " + element[z];
         }
         else{
             rareWeapon();
@@ -88,20 +88,8 @@ public class WeaponGenerator{
                 if (name.contains("Gold")){
 
                 }
-            }
-            if (name.contains("Axe")){
-                if (name.contains("Wooden")){
 
-                }
-                if (name.contains("Steel")){
 
-                }
-                if (name.contains("Bronze")){
-
-                }
-                if (name.contains("Gold")){
-
-                }
 
             }
             if (name.contains("Sword")){
@@ -162,21 +150,7 @@ public class WeaponGenerator{
 
                 }
             }
-            if (name.contains("Axe")){
-                if (name.contains("Wooden")){
 
-                }
-                if (name.contains("Steel")){
-
-                }
-                if (name.contains("Bronze")){
-
-                }
-                if (name.contains("Gold")){
-
-                }
-
-            }
             if (name.contains("Sword")){
                 if (name.contains("Wooden")){
 
@@ -232,21 +206,7 @@ public class WeaponGenerator{
 
                 }
             }
-            if (name.contains("Axe")){
-                if (name.contains("Wooden")){
 
-                }
-                if (name.contains("Steel")){
-
-                }
-                if (name.contains("Bronze")){
-
-                }
-                if (name.contains("Gold")){
-
-                }
-
-            }
             if (name.contains("Sword")){
                 if (name.contains("Wooden")){
 
