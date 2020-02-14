@@ -1,6 +1,5 @@
 package scc210game.game.map;
 
-import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
 import com.github.cliftonlabs.json_simple.*;
 import java.io.FileNotFoundException;
@@ -278,7 +277,7 @@ public class GenerateMap {
 		for(int i=0; i< allBossCoords.size(); i++) {
 			for (int j = 0; j < allBossCoords.get(i).length; j++) {
 				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasCollision(true);
-				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasEnemy(true);
+				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setCanHaveEnemy(true);
 				switch (i) {
 					case 0: {
 						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass2.png");
