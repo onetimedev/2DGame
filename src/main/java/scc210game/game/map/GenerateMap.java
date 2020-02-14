@@ -81,136 +81,204 @@ public class GenerateMap {
 		tileData.put("enemy", false);
 
 		switch(tileType) {
-			case 1: {  // Forest
-				tileData.put("texture", "forest.png");
-				tileData.put("collision", true);
-				break;
-			}
-			case 2: {  // Grass
+			case 1: {  // Grass
 				tileData.put("texture", "grass2.png");
 				break;
 			}
-			case 3: {  // Path
+			case 2: {  // Path
 				tileData.put("texture", "path.png");
 				break;
 			}
-			case 4: {  // Chest
+			case 3: {  // Chest
 				tileData.put("texture", "chest.png");
 				tileData.put("collision", true);
 				tileData.put("chest", true);
 				break;
 			}
-			case 5: {  // Enemy
+			case 4: {  // Enemy
 				tileData.put("texture", "enemy.png");
 				tileData.put("collision", true);
 				tileData.put("enemy", true);
 				break;
 			}
-			case 6: {  // Tree
+			case 5: {  // Tree
 				tileData.put("texture", "tree.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 7: {  // Story
+			case 6: {  // Story
 				tileData.put("texture", "story.png");
 				break;
 			}
-			case 8: {  // Border
+			case 7: {  // Border
 				tileData.put("texture", "border.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 9: {  // Snow
+			case 8: {  // Snow
 				tileData.put("texture", "snow.png");
 				break;
 			}
-			case 10: {  // Water
+			case 9: {  // Water
 				tileData.put("texture", "water.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 11: {  // Sand
+			case 10: {  // Sand
 				tileData.put("texture", "sand.png");
 				break;
 			}
-			case 12: {  // Lava
+			case 11: {  // Lava
 				tileData.put("texture", "lava.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 13: {  // Basalt
+			case 12: {  // Basalt
 				tileData.put("texture", "basalt.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 14: {  // Basalt_Light
+			case 13: {  // Basalt_Light
 				tileData.put("texture", "light_basalt.png");
 				break;
 			}
-			case 15: {  // Ice
+			case 14: {  // Ice
 				tileData.put("texture", "ice.png");
 				break;
 			}
-			case 16: {  // Snowy Forest
+			case 15: {  // Snowy Forest
 				tileData.put("texture", "snow_forest.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 17: {  // Final Boss
+			case 16: {  // Final Boss
 				tileData.put("texture", "boss_final.png");
 				tileData.put("collision", true);
 				tileData.put("enemy", true);
 				break;
 			}
-			case 18: {  // Fire Boss
-				tileData.put("texture", "boss_fire.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 19: {  // Grass Boss
-				tileData.put("texture", "boss_grass.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 20: {  // Water Boss
-				tileData.put("texture", "boss_water.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 21: {  // Snow Boss
-				tileData.put("texture", "boss_snow.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 22: {  // Barrier
+			case 17: {  // Barrier
 				tileData.put("texture", "barrier.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 23: {  // Enemy Basalt
+			case 18: {  // Enemy Basalt
 				tileData.put("texture", "enemy_basalt.png");
 				tileData.put("enemy", true);
 				break;
 			}
-			case 24: {  // Enemy Sand
+			case 19: {  // Enemy Sand
 				tileData.put("texture", "enemy_sand.png");
 				tileData.put("enemy", true);
 				break;
 			}
-			case 25: {  // Enemy Grass
+			case 20: {  // Enemy Grass
 				tileData.put("texture", "enemy_grass.png");
 				tileData.put("enemy", true);
 				break;
 			}
-			case 26: {  // Enemy Snow
+			case 21: {  // Enemy Snow
 				tileData.put("texture", "enemy_snow.png");
 				tileData.put("enemy", true);
 				break;
 			}
+			case 22: {  // Forest 1
+				tileData.put("texture", "forest1.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 23: {  // Forest 1
+				tileData.put("texture", "forest2.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 24: {  // Forest 1
+				tileData.put("texture", "forest3.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 25: {  // Forest 1
+				tileData.put("texture", "forest4.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 26: {  // Forest 1
+				tileData.put("texture", "forest5.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 27: {  // Forest 1
+				tileData.put("texture", "forest6.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 28: {  // Forest 1
+				tileData.put("texture", "forest7.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 29: {  // Forest 1
+				tileData.put("texture", "forest8.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 30: {  // Forest 1
+				tileData.put("texture", "forest9.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 31: {  // Forest 1
+				tileData.put("texture", "snowforest1.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 32: {  // Forest 1
+				tileData.put("texture", "snowforest2.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 33: {  // Forest 1
+				tileData.put("texture", "snowforest3.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 34: {  // Forest 1
+				tileData.put("texture", "snowforest4.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 35: {  // Forest 1
+				tileData.put("texture", "snowforest5.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 36: {  // Forest 1
+				tileData.put("texture", "snowforest6.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 37: {  // Forest 1
+				tileData.put("texture", "snowforest7.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 38: {  // Forest 1
+				tileData.put("texture", "snowforest8.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 39: {  // Forest 1
+				tileData.put("texture", "snowforest9.png");
+				tileData.put("collision", true);
+				break;
+			}
+
+
+
+
+
+
+
 		}
 		return tileData;
 	}
