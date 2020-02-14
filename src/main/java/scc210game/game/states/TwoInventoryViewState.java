@@ -8,7 +8,6 @@ import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
-import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.state.event.KeyDepressedEvent;
@@ -86,17 +85,21 @@ public class TwoInventoryViewState extends BaseInGameState {
                 var itemID = maybeItemID.get();
                 var itemEnt = this.findItem(itemID, world);
 
-                world.addComponentToEntity(itemEnt, new UITransform(slotTransform.xPos, slotTransform.yPos, 4, slotTransform.width, slotTransform.height));
+                var itemSize = new Vector2f(slotTransform.width * 0.8f, slotTransform.height * 0.8f);
+                var centerPosition = UiUtils.centerTransforms(itemSize, slotTransform.pos(), slotTransform.size());
+
+                world.addComponentToEntity(itemEnt, new UITransform(centerPosition.x, centerPosition.y, 4, itemSize.x, itemSize.y));
                 world.addComponentToEntity(itemEnt, new Renderable(Set.of(ViewType.UI), 3, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var itemTex = w.fetchComponent(e, TextureStorage.class);
                     var sprite = new Sprite(itemTex.texture);
                     sprite.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
 
+
                     var realItemSize = new Vector2f(itemTex.texture.getSize());
                     var mainViewSize = rw.getDefaultView().getSize().x;
-                    var itemSize = new Vector2f(realItemSize.x / mainViewSize, realItemSize.y / mainViewSize);
-                    sprite.setScale(trans.width / itemSize.x, trans.width / itemSize.x);
+                    var itemScale = trans.width / (realItemSize.x / mainViewSize);
+                    sprite.setScale(itemScale, itemScale);
                     rw.draw(sprite);
                 }));
                 world.addComponentToEntity(itemEnt, new UIDraggable());
