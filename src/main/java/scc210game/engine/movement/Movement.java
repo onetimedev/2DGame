@@ -57,28 +57,28 @@ public class Movement implements System {
         case A: {
           if(!map.getTile(position.xPos-1, position.yPos).hasCollision()) {
             position.xPos -= 1;
-            au.playSound("./src/main/resources/sounds/walking.wav");
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
           }
           break;
         }
         case S: {
           if(!map.getTile(position.xPos, position.yPos+1).hasCollision()) {
             position.yPos += 1;
-            au.playSound("./src/main/resources/sounds/walking.wav");
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
           }
           break;
         }
         case D: {
           if(!map.getTile(position.xPos+1, position.yPos).hasCollision()) {
             position.xPos += 1;
-            au.playSound("./src/main/resources/sounds/walking.wav");
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
           }
           break;
         }
         case W: {
           if(!map.getTile(position.xPos, position.yPos-1).hasCollision()) {
             position.yPos -= 1;
-            au.playSound("./src/main/resources/sounds/walking.wav");
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
           }
           break;
         }
