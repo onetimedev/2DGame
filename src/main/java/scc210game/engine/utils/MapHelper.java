@@ -1,12 +1,14 @@
 package scc210game.engine.utils;
 
 import org.jsfml.graphics.Texture;
+import org.jsfml.system.Vector2i;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
 public class MapHelper {
 
+	public static Vector2i mapSize = new Vector2i(120,120);
 
 	/**
 	 * Method used in enemy spawners to load the specific texture for the entity.

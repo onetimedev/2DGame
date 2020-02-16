@@ -39,26 +39,6 @@ public class MainGameState extends BaseInGameState {
 			count++;
 		}
 
-
-
-		// Hardcoded final boss coordinates
-		//TODO: Move this to GenerateMap?
-		Vector2i[] finalBossCoords = new Vector2i[9];
-		finalBossCoords[0] = new Vector2i(59,59);
-		finalBossCoords[1] = new Vector2i(60,59);
-		finalBossCoords[2] = new Vector2i(61,59);
-		finalBossCoords[3] = new Vector2i(59,60);
-		finalBossCoords[4] = new Vector2i(60,60);
-		finalBossCoords[5] = new Vector2i(61,60);
-		finalBossCoords[6] = new Vector2i(59,61);
-		finalBossCoords[7] = new Vector2i(60,61);
-		finalBossCoords[8] = new Vector2i(61,61);
-		Tile[] finalBossTiles = new Tile[9];
-
-		for(int i=0; i < finalBossTiles.length; i++) {  // Changing tile texture beneath FinalBoss
-			map.getTile(finalBossCoords[i].x, finalBossCoords[i].y).setTexture("light_basalt.png");
-			map.getTile(finalBossCoords[i].x, finalBossCoords[i].y).setHasEnemy(true);
-		}
 		world.entityBuilder().with(new FinalBossSpawner()).build();
 
 

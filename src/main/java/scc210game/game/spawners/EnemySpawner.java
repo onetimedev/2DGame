@@ -52,9 +52,9 @@ public class EnemySpawner implements Spawner {
         enemyTexture = MapHelper.loadTexture("grassEnemy.png");
         break;
       }
-      case "enemy_snow": {
+      case "enemy_snow.png": {
         enemyTile.setHasCollision(true);
-        enemyTexture = MapHelper.loadTexture("enemy.png");
+        enemyTexture = MapHelper.loadTexture("snowEnemy.png");
         break;
       }
     }

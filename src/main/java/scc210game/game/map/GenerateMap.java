@@ -13,11 +13,10 @@ public class GenerateMap {
 
 	private Tile[][] allTiles;
 	private Vector2i mapSize;
-	private ArrayList<Vector2i> possEnemyTiles = new ArrayList<>();
-	private ArrayList<Vector2i> possNPCTiles = new ArrayList<>();
-	private Vector2i[] enemyTiles;
-	private Vector2i[] npcTiles;
+	private ArrayList<Tile>  possEnemyTiles = new ArrayList<>();
+	private ArrayList<Tile> npcTiles = new ArrayList<>();
 	private ArrayList<Tile> chestTiles = new ArrayList<>();
+	private ArrayList<Tile> enemyTiles;
 
 
 	// Read from object map tile values that are already preset
@@ -25,8 +24,8 @@ public class GenerateMap {
 		mapSize = new Vector2i(120, 120);
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
-		addEnemies();
-		addNPCs();
+		enemyTiles = addEnemies();
+		createFinalBossTiles();
 	}
 
 
@@ -44,11 +43,11 @@ public class GenerateMap {
 				for (int x=0; x<mapSize.x; x++) {
 					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
-					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().contains("enemy_"))
-						possEnemyTiles.add(allTiles[x][y].getXYPos());
+					if(allTiles[x][y].getTextureName().contains("enemy_"))
+						possEnemyTiles.add(allTiles[x][y]);
 
 					if(allTiles[x][y].getTextureName().contains("story.png"))
-						possNPCTiles.add(allTiles[x][y].getXYPos());
+						npcTiles.add(allTiles[x][y]);
 
 					if(allTiles[x][y].canHaveChest() && allTiles[x][y].getTextureName().equals("chest.png"))
 						chestTiles.add(allTiles[x][y]);
@@ -147,7 +146,7 @@ public class GenerateMap {
 				break;
 			}
 			case 15: {  // Snowy Forest
-				tileData.put("texture", "snow_forest.png");
+				tileData.put("texture", "snow_tree.png");
 				tileData.put("collision", true);
 				break;
 			}
@@ -164,22 +163,22 @@ public class GenerateMap {
 			}
 			case 18: {  // Enemy Basalt
 				tileData.put("texture", "enemy_basalt.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
 			case 19: {  // Enemy Sand
 				tileData.put("texture", "enemy_sand.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
 			case 20: {  // Enemy Grass
 				tileData.put("texture", "enemy_grass.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
 			case 21: {  // Enemy Snow
 				tileData.put("texture", "enemy_snow.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
 			case 22: {  // Forest 1
@@ -272,32 +271,8 @@ public class GenerateMap {
 				tileData.put("collision", true);
 				break;
 			}
-
-
-
-
-
-
-
 		}
 		return tileData;
-	}
-
-
-	public Tile[][] getAllTiles() {
-		return allTiles;
-	}
-
-	public Vector2i getMapSize() {
-		return mapSize;
-	}
-
-	public Vector2i[] getEnemyTiles() {
-		return enemyTiles;
-	}
-
-	public Vector2i[] getNPCTiles() {
-		return npcTiles;
 	}
 
 
@@ -371,53 +346,78 @@ public class GenerateMap {
 	}
 
 
-	public ArrayList<Tile> getChestTiles() {
-		return chestTiles;
+	/**
+	 * Method to set the tiles beneath the final boss.
+	 */
+	private void createFinalBossTiles() {
+		Vector2i[] finalBossCoords = new Vector2i[9];
+		finalBossCoords[0] = new Vector2i(59,59);
+		finalBossCoords[1] = new Vector2i(60,59);
+		finalBossCoords[2] = new Vector2i(61,59);
+		finalBossCoords[3] = new Vector2i(59,60);
+		finalBossCoords[4] = new Vector2i(60,60);
+		finalBossCoords[5] = new Vector2i(61,60);
+		finalBossCoords[6] = new Vector2i(59,61);
+		finalBossCoords[7] = new Vector2i(60,61);
+		finalBossCoords[8] = new Vector2i(61,61);
+		Tile[] finalBossTiles = new Tile[9];
+		for(int i=0; i < finalBossTiles.length; i++) {  // Changing tile texture beneath FinalBoss
+		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setTexture("light_basalt.png");
+		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setHasEnemy(true);
+		}
 	}
-
 
 
 	/*
 		Method to assign the spawn points of enemies on the map based on other spawn points and
 		the number of enemies to be place on the map.
 	*/
-	private void addEnemies() {
+	private ArrayList<Tile> addEnemies() {
 		int minEnemyTiles = 30;
-		int checkWithin = 20;
+		int checkWithin = 70;
 		int placedCount = 0;
-		ArrayList<Vector2i> tempList = new ArrayList<>();
+		ArrayList<Tile> tempList = new ArrayList<>();
 
 		while (minEnemyTiles > placedCount) {
-			for (Vector2i coords : possEnemyTiles) {
+			for (Tile tile : possEnemyTiles) {
+				System.out.println(tile.getTextureName());
 				int count = 0;
 				int rng = (int) (Math.random() * 10 + 1);
 				if (rng > 7) {
-					System.out.println("Coords: " + coords);
-					for (Vector2i altCoords : possEnemyTiles)
-						if ((coords.x - checkWithin > altCoords.x || coords.x + checkWithin < altCoords.x) || (coords.y - checkWithin > altCoords.y || coords.y + checkWithin < altCoords.y))
+					//System.out.println("Coords: " + coords);
+					for (Tile otherTiles : possEnemyTiles)
+						if ((tile.getXPos() - checkWithin > otherTiles.getXPos() || tile.getXPos() + checkWithin < otherTiles.getXPos()) || (tile.getYPos() - checkWithin > otherTiles.getYPos() || tile.getYPos() + checkWithin < otherTiles.getYPos()))
 							count++;
 
 					if (count == possEnemyTiles.size() - 1) {
-						tempList.add(coords);
+						tempList.add(tile);
+						tile.setHasEnemy(true);
+						System.out.println("Added");
 						placedCount++;
 					}
+
 				}
 			}
 			checkWithin -= 2;
 		}
-
-		enemyTiles = new Vector2i[tempList.size()];
-		enemyTiles = tempList.toArray(enemyTiles);
+		return tempList;
 	}
 
-	private void addNPCs() {
-		ArrayList<Vector2i> npcList = new ArrayList<>();
 
-		npcList.addAll(possNPCTiles);
+	public ArrayList<Tile> getGenChestTiles() {
+		return chestTiles;
+	}
 
-		npcTiles = new Vector2i[npcList.size()];
-		npcTiles = npcList.toArray(npcTiles);
+	public Tile[][] getGenTiles() {
+		return allTiles;
+	}
 
+	public ArrayList<Tile> getGenEnemyTiles() {
+		return enemyTiles;
+	}
+
+	public ArrayList<Tile> getGenNPCTiles() {
+		return npcTiles;
 	}
 
 
