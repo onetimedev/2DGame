@@ -16,7 +16,7 @@ public class TextureStorage extends Component {
     }
 
     @Override
-    public Component clone() {
+    public Component copy() {
         return this;
     }
 }

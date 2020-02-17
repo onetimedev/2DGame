@@ -7,4 +7,8 @@ public class Player extends Component {
     public String serialize() {
         return null;
     }
+
+    public Player copy() {
+        return null;
+    }
 }

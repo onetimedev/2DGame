@@ -7,7 +7,6 @@ import scc210game.engine.ecs.World;
 import java.util.function.BiConsumer;
 
 public class Consumable extends Component {
-
     public BiConsumer<Entity, World> consume;
 
     public Consumable(BiConsumer<Entity, World> consume) {

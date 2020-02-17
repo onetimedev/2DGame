@@ -49,7 +49,7 @@ public class HealthBarSpawner implements Spawner {
 
                     var health = w.fetchComponent(player, Health.class);
 
-                    var innerTrans = trans.clone();
+                    var innerTrans = trans.copy();
                     innerTrans.height *= 0.90;
                     innerTrans.width *= (0.99375 * health.hpPercent());
                     innerTrans.updateOrigin(innerTrans.xPos + 0.003125f, innerTrans.yPos + 0.00125f);

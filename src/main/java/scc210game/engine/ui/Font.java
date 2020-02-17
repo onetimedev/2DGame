@@ -12,4 +12,12 @@ public class Font {
             throw new RuntimeException(e);
         }
     }};
+
+    public static final org.jsfml.graphics.Font fantasqueSansMono = new org.jsfml.graphics.Font() {{
+        try {
+            this.loadFromFile(ResourceLoader.resolve("font/FantasqueSansMono-Regular.ttf"));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }};
 }

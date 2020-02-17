@@ -160,7 +160,8 @@ public class UITransform extends Component {
                 y < yUppBound);
     }
 
-    public UITransform clone() {
+    @Override
+    public UITransform copy() {
         return new UITransform(this.originXPos, this.originYPos, this.xPos, this.yPos, this.zPos, this.width, this.height);
     }
 }

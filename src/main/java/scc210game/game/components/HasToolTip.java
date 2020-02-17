@@ -9,11 +9,9 @@ import java.util.List;
  * Represents objects that have popup hover info
  */
 public class HasToolTip extends Component {
-    @Nonnull public final String text;
     @Nonnull public HoverState hoverState;
 
-    public HasToolTip(@Nonnull String text) {
-        this.text = text;
+    public HasToolTip() {
         hoverState = HoverState.NOTHOVERED;
     }
 
@@ -58,8 +56,7 @@ public class HasToolTip extends Component {
     @Override
     public String toString() {
         return "HasToolTip{" +
-                "text='" + text + '\'' +
-                ", hoverState=" + hoverState +
+                "hoverState=" + hoverState +
                 '}';
     }
 }

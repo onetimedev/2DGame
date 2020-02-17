@@ -6,9 +6,10 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.Item;
 import scc210game.game.components.TextureStorage;
-import scc210game.game.components.Weapon;
+import scc210game.game.items.Weapon;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class WeaponSpawner implements Spawner {
@@ -26,8 +27,7 @@ public class WeaponSpawner implements Spawner {
         var tex = generateTexture(this.level);
 
         return builder
-                .with(Item.makeWithLevel(name, this.level))
-                .with(new Weapon(dmg, name, lore))
+                .with(Item.makeWithLevel(name, this.level, List.of(new Weapon(dmg, lore))))
                 .with(new TextureStorage(tex));
     }
 
