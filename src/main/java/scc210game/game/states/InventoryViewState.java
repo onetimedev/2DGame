@@ -1,9 +1,12 @@
 package scc210game.game.states;
 
+import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
+import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
+import scc210game.engine.animation.Animate;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
@@ -15,16 +18,19 @@ import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransNop;
 import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
+import scc210game.engine.ui.Font;
 import scc210game.engine.ui.components.UIDraggable;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.Tuple2;
 import scc210game.engine.utils.UiUtils;
+import scc210game.game.components.HasToolTip;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Item;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.spawners.ui.InventorySlotSpawner;
 import scc210game.game.states.events.LeaveInventoryEvent;
 
+import java.awt.*;
 import java.util.Set;
 
 public class InventoryViewState extends BaseInGameState {
@@ -73,11 +79,13 @@ public class InventoryViewState extends BaseInGameState {
             if (maybeItemID.isPresent()) {
                 var itemID = maybeItemID.get();
                 var itemEnt = this.findItem(itemID, world);
+                var itemData = world.fetchComponent(itemEnt, Item.class);
 
                 var itemSize = new Vector2f(slotTransform.width * 0.8f, slotTransform.height * 0.8f);
                 var centerPosition = UiUtils.centerTransforms(itemSize, slotTransform.pos(), slotTransform.size());
 
                 world.addComponentToEntity(itemEnt, new UITransform(centerPosition.x, centerPosition.y, 4, itemSize.x, itemSize.y));
+                world.addComponentToEntity(itemEnt, new HasToolTip(itemData.name));
                 world.addComponentToEntity(itemEnt, new Renderable(Set.of(ViewType.UI), 3, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var itemTex = w.fetchComponent(e, TextureStorage.class);
@@ -90,6 +98,36 @@ public class InventoryViewState extends BaseInGameState {
                     var itemScale = trans.width / (realItemSize.x / mainViewSize);
                     sprite.setScale(itemScale, itemScale);
                     rw.draw(sprite);
+
+                    var tooltipPos = new Vector2f(trans.xPos, trans.yPos + trans.height + 0.01f);
+                    var tooltipSize = new Vector2f(0.1f, 0.03f);
+
+                    var toolTip = w.fetchComponent(e, HasToolTip.class);
+
+                    if (!toolTip.isVisible())
+                        return;
+
+                    float opacity;
+                    if (w.hasComponent(e, Animate.class)) {
+                        opacity = toolTip.calcOpacity(w.fetchComponent(e, Animate.class).pctComplete);
+                    } else {
+                        opacity = 1.0f;
+                    }
+
+                    var rect = new RectangleShape(UiUtils.convertUiSize(rw, tooltipSize)) {{
+                        var colour = new Color(0.8f, 0.8f, 0.8f, opacity);
+                        this.setPosition(UiUtils.convertUiPosition(rw, tooltipPos));
+                        this.setFillColor(UiUtils.transformColor(colour));
+                    }};
+                    rw.draw(rect);
+
+                    var text = new Text(toolTip.text, Font.freesans) {{
+                        var colour = new Color(1.0f, 1.0f, 1.0f, opacity);
+                        this.setPosition(UiUtils.convertUiPosition(rw, tooltipPos));
+                        this.setColor(UiUtils.transformColor(colour));
+                    }};
+
+                    rw.draw(text);
                 }));
                 world.addComponentToEntity(itemEnt, new UIDraggable());
             }

@@ -23,6 +23,8 @@ import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.states.MainMenuState;
+import scc210game.game.systems.ToolTipHandler;
+import scc210game.game.systems.InventoryLeaveHandler;
 import scc210game.game.systems.ItemMoveHandler;
 
 import java.util.HashMap;
@@ -58,6 +60,8 @@ public class Main {
                 (ecs) -> new AnimationUpdater(),
                 Movement::new,
                 ItemMoveHandler::new,
+                ToolTipHandler::new,
+                InventoryLeaveHandler::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());

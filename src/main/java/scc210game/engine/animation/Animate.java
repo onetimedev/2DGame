@@ -28,7 +28,7 @@ public class Animate extends Component {
     }
 
     public void update(Duration td) {
-        var pct = td.dividedBy(this.duration);
+        var pct = (float) td.toNanos() / (float) this.duration.toNanos();
         this.pctComplete += pct;
     }
 

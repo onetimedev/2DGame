@@ -26,7 +26,7 @@ public class WeaponSpawner implements Spawner {
         var tex = generateTexture(this.level);
 
         return builder
-                .with(Item.makeWithLevel(this.level))
+                .with(Item.makeWithLevel(name, this.level))
                 .with(new Weapon(dmg, name, lore))
                 .with(new TextureStorage(tex));
     }
