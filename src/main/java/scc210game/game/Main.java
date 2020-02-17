@@ -6,6 +6,7 @@ import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
+import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
@@ -40,7 +41,7 @@ public class Main {
 
     private Main() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
+        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game", WindowStyle.FULLSCREEN);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{

@@ -28,6 +28,7 @@ public class MainMenuState extends InputHandlingState {
     public Transition handleEvent(StateEvent evt, World world) {
         if (evt instanceof StartGameEvent) {
             au.stopSound();
+            au.playSound("./src/main/resources/sounds/menuSelect.wav", false);
             // transition to the main game state
             return new TransPush(new MainGameState());
         }
