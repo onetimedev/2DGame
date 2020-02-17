@@ -81,7 +81,7 @@ public class GenerateMap {
 
 		switch(tileType) {
 			case 1: {  // Grass
-				tileData.put("texture", "grass2.png");
+				tileData.put("texture", "grass.png");
 				break;
 			}
 			case 2: {  // Path
@@ -157,7 +157,7 @@ public class GenerateMap {
 				break;
 			}
 			case 17: {  // Barrier
-				tileData.put("texture", "barrier.png");
+				tileData.put("texture", "barrier1.png");
 				tileData.put("collision", true);
 				break;
 			}
@@ -271,6 +271,11 @@ public class GenerateMap {
 				tileData.put("collision", true);
 				break;
 			}
+			case 40: {  // Barrier
+				tileData.put("texture", "barrier2.png");
+				tileData.put("collision", true);
+				break;
+			}
 		}
 		return tileData;
 	}
@@ -323,7 +328,7 @@ public class GenerateMap {
 				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setCanHaveEnemy(true);
 				switch (i) {
 					case 0: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass2.png");
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass.png");
 						break;
 					}
 					case 1: {
@@ -380,11 +385,9 @@ public class GenerateMap {
 
 		while (minEnemyTiles > placedCount) {
 			for (Tile tile : possEnemyTiles) {
-				System.out.println(tile.getTextureName());
 				int count = 0;
 				int rng = (int) (Math.random() * 10 + 1);
 				if (rng > 7) {
-					//System.out.println("Coords: " + coords);
 					for (Tile otherTiles : possEnemyTiles)
 						if ((tile.getXPos() - checkWithin > otherTiles.getXPos() || tile.getXPos() + checkWithin < otherTiles.getXPos()) || (tile.getYPos() - checkWithin > otherTiles.getYPos() || tile.getYPos() + checkWithin < otherTiles.getYPos()))
 							count++;
@@ -392,7 +395,6 @@ public class GenerateMap {
 					if (count == possEnemyTiles.size() - 1) {
 						tempList.add(tile);
 						tile.setHasEnemy(true);
-						System.out.println("Added");
 						placedCount++;
 					}
 

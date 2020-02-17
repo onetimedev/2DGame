@@ -68,9 +68,12 @@ public class BossSpawner implements Spawner {
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 						(Entity entity, RenderWindow window, World world) -> {
 
+						//TODO: Get if specific enemy has been defeated
+						//if(defeated == false) {
 							Sprite en = new Sprite(bossTexture);
 							en.setPosition(bossCoords[0].x *64, bossCoords[0].y *64);
 							window.draw(en);
+						//}
 
 						}));
 	}

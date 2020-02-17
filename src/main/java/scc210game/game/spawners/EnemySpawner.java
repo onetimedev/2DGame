@@ -13,6 +13,7 @@ import scc210game.engine.render.ViewType;
 import scc210game.engine.utils.MapHelper;
 import scc210game.game.map.Enemy;
 import scc210game.game.map.Map;
+import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
 
 import java.io.IOException;
@@ -69,10 +70,13 @@ public class EnemySpawner implements Spawner {
       .with(new Renderable(Set.of(ViewType.MAIN), 5,
         (Entity entity, RenderWindow window, World world) -> {
 
+        //TODO: Get if specific enemy has been defeated
+        //if(defeated == false) {
           Sprite en = new Sprite(enemyTexture);
           en.setPosition(xSpawn*64, ySpawn*64);
-
           window.draw(en);
+        //}
+
         }));
   }
 }
