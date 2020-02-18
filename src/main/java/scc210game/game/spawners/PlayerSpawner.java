@@ -20,31 +20,31 @@ import java.util.Set;
 
 public class PlayerSpawner implements Spawner {
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Player())
 				.with(new Position(15, 106))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-				(Entity entity, RenderWindow window, World world) -> {
+				(Entity e, RenderWindow rw, World w) -> {
 					Texture t = new Texture();
 					try {
 						t.loadFromFile(Paths.get("./src/main/resources/textures/player.png"));
 						Sprite pl = new Sprite(t);
 
 
-						var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
-						var position = world.fetchComponent(playerEnt, Position.class);
+						var playerEnt = w.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+						var position = w.fetchComponent(playerEnt, Position.class);
 
 						pl.setPosition(position.xPos*64, position.yPos*64);
 
-						var view = world.fetchGlobalResource(MainViewResource.class);
+						var view = w.fetchGlobalResource(MainViewResource.class);
 						view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
-						window.draw(pl);
+						rw.draw(pl);
 
 					}
-					catch (IOException e) {
-						throw new RuntimeException();
+					catch (IOException ex) {
+						throw new RuntimeException(ex);
 					}
 				}));
 

@@ -57,17 +57,17 @@ public class EnemySpawner implements Spawner {
 
 
   @Override
-  public World.EntityBuilder inject(World.EntityBuilder builder) {
+  public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
     return builder
       .with(new Enemy())
       .with(new Position(xSpawn, ySpawn))
       .with(new Renderable(Set.of(ViewType.MAIN), 5,
-        (Entity entity, RenderWindow window, World world) -> {
+        (Entity e, RenderWindow rw, World w) -> {
 
           Sprite en = new Sprite(enemyTexture);
           en.setPosition(xSpawn*64, ySpawn*64);
 
-          window.draw(en);
+          rw.draw(en);
         }));
   }
 }

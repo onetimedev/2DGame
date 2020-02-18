@@ -23,7 +23,7 @@ public class WeaponSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var dmg = generateDamage(this.level);
         var element = randomEnum(Element.class);
         var name = generateWeaponName(this.level, element);

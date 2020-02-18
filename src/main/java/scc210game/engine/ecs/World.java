@@ -297,7 +297,7 @@ public class World {
         public EntityBuilder with(Spawner spawner) {
             assert !this.built : "EntityBuilder already built";
 
-            return spawner.inject(this);
+            return spawner.inject(this, World.this);
         }
 
         /**

@@ -52,17 +52,17 @@ public class BossSpawner implements Spawner {
 
 
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Enemy())
 				.with(new Boss())
 				.with(new Position(bossCoords[0].x, bossCoords[0].y))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						(Entity entity, RenderWindow window, World world) -> {
+						(Entity e, RenderWindow rw, World w) -> {
 
 							Sprite en = new Sprite(bossTexture);
 							en.setPosition(bossCoords[0].x *64, bossCoords[0].y *64);
-							window.draw(en);
+							rw.draw(en);
 
 						}));
 	}

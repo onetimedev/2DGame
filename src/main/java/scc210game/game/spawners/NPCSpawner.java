@@ -31,28 +31,25 @@ public class NPCSpawner implements Spawner {
 
 
     public void setTexture(String type) {
-        switch (type) {
-            case "story.png": {
-                npcTile.setHasCollision(true);
-                npcTexture = MapHelper.loadTexture("story.png");
-                break;
-            }
+        if (type.equals("story.png")) {
+            npcTile.setHasCollision(true);
+            npcTexture = MapHelper.loadTexture("story.png");
         }
     }
 
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new NPC())
                 .with(new Position(xSpawn, ySpawn))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
-                        (Entity entity, RenderWindow window, World world) -> {
+                        (Entity e, RenderWindow rw, World w) -> {
 
                             Sprite npc = new Sprite(npcTexture);
                             npc.setPosition(xSpawn * 64, ySpawn * 64);
 
-                            window.draw(npc);
+                            rw.draw(npc);
                         }));
     }
 

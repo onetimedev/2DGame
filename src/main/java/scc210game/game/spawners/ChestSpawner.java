@@ -18,7 +18,7 @@ import java.util.Set;
 public class ChestSpawner implements Spawner {
 
 	private Tile chestTile;
-	private Texture t = new Texture();
+	private Texture t;
 
 	public ChestSpawner(Tile ti) {
 		chestTile = ti;
@@ -37,16 +37,17 @@ public class ChestSpawner implements Spawner {
 	}
 
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Chest())
+                .with(new FilledInventorySpawner())
 				.with(new Position(chestTile.getXPos(), chestTile.getYPos()))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						(Entity entity, RenderWindow window, World world) -> {
+						(Entity e, RenderWindow rw, World w) -> {
 
 								Sprite c = new Sprite(t);
 								c.setPosition(chestTile.getXPos()*64, chestTile.getYPos()*64);
-								window.draw(c);
+								rw.draw(c);
 
 						}));
 

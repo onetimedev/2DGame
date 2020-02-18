@@ -37,41 +37,41 @@ public class EnterInventoryButtonSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
         var correctedSize = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
         return builder
                 .with(new UIText("Inventory"))
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
-                .with(new UIClickable((entity, world) -> {
+                .with(new UIClickable((Entity e, World w) -> {
                     var inv = new Inventory(14);
-                    var invEnt = world.entityBuilder()
+                    var invEnt = w.entityBuilder()
                             .with(inv)
                             .build();
 
                     for (var i = 0; i < 4; i++) {
-                        var itemEnt = world.entityBuilder()
+                        var itemEnt = w.entityBuilder()
                                 .with(new WeaponSpawner(i * 10))
                                 .build();
-                        var item = world.fetchComponent(itemEnt, Item.class);
+                        var item = w.fetchComponent(itemEnt, Item.class);
                         inv.addItem(item.itemID);
                     }
 
                     var inv1 = new Inventory(14);
-                    var invEnt1 = world.entityBuilder()
+                    var invEnt1 = w.entityBuilder()
                             .with(inv1)
                             .build();
 
                     for (var i = 0; i < 4; i++) {
-                        var itemEnt = world.entityBuilder()
+                        var itemEnt = w.entityBuilder()
                                 .with(new WeaponSpawner(i * 10))
                                 .build();
-                        var item = world.fetchComponent(itemEnt, Item.class);
+                        var item = w.fetchComponent(itemEnt, Item.class);
                         inv1.addItem(item.itemID);
                     }
 
-                    world.ecs.acceptEvent(new EnterTwoInventoryEvent(inv, inv1, invEnt, invEnt1));
+                    w.ecs.acceptEvent(new EnterTwoInventoryEvent(inv, inv1, invEnt, invEnt1));
                 }))
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);

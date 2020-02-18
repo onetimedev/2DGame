@@ -25,17 +25,17 @@ public class FinalBossSpawner implements Spawner {
 	}
 
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Enemy())
 				.with(new FinalBoss())
 				.with(new Position(59, 59))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						(Entity entity, RenderWindow window, World world) -> {
+						(Entity e, RenderWindow rw, World w) -> {
 
 							Sprite en = new Sprite(finalBossTexture);
 							en.setPosition(59*64, 59*64);
-							window.draw(en);
+							rw.draw(en);
 
 						}));
 	}

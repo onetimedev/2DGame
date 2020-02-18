@@ -25,7 +25,7 @@ public class DialogueSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))
                 .with(new UIText(this.message))

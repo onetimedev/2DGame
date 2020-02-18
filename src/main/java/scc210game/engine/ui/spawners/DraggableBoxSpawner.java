@@ -30,7 +30,7 @@ public class DraggableBoxSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
         var correctedSize = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
