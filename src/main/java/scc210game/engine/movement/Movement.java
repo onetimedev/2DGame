@@ -10,6 +10,7 @@ import scc210game.engine.render.MainViewResource;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
+import scc210game.engine.audio.Audio;
 import scc210game.game.map.Tile;
 import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
@@ -37,7 +38,8 @@ public class Movement implements System {
   public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
     for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
       Event e = it.next();
-      this.handleEvent(world, e);
+      Audio au = new Audio();
+      this.handleEvent(world, e, au);
     }
   }
 
@@ -46,8 +48,9 @@ public class Movement implements System {
    * surrounding tiles for collision or entities such as enemies.
    * @param world
    * @param e
+   * @param au
    */
-  private void handleEvent(@Nonnull World world, Event e) {
+  private void handleEvent(@Nonnull World world, Event e, Audio au) {
     var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
     if (!playerEntO.isPresent())
       return;
@@ -64,26 +67,35 @@ public class Movement implements System {
       KeyPressedEvent e1 = (KeyPressedEvent) e;
       switch (e1.key) {
         case A: {
-          if(!map.getTile(position.xPos-1, position.yPos).hasCollision())
+          if(!map.getTile(position.xPos-1, position.yPos).hasCollision()) {
             position.xPos -= 1;
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
+          }
             checkSurrounding(world, map, position.xPos, position.yPos);
           break;
         }
         case S: {
-          if(!map.getTile(position.xPos, position.yPos+1).hasCollision())
+          if(!map.getTile(position.xPos, position.yPos+1).hasCollision()) {
             position.yPos += 1;
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
+          }
             checkSurrounding(world, map, position.xPos, position.yPos);
           break;
         }
         case D: {
-          if(!map.getTile(position.xPos+1, position.yPos).hasCollision())
+          if(!map.getTile(position.xPos+1, position.yPos).hasCollision()) {
             position.xPos += 1;
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
+          }
             checkSurrounding(world, map, position.xPos, position.yPos);
           break;
         }
         case W: {
-          if(!map.getTile(position.xPos, position.yPos-1).hasCollision())
+          if(!map.getTile(position.xPos, position.yPos-1).hasCollision()) {
             position.yPos -= 1;
+            au.playSound("./src/main/resources/sounds/walking.wav", false);
+
+          }
             checkSurrounding(world, map, position.xPos, position.yPos);
           break;
         }
