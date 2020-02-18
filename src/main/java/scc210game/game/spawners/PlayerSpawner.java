@@ -5,6 +5,7 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Clock;
+import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
@@ -24,6 +25,7 @@ import java.util.Set;
 public class PlayerSpawner implements Spawner {
 
 	private Texture t = new Texture();
+	private Vector2i oldCoords = new Vector2i(15, 106);
 	private Sprite pl;
 	private int frame = 0;
 	private Clock animClock = new Clock();
@@ -52,8 +54,14 @@ public class PlayerSpawner implements Spawner {
 				(Entity entity, RenderWindow window, World world) -> {
 					var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
 					var position = world.fetchComponent(playerEnt, Position.class);
+					var steps = world.fetchComponent(playerEnt, Steps.class);
 
 					pl.setPosition(position.xPos*64, position.yPos*64);
+
+					//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
+					if(oldCoords.x != Math.floor(position.xPos) || oldCoords.y != Math.floor(position.yPos))
+						steps.count++;
+
 					var view = world.fetchGlobalResource(MainViewResource.class);
 					view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
@@ -67,6 +75,7 @@ public class PlayerSpawner implements Spawner {
 						pl.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
 					}
 
+					oldCoords = new Vector2i((int) Math.floor(position.xPos), (int) Math.floor(position.yPos));
 					window.draw(pl);
 				}));
 
