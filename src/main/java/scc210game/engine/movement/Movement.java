@@ -51,7 +51,6 @@ public class Movement implements System {
    * @param au
    */
   private void handleEvent(@Nonnull World world, Event e, Audio au) {
-
     var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
     if (!playerEntO.isPresent())
       return;
