@@ -31,6 +31,7 @@ public class CombatMovement implements System {
     private ScheduledExecutorService scheduledExecutorService;
 
 
+
     private World world;
     public CombatMovement(ECS ecs) {
         this.eventReader = ecs.eventQueue.makeReader();
@@ -72,8 +73,7 @@ public class CombatMovement implements System {
                         else
                             {
 
-                            new CombatAnimator(world, CombatPlayer.class, 15, CombatUtils.BACKWARD).animateXAxis();
-                            new CombatAnimator(world, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD).animateXAxis();
+                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD, false).animateXAxis();
                         }
 
                         break;
@@ -83,15 +83,14 @@ public class CombatMovement implements System {
 
                         float collisionXPos = cplayerPosition.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
                         UITransform newAttr = new UITransform(collisionXPos, cplayerPosition.yPos, cplayerPosition.zPos, cplayerPosition.width, cplayerPosition.height);
-                        if(new CombatUtils().hasCollided(newAttr, new CombatUtils().getEnemy(world)))
+                        if(new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(world, true)))
                         {
                             java.lang.System.out.println("has collided");
                         }
                         else
                         {
 
-                            new CombatAnimator(world, CombatPlayer.class, 15, CombatUtils.FORWARD).animateXAxis();
-                            new CombatAnimator(world, CombatPlayerWeapon.class, 15, CombatUtils.FORWARD).animateXAxis();
+                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.FORWARD, false).animateXAxis();
                         }
 
                         break;

@@ -64,8 +64,8 @@ public class CombatSpawner implements Spawner {
                             try {
                                 String spriteImage = this.enemy ? "./src/main/resources/textures/combat_enemy_player.png" : "./src/main/resources/textures/combat_player.png";
                                 t.loadFromFile(Paths.get(spriteImage));
-                                Sprite pl = new Sprite(t);
 
+                                Sprite pl = new Sprite(t);
 
 
 

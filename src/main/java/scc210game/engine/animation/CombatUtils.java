@@ -4,6 +4,7 @@ import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatEnemy;
+import scc210game.game.components.CombatPlayer;
 
 public class CombatUtils
 {
@@ -27,9 +28,14 @@ public class CombatUtils
 
     }
 
-    public UITransform getEnemy(World w){
-        var combatPlayer = w.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
-        return w.fetchComponent(combatPlayer, UITransform.class);
+    public UITransform getOpponent(World w, boolean enemy){
+        if(enemy){
+            var combatPlayer = w.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
+            return w.fetchComponent(combatPlayer, UITransform.class);
+        }else {
+            var combatPlayer = w.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
+            return w.fetchComponent(combatPlayer, UITransform.class);
+        }
     }
 
 }
