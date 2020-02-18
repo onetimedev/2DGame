@@ -41,7 +41,7 @@ public class Main {
 
     private Main() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game", WindowStyle.FULLSCREEN);
+        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
