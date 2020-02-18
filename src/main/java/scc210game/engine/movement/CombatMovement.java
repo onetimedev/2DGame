@@ -65,33 +65,16 @@ public class CombatMovement implements System {
                 switch (type.key) {
                     case A: {
 
+                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD, false).animateXAxis();
 
-                        if(cplayerPosition.xPos <= 0.0f)
-                        {
-                            java.lang.System.out.println("has collided");
-                        }
-                        else
-                            {
-
-                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD, false).animateXAxis();
-                        }
 
                         break;
                     }
                     case D: {
                         //right move
 
-                        float collisionXPos = cplayerPosition.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
-                        UITransform newAttr = new UITransform(collisionXPos, cplayerPosition.yPos, cplayerPosition.zPos, cplayerPosition.width, cplayerPosition.height);
-                        if(new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(world, true)))
-                        {
-                            java.lang.System.out.println("has collided");
-                        }
-                        else
-                        {
+                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.FORWARD, false).animateXAxis();
 
-                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.FORWARD, false).animateXAxis();
-                        }
 
                         break;
                     }

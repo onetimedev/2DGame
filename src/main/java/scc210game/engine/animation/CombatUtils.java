@@ -1,5 +1,6 @@
 package scc210game.engine.animation;
 
+import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
@@ -36,6 +37,13 @@ public class CombatUtils
             var combatPlayer = w.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
             return w.fetchComponent(combatPlayer, UITransform.class);
         }
+    }
+
+
+    public UITransform getWeapon(World w, Class<? extends Component> weaponClass){
+        var combatPlayer = w.applyQuery(Query.builder().require(weaponClass).build()).findFirst().get();
+        return w.fetchComponent(combatPlayer, UITransform.class);
+
     }
 
 }

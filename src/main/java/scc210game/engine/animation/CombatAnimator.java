@@ -110,20 +110,24 @@ public class CombatAnimator {
                 if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, false))) {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
                     weaponAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
+
                     continueAnimation();
                 }else{
+                    System.out.println("enemy exiting");
                     exit();
                 }
                 break;
             }
 
             case CombatUtils.BACKWARD: {
-                if(!(spriteAttributes.xPos <= getEnd())) {
+                if(spriteAttributes.xPos <= getEnd()) {
+
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
                     weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
 
                     continueAnimation();
                 }else{
+                    System.out.println("enemy exiting");
                     exit();
                 }
                 break;
@@ -150,7 +154,7 @@ public class CombatAnimator {
 
     private float getEnd()
     {
-        return enemy ? 0.9f : 0.0f;
+        return enemy ? 0.75f : 0.0f;
     }
 
 

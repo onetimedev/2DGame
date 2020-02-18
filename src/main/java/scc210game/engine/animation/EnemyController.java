@@ -2,6 +2,8 @@ package scc210game.engine.animation;
 
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.World;
+import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatEnemyWeapon;
 import scc210game.game.components.CombatPlayer;
@@ -23,7 +25,12 @@ public class EnemyController {
 
     private ScheduledExecutorService scheduledExecutorService;
 
+    private float WEAPON_RAISED = 170f;
+    private float WEAPON_HOLSTERED = 50f;
+
     private int collisionCount = 0;
+
+    private boolean weaponRaised = false;
 
     public EnemyController(World w, Class<? extends Component> spriteClass, Class<? extends Component> weaponClass){
         this.w = w;
@@ -38,14 +45,14 @@ public class EnemyController {
 
         if(startFirst()){
             start = true;
-            scheduledExecutorService.scheduleAtFixedRate(this::initMove, 2, 2, TimeUnit.SECONDS);
+            scheduledExecutorService.scheduleAtFixedRate(this::initMove, 0, 800, TimeUnit.MILLISECONDS);
 
         }
         else
         {
             if(start)
             {
-                scheduledExecutorService.scheduleAtFixedRate(this::initMove, 2, 2, TimeUnit.SECONDS);
+                scheduledExecutorService.scheduleAtFixedRate(this::initMove, 0, 800, TimeUnit.MILLISECONDS);
 
             }
 
@@ -58,20 +65,66 @@ public class EnemyController {
     private void initMove()
     {
 
-        if(collisionCount >= 3){
+        if(collisionCount >= 1){
             new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
+            collisionCount = 0;
         }else {
             if (getMove() != 3) {
-                System.out.println("enemy moving");
-                new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                //forward move
+                System.out.println("enemy moving forward");
+                UITransform attributes = new CombatUtils().getOpponent(w, true);
+                float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
+                UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
+                if(new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false)))
+                {
+                    if(!weaponRaised)
+                    {
+                        raiseWeapon();
+                        weaponRaised = true;
+                    }
+
+
+                    System.out.println("collided so moving backward");
+                    collisionCount++;
+                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                }else{
+
+                    if(weaponRaised)
+                    {
+                        lowerWeapon();
+                        weaponRaised = false;
+                    }
+                    System.out.println("moving forward");
+                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                }
             } else if (getMove() != 4) {
-                System.out.println("enemy moving");
+                //backwards move
+                System.out.println("enemy moving backward");
                 new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
             } else {
                 System.out.println("no move");
             }
         }
     }
+
+
+    private void raiseWeapon()
+    {
+
+
+        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).rotation = WEAPON_RAISED;
+        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).xPos -= 0.1f;
+
+
+    }
+
+
+    private void lowerWeapon()
+    {
+        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).rotation = WEAPON_HOLSTERED;
+        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).xPos += 0.1f;
+    }
+
 
     private int getMove()
     {
