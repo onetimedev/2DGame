@@ -2,30 +2,24 @@ package scc210game.engine.movement;
 
 import org.jsfml.window.Keyboard;
 import scc210game.engine.animation.CombatAnimator;
-import scc210game.engine.ecs.Query;
-import scc210game.engine.ecs.ECS;
+import scc210game.engine.animation.CombatUtils;
+import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
-import scc210game.engine.ecs.World;
 import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueueReader;
-import scc210game.engine.render.MainViewResource;
 import scc210game.engine.state.event.KeyDepressedEvent;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
-import scc210game.game.map.Map;
-import scc210game.game.map.Player;
-import scc210game.game.spawners.CombatWeapon;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.Iterator;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class CombatMovement implements System {
     private final EventQueueReader eventReader;
@@ -53,7 +47,7 @@ public class CombatMovement implements System {
         }
     }
 
-
+    @SuppressWarnings("unchecked")
     private void handleMovement(World world, Event event)
     {
         if(world.getCombatStatus()) {
@@ -69,24 +63,36 @@ public class CombatMovement implements System {
 
                 switch (type.key) {
                     case A: {
-                        //left move
 
-                        /*
-                        cplayerPosition.xPos -= 0.01f;
-                        cplayerWeaponPosition.xPos -= 0.01f;
-                        */
 
-                        new CombatAnimator(world, CombatPlayer.class, 20, false).animate(0,20);
+                        if(cplayerPosition.xPos <= 0.0f)
+                        {
+                            java.lang.System.out.println("has collided");
+                        }
+                        else
+                            {
 
+                            new CombatAnimator(world, CombatPlayer.class, 15, CombatUtils.BACKWARD).animateXAxis();
+                            new CombatAnimator(world, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD).animateXAxis();
+                        }
 
                         break;
                     }
                     case D: {
                         //right move
 
-                        new CombatAnimator(world, CombatPlayer.class, 20, true).animate(0,20);
+                        float collisionXPos = cplayerPosition.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
+                        UITransform newAttr = new UITransform(collisionXPos, cplayerPosition.yPos, cplayerPosition.zPos, cplayerPosition.width, cplayerPosition.height);
+                        if(new CombatUtils().hasCollided(newAttr, new CombatUtils().getEnemy(world)))
+                        {
+                            java.lang.System.out.println("has collided");
+                        }
+                        else
+                        {
 
-
+                            new CombatAnimator(world, CombatPlayer.class, 15, CombatUtils.FORWARD).animateXAxis();
+                            new CombatAnimator(world, CombatPlayerWeapon.class, 15, CombatUtils.FORWARD).animateXAxis();
+                        }
 
                         break;
                     }
@@ -119,25 +125,7 @@ public class CombatMovement implements System {
         }
     }
 
-    public void animate(int counter, int max){
-        if(counter < max){
-            scheduledExecutorService.schedule(this::move, 10, TimeUnit.MILLISECONDS);
-        }else{
-            animCounter = 0;
-        }
-    }
 
-    public void move(){
-
-        var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
-        var combatPlayerWeapon = world.applyQuery(Query.builder().require(CombatPlayerWeapon.class).build()).findFirst().get();
-        var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-        var cplayerWeaponPosition = world.fetchComponent(combatPlayerWeapon, UITransform.class);
-        cplayerPosition.xPos += 0.005f;
-        cplayerWeaponPosition.xPos += 0.005f;
-        animCounter++;
-        animate(animCounter, 50);
-    }
 
 
 
