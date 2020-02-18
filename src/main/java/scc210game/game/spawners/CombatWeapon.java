@@ -38,7 +38,7 @@ public class CombatWeapon implements Spawner {
 
     public CombatWeapon(boolean enemy, World world)
     {
-
+        this.enemy = enemy;
         if(!enemy)
         {
             var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
@@ -49,13 +49,12 @@ public class CombatWeapon implements Spawner {
         }
         else
         {
-            var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
-            var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-            this.xPosition = (cplayerPosition.xPos + (cplayerPosition.width/2));
-            this.yPosition = (cplayerPosition.yPos + (cplayerPosition.height/2));
+            var combatEnemySprite = world.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
+            var combatplayerPosition = world.fetchComponent(combatEnemySprite, UITransform.class);
+            this.xPosition = combatplayerPosition.xPos;
+            this.yPosition = (combatplayerPosition.height/2)+0.2f;
         }
 
-        this.enemy = enemy;
     }
 
     @Override
@@ -73,7 +72,6 @@ public class CombatWeapon implements Spawner {
                     var dimensions = w.fetchComponent(e, UITransform.class);
                     Texture t = new Texture();
                     try {
-                        String spriteImage = this.enemy ? "./src/main/resources/textures/enemy_basalt.png" : "./src/main/resources/textures/combat_player.png";
                         t.loadFromFile(Paths.get("./src/main/resources/textures/sword.png"));
                         Sprite pl = new Sprite(t);
 

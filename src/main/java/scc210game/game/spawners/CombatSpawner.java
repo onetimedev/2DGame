@@ -41,7 +41,7 @@ public class CombatSpawner implements Spawner {
         }
         else
         {
-            xPosition = 0.8f;
+            xPosition = 0.75f;
         }
 
         this.enemy = enemy;
@@ -62,7 +62,7 @@ public class CombatSpawner implements Spawner {
                             var dimensions = w.fetchComponent(e, UITransform.class);
                             Texture t = new Texture();
                             try {
-                                String spriteImage = this.enemy ? "./src/main/resources/textures/enemy_basalt.png" : "./src/main/resources/textures/combat_player.png";
+                                String spriteImage = this.enemy ? "./src/main/resources/textures/combat_enemy_player.png" : "./src/main/resources/textures/combat_player.png";
                                 t.loadFromFile(Paths.get(spriteImage));
                                 Sprite pl = new Sprite(t);
 
