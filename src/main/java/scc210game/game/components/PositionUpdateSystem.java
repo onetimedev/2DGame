@@ -68,42 +68,102 @@ public class PositionUpdateSystem implements System {
 
 
 		float left = position.xPos;
-		float right = position.xPos + 64;
+		float right = position.xPos + 1;
 		float top = position.yPos;
-		float bottom = position.yPos + 64;
+		float bottom = position.yPos + 1;
 
 		if(deltaX > 0) {  // right
-			map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(top+10));
-
-			if(map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom-10)))
-				if(map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom-10)).hasCollision()) {
-
+			if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)))
+				if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
 				}
+			if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)))
+				if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
+		}
+		if(deltaX < 0) {
+			if (map.legalTile((int) Math.floor(left + deltaX), (int) Math.floor(top + 0.2)))
+				if (map.getTile((int) Math.floor(left + deltaX), (int) Math.floor(top + 0.2)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
+			if (map.legalTile((int) Math.floor(left + deltaX), (int) Math.floor(bottom - 0.2)))
+				if (map.getTile((int) Math.floor(left + deltaX), (int) Math.floor(bottom - 0.2)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
+			}
 
 
-
-
-
+		if(deltaY < 0) {  // right
+			if (map.legalTile((int) Math.floor(left + 0.2), (int) Math.floor(top + deltaY)))
+				if (map.getTile((int) Math.floor(left + 0.2), (int) Math.floor(top + deltaY)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
+			if (map.legalTile((int) Math.floor(right - 0.2), (int) Math.floor(top + deltaY)))
+				if (map.getTile((int) Math.floor(right - 0.2), (int) Math.floor(top + deltaY)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
+		}
+		if(deltaY > 0) {
+			if (map.legalTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)))
+				if (map.getTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
+			if (map.legalTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)))
+				if (map.getTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
+					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
+					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
+					java.lang.System.out.println("COLLISION");
+					velocity.dy = 0;
+					velocity.dx = 0;
+					return;
+				}
 		}
 
+
+		int xPosInt = (int) Math.floor(position.xPos + deltaX);
+		int yPosInt = (int) Math.floor(position.yPos + deltaY);
 
 		checkSurrounding(world, map, xPosInt, yPosInt);
 
 
-		
-
-
-		if(map.legalTile(xPosInt, yPosInt))
-			if(map.getTile(xPosInt, yPosInt).hasCollision()) {
-				java.lang.System.out.println("COLLISION");
-				velocity.dy = 0;
-				velocity.dx = 0;
-				return;
-			}
-
-
-		position.xPos = xPosition;
-		position.yPos = yPosition;
+		position.xPos += deltaX;
+		position.yPos += deltaY;
 
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.setCenter(position.xPos*64, position.yPos*64);

@@ -5,10 +5,7 @@ import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
-import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueueReader;
-import scc210game.engine.render.MainViewResource;
-import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.game.map.Player;
 import javax.annotation.Nonnull;
@@ -36,13 +33,13 @@ public class Movement implements System {
     var velocity = world.fetchComponent(playerEnt, Velocity.class);
 
     if(Keyboard.isKeyPressed(Keyboard.Key.A))
-      velocity.dx = -2.5f;
+      velocity.dx = -3;
     if(Keyboard.isKeyPressed(Keyboard.Key.S))
-      velocity.dy = 2.5f;
+      velocity.dy = 3;
     if(Keyboard.isKeyPressed(Keyboard.Key.D))
-      velocity.dx = 2.5f;
+      velocity.dx = 3;
     if(Keyboard.isKeyPressed(Keyboard.Key.W))
-      velocity.dy = -2.5f;
+      velocity.dy = -3;
 
   }
 
