@@ -1,6 +1,5 @@
 package scc210game.game.components;
 
-import org.jsfml.system.Vector2f;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
@@ -34,140 +33,108 @@ public class PositionUpdateSystem implements System {
 			return;
 		var mapEnt = mapEntO.get();
 		var map = world.fetchComponent(mapEnt, Map.class);
-		//java.lang.System.out.println(velocity.dx + " " + velocity.dy);
 
-		var deltaX = velocity.dx * ((float) timeDelta.toMillis()) / 1000;  // for actual movement
+		// Delta of velocity movement around time
+		var deltaX = velocity.dx * ((float) timeDelta.toMillis()) / 1000;
 		var deltaY = velocity.dy * ((float) timeDelta.toMillis()) / 1000;
 
-
-
-		//java.lang.System.out.println("PRE * velX: " + velocity.dx + " velY: " + velocity.dy + ". xPos: " + xPosition + " yPos: " + yPosition);
-
+		// Decrementing velocity over time
 		velocity.dx *= 0.8;
 		velocity.dy *= 0.8;
 
-		//java.lang.System.out.println("PRE IF velX: " + velocity.dx + " velY: " + velocity.dy + ". xPos: " + xPosition + " yPos: " + yPosition);
-
+		// Resetting velocity
 		if(velocity.dx > -0.1 && velocity.dx < 0.1)
 			velocity.dx = 0;
 		if(velocity.dy > -0.1 && velocity.dy < 0.1)
 			velocity.dy = 0;
 
-		//java.lang.System.out.println("velX: " + velocity.dx + " velY: " + velocity.dy + ". xPos: " + xPosition + " yPos: " + yPosition);
-
-
-
-
-
-
-
-		java.lang.System.out.println("PLAYER COORDS: " + position.xPos + "," + position.yPos);
-
-
-		java.lang.System.out.println("Velocity: " + velocity.dx + "," + velocity.dy);
-
-
+		// Bounding box position of player
 		float left = position.xPos;
 		float right = position.xPos + 1;
 		float top = position.yPos;
 		float bottom = position.yPos + 1;
 
+		// X Delta collision checks
 		if(deltaX > 0) {  // right
-			if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)))
-				if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
-			if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)))
-				if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
+			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
 		}
-		if(deltaX < 0) {
-			if (map.legalTile((int) Math.floor(left + deltaX), (int) Math.floor(top + 0.2)))
-				if (map.getTile((int) Math.floor(left + deltaX), (int) Math.floor(top + 0.2)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
-			if (map.legalTile((int) Math.floor(left + deltaX), (int) Math.floor(bottom - 0.2)))
-				if (map.getTile((int) Math.floor(left + deltaX), (int) Math.floor(bottom - 0.2)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
-			}
-
-
-		if(deltaY < 0) {  // right
-			if (map.legalTile((int) Math.floor(left + 0.2), (int) Math.floor(top + deltaY)))
-				if (map.getTile((int) Math.floor(left + 0.2), (int) Math.floor(top + deltaY)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
-			if (map.legalTile((int) Math.floor(right - 0.2), (int) Math.floor(top + deltaY)))
-				if (map.getTile((int) Math.floor(right - 0.2), (int) Math.floor(top + deltaY)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
-		}
-		if(deltaY > 0) {
-			if (map.legalTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)))
-				if (map.getTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
-			if (map.legalTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)))
-				if (map.getTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
-					java.lang.System.out.println("PlayerCoords: " + position.xPos+  "," + position.yPos);
-					java.lang.System.out.println("TileCoords: " + (int) Math.floor(right + deltaX) + "," + (int) Math.floor(top + 10));
-					java.lang.System.out.println("COLLISION");
-					velocity.dy = 0;
-					velocity.dx = 0;
-					return;
-				}
+		if(deltaX < 0) {  // left
+			if (checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
 		}
 
+		// Y Delta collision checks
+		if(deltaY < 0) {  // top
+			if (checkCollisionY(velocity, map, deltaY, left, right, top)) return;
+		}
+		if(deltaY > 0) {  // bottom
+			if (checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
+		}
 
+		// Changing to floored ints to check specific tiles around position
 		int xPosInt = (int) Math.floor(position.xPos + deltaX);
 		int yPosInt = (int) Math.floor(position.yPos + deltaY);
-
 		checkSurrounding(world, map, xPosInt, yPosInt);
 
-
+		// Updating position of player with delta value
 		position.xPos += deltaX;
 		position.yPos += deltaY;
 
+		// Getting and updating the view by its center
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
+	}
+
+	/**
+	 * Method to check the collision of tiles horizontally around the player
+	 * @param velocity of the player
+	 * @param map entity that holds the tiles
+	 * @param deltaY delta value of Y axis
+	 * @param left bounds
+	 * @param right bounds
+	 * @param bottom bounds
+	 * @return true if the tiles in the direction of movement have collision, false otherwise
+	 */
+	private boolean checkCollisionY(Velocity velocity, Map map, float deltaY, float left, float right, float bottom) {
+		if (map.legalTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)))
+			if (map.getTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
+				velocity.dy = 0;
+				velocity.dx = 0;
+				return true;
+			}
+		if (map.legalTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)))
+			if (map.getTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
+				velocity.dy = 0;
+				velocity.dx = 0;
+				return true;
+			}
+		return false;
+	}
+
+	/**
+	 * Method to check the collision of tiles horizontally around the player
+	 * @param velocity of the player
+	 * @param map entity that holds the tiles
+	 * @param deltaX delta value of X axis
+	 * @param right bounds
+	 * @param top bounds
+	 * @param bottom bounds
+	 * @return true if the tiles in the direction of movement have collision, false otherwise
+	 */
+	private boolean checkCollisionX(Velocity velocity, Map map, float deltaX, float right, float top, float bottom) {
+		if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)))
+			if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)).hasCollision()) {
+				velocity.dy = 0;
+				velocity.dx = 0;
+				return true;
+			}
+		if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)))
+			if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)).hasCollision()) {
+				velocity.dy = 0;
+				velocity.dx = 0;
+				return true;
+			}
+		return false;
 	}
 
 	/**
