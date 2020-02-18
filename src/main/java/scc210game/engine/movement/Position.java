@@ -4,10 +4,10 @@ import scc210game.engine.ecs.Component;
 
 public class Position extends Component {
 
-	public int xPos;
-	public int yPos;
+	public float xPos;
+	public float yPos;
 
-	public Position(int x, int y) {
+	public Position(float x, float y) {
 		xPos = x;
 		yPos = y;
 	}

@@ -10,12 +10,13 @@ import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
+import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 
@@ -45,6 +46,8 @@ public class PlayerSpawner implements Spawner {
 		return builder
 				.with(new Player())
 				.with(new Position(15, 106))
+				.with(new Velocity(0, 0))
+				.with(new Steps())
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 				(Entity entity, RenderWindow window, World world) -> {
 					var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
@@ -54,7 +57,7 @@ public class PlayerSpawner implements Spawner {
 					var view = world.fetchGlobalResource(MainViewResource.class);
 					view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
-					if(animClock.getElapsedTime().asMilliseconds() >= 500) {
+					if(animClock.getElapsedTime().asMilliseconds() >= 800) {
 						animClock.restart();
 						frame++;
 						if(frame > 5)

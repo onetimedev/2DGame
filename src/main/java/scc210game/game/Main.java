@@ -15,6 +15,7 @@ import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Movement;
 import scc210game.engine.render.MainViewResource;
+import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.render.RenderSystem;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.state.event.StateEvent;
@@ -22,6 +23,7 @@ import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
+import scc210game.game.components.PositionUpdateSystem;
 import scc210game.game.states.MainMenuState;
 
 import java.util.HashMap;
@@ -41,6 +43,7 @@ public class Main {
     private Main() {
         this.mainWindow = new RenderWindow();
         this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
+        this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
@@ -56,10 +59,12 @@ public class Main {
                 HandleClicked::new,
                 (ecs) -> new AnimationUpdater(),
                 Movement::new,
+                (ecs) -> new PositionUpdateSystem(),
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
         this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
+        this.ecs.addGlobalResource(new MainWindowResource(this.mainWindow));
         this.ecs.start();
     }
 

@@ -2,7 +2,7 @@ package scc210game.game.map;
 
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Component;
-import scc210game.engine.utils.MapHelper;
+import scc210game.game.utils.MapHelper;
 
 import java.util.ArrayList;
 
@@ -48,6 +48,12 @@ public class Map extends Component {
 
 	public Tile getTile(int xPos, int yPos) {
 		return mapTiles[xPos][yPos];
+	}
+
+	public boolean legalTile(int xPos, int yPos) {
+  	if(xPos > MapHelper.mapSize.x || xPos < 0 || yPos > MapHelper.mapSize.y || yPos < 0)
+  		return false;
+  	return true;
 	}
 
 	public int getTileMaxX() {
