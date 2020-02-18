@@ -43,6 +43,13 @@ public class Movement implements System {
     }
   }
 
+  /**
+   * Called when there is a JSFML key event, updating the players position and checking
+   * surrounding tiles for collision or entities such as enemies.
+   * @param world
+   * @param e
+   * @param au
+   */
   private void handleEvent(@Nonnull World world, Event e, Audio au) {
 
     var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
