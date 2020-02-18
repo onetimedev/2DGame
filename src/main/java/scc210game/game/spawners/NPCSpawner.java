@@ -31,9 +31,13 @@ public class NPCSpawner implements Spawner {
 
 
     public void setTexture(String type) {
-        if (type.equals("story.png")) {
-            npcTile.setHasCollision(true);
-            npcTexture = MapHelper.loadTexture("story.png");
+        switch (type) {
+            case "story.png": {
+                npcTile.setHasCollision(true);
+                npcTile.setCanHaveStory(true);
+                npcTexture = MapHelper.loadTexture("story.png");
+                break;
+            }
         }
     }
 

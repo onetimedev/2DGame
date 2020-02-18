@@ -23,9 +23,9 @@ import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.states.MainMenuState;
-import scc210game.game.systems.ToolTipHandler;
 import scc210game.game.systems.InventoryLeaveHandler;
 import scc210game.game.systems.ItemMoveHandler;
+import scc210game.game.systems.ToolTipHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +47,7 @@ public class Main {
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
-                //this.zoom(0.f);
+                this.zoom(0.7f);
             }});
             this.put(ViewType.UI, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));

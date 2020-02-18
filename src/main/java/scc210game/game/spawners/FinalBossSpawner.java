@@ -33,9 +33,12 @@ public class FinalBossSpawner implements Spawner {
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 						(Entity e, RenderWindow rw, World w) -> {
 
+						//TODO: Get if specific enemy has been defeated
+						//if(defeated == false) {
 							Sprite en = new Sprite(finalBossTexture);
 							en.setPosition(59*64, 59*64);
 							rw.draw(en);
+						//}
 
 						}));
 	}

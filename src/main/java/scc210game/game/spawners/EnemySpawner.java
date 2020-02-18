@@ -27,6 +27,7 @@ public class EnemySpawner implements Spawner {
     xSpawn = enemyTile.getXPos();
     ySpawn = enemyTile.getYPos();
     setTexture(t.getTextureName());
+    enemyTile.setHasEnemy(true);
   }
 
 
@@ -47,9 +48,9 @@ public class EnemySpawner implements Spawner {
         enemyTexture = MapHelper.loadTexture("grassEnemy.png");
         break;
       }
-      case "enemy_snow": {
+      case "enemy_snow.png": {
         enemyTile.setHasCollision(true);
-        enemyTexture = MapHelper.loadTexture("enemy.png");
+        enemyTexture = MapHelper.loadTexture("snowEnemy.png");
         break;
       }
     }
@@ -64,10 +65,13 @@ public class EnemySpawner implements Spawner {
       .with(new Renderable(Set.of(ViewType.MAIN), 5,
         (Entity e, RenderWindow rw, World w) -> {
 
+        //TODO: Get if specific enemy has been defeated
+        //if(defeated == false) {
           Sprite en = new Sprite(enemyTexture);
           en.setPosition(xSpawn*64, ySpawn*64);
-
           rw.draw(en);
+        //}
+
         }));
   }
 }
