@@ -44,7 +44,7 @@ public class Main {
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
-                //this.zoom(0.f);
+                this.zoom(0.7f);
             }});
             this.put(ViewType.UI, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize())));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));

@@ -13,11 +13,10 @@ public class GenerateMap {
 
 	private Tile[][] allTiles;
 	private Vector2i mapSize;
-	private ArrayList<Vector2i> possEnemyTiles = new ArrayList<>();
-	private ArrayList<Vector2i> possNPCTiles = new ArrayList<>();
-	private Vector2i[] enemyTiles;
-	private Vector2i[] npcTiles;
+	private ArrayList<Tile>  possEnemyTiles = new ArrayList<>();
+	private ArrayList<Tile> npcTiles = new ArrayList<>();
 	private ArrayList<Tile> chestTiles = new ArrayList<>();
+	private ArrayList<Tile> enemyTiles;
 
 
 	// Read from object map tile values that are already preset
@@ -25,8 +24,8 @@ public class GenerateMap {
 		mapSize = new Vector2i(120, 120);
 		allTiles = new Tile[mapSize.x][mapSize.y];
 		jsonToTiles();
-		addEnemies();
-		addNPCs();
+		enemyTiles = addEnemies();
+		createFinalBossTiles();
 	}
 
 
@@ -44,11 +43,11 @@ public class GenerateMap {
 				for (int x=0; x<mapSize.x; x++) {
 					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
 					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
-					if(allTiles[x][y].canHaveEnemy() && allTiles[x][y].getTextureName().contains("enemy_"))
-						possEnemyTiles.add(allTiles[x][y].getXYPos());
+					if(allTiles[x][y].getTextureName().contains("enemy_"))
+						possEnemyTiles.add(allTiles[x][y]);
 
 					if(allTiles[x][y].getTextureName().contains("story.png"))
-						possNPCTiles.add(allTiles[x][y].getXYPos());
+						npcTiles.add(allTiles[x][y]);
 
 					if(allTiles[x][y].canHaveChest() && allTiles[x][y].getTextureName().equals("chest.png"))
 						chestTiles.add(allTiles[x][y]);
@@ -81,155 +80,204 @@ public class GenerateMap {
 		tileData.put("enemy", false);
 
 		switch(tileType) {
-			case 1: {  // Forest
-				tileData.put("texture", "forest.png");
-				tileData.put("collision", true);
+			case 1: {  // Grass
+				tileData.put("texture", "grass.png");
 				break;
 			}
-			case 2: {  // Grass
-				tileData.put("texture", "grass2.png");
-				break;
-			}
-			case 3: {  // Path
+			case 2: {  // Path
 				tileData.put("texture", "path.png");
 				break;
 			}
-			case 4: {  // Chest
+			case 3: {  // Chest
 				tileData.put("texture", "chest.png");
 				tileData.put("collision", true);
 				tileData.put("chest", true);
 				break;
 			}
-			case 5: {  // Enemy
+			case 4: {  // Enemy
 				tileData.put("texture", "enemy.png");
 				tileData.put("collision", true);
 				tileData.put("enemy", true);
 				break;
 			}
-			case 6: {  // Tree
+			case 5: {  // Tree
 				tileData.put("texture", "tree.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 7: {  // Story
+			case 6: {  // Story
 				tileData.put("texture", "story.png");
 				break;
 			}
-			case 8: {  // Border
+			case 7: {  // Border
 				tileData.put("texture", "border.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 9: {  // Snow
+			case 8: {  // Snow
 				tileData.put("texture", "snow.png");
 				break;
 			}
-			case 10: {  // Water
+			case 9: {  // Water
 				tileData.put("texture", "water.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 11: {  // Sand
+			case 10: {  // Sand
 				tileData.put("texture", "sand.png");
 				break;
 			}
-			case 12: {  // Lava
+			case 11: {  // Lava
 				tileData.put("texture", "lava.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 13: {  // Basalt
+			case 12: {  // Basalt
 				tileData.put("texture", "basalt.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 14: {  // Basalt_Light
+			case 13: {  // Basalt_Light
 				tileData.put("texture", "light_basalt.png");
 				break;
 			}
-			case 15: {  // Ice
+			case 14: {  // Ice
 				tileData.put("texture", "ice.png");
 				break;
 			}
-			case 16: {  // Snowy Forest
-				tileData.put("texture", "snow_forest.png");
+			case 15: {  // Snowy Forest
+				tileData.put("texture", "snow_tree.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 17: {  // Final Boss
+			case 16: {  // Final Boss
 				tileData.put("texture", "boss_final.png");
 				tileData.put("collision", true);
 				tileData.put("enemy", true);
 				break;
 			}
-			case 18: {  // Fire Boss
-				tileData.put("texture", "boss_fire.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 19: {  // Grass Boss
-				tileData.put("texture", "boss_grass.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 20: {  // Water Boss
-				tileData.put("texture", "boss_water.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 21: {  // Snow Boss
-				tileData.put("texture", "boss_snow.png");
-				tileData.put("collision", true);
-				tileData.put("enemy", true);
-				break;
-			}
-			case 22: {  // Barrier
-				tileData.put("texture", "barrier.png");
+			case 17: {  // Barrier
+				tileData.put("texture", "barrier1.png");
 				tileData.put("collision", true);
 				break;
 			}
-			case 23: {  // Enemy Basalt
+			case 18: {  // Enemy Basalt
 				tileData.put("texture", "enemy_basalt.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
-			case 24: {  // Enemy Sand
+			case 19: {  // Enemy Sand
 				tileData.put("texture", "enemy_sand.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
-			case 25: {  // Enemy Grass
+			case 20: {  // Enemy Grass
 				tileData.put("texture", "enemy_grass.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
 				break;
 			}
-			case 26: {  // Enemy Snow
+			case 21: {  // Enemy Snow
 				tileData.put("texture", "enemy_snow.png");
-				tileData.put("enemy", true);
+				//tileData.put("enemy", true);
+				break;
+			}
+			case 22: {  // Forest 1
+				tileData.put("texture", "forest1.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 23: {  // Forest 1
+				tileData.put("texture", "forest2.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 24: {  // Forest 1
+				tileData.put("texture", "forest3.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 25: {  // Forest 1
+				tileData.put("texture", "forest4.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 26: {  // Forest 1
+				tileData.put("texture", "forest5.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 27: {  // Forest 1
+				tileData.put("texture", "forest6.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 28: {  // Forest 1
+				tileData.put("texture", "forest7.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 29: {  // Forest 1
+				tileData.put("texture", "forest8.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 30: {  // Forest 1
+				tileData.put("texture", "forest9.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 31: {  // Forest 1
+				tileData.put("texture", "snowforest1.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 32: {  // Forest 1
+				tileData.put("texture", "snowforest2.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 33: {  // Forest 1
+				tileData.put("texture", "snowforest3.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 34: {  // Forest 1
+				tileData.put("texture", "snowforest4.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 35: {  // Forest 1
+				tileData.put("texture", "snowforest5.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 36: {  // Forest 1
+				tileData.put("texture", "snowforest6.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 37: {  // Forest 1
+				tileData.put("texture", "snowforest7.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 38: {  // Forest 1
+				tileData.put("texture", "snowforest8.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 39: {  // Forest 1
+				tileData.put("texture", "snowforest9.png");
+				tileData.put("collision", true);
+				break;
+			}
+			case 40: {  // Barrier
+				tileData.put("texture", "barrier2.png");
+				tileData.put("collision", true);
 				break;
 			}
 		}
 		return tileData;
-	}
-
-
-	public Tile[][] getAllTiles() {
-		return allTiles;
-	}
-
-	public Vector2i getMapSize() {
-		return mapSize;
-	}
-
-	public Vector2i[] getEnemyTiles() {
-		return enemyTiles;
-	}
-
-	public Vector2i[] getNPCTiles() {
-		return npcTiles;
 	}
 
 
@@ -280,7 +328,7 @@ public class GenerateMap {
 				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setCanHaveEnemy(true);
 				switch (i) {
 					case 0: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass2.png");
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass.png");
 						break;
 					}
 					case 1: {
@@ -303,53 +351,75 @@ public class GenerateMap {
 	}
 
 
-	public ArrayList<Tile> getChestTiles() {
-		return chestTiles;
+	/**
+	 * Method to set the tiles beneath the final boss.
+	 */
+	private void createFinalBossTiles() {
+		Vector2i[] finalBossCoords = new Vector2i[9];
+		finalBossCoords[0] = new Vector2i(59,59);
+		finalBossCoords[1] = new Vector2i(60,59);
+		finalBossCoords[2] = new Vector2i(61,59);
+		finalBossCoords[3] = new Vector2i(59,60);
+		finalBossCoords[4] = new Vector2i(60,60);
+		finalBossCoords[5] = new Vector2i(61,60);
+		finalBossCoords[6] = new Vector2i(59,61);
+		finalBossCoords[7] = new Vector2i(60,61);
+		finalBossCoords[8] = new Vector2i(61,61);
+		Tile[] finalBossTiles = new Tile[9];
+		for(int i=0; i < finalBossTiles.length; i++) {  // Changing tile texture beneath FinalBoss
+		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setTexture("light_basalt.png");
+		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setHasEnemy(true);
+		}
 	}
-
 
 
 	/*
 		Method to assign the spawn points of enemies on the map based on other spawn points and
 		the number of enemies to be place on the map.
 	*/
-	private void addEnemies() {
+	private ArrayList<Tile> addEnemies() {
 		int minEnemyTiles = 30;
-		int checkWithin = 20;
+		int checkWithin = 70;
 		int placedCount = 0;
-		ArrayList<Vector2i> tempList = new ArrayList<>();
+		ArrayList<Tile> tempList = new ArrayList<>();
 
 		while (minEnemyTiles > placedCount) {
-			for (Vector2i coords : possEnemyTiles) {
+			for (Tile tile : possEnemyTiles) {
 				int count = 0;
 				int rng = (int) (Math.random() * 10 + 1);
 				if (rng > 7) {
-					System.out.println("Coords: " + coords);
-					for (Vector2i altCoords : possEnemyTiles)
-						if ((coords.x - checkWithin > altCoords.x || coords.x + checkWithin < altCoords.x) || (coords.y - checkWithin > altCoords.y || coords.y + checkWithin < altCoords.y))
+					for (Tile otherTiles : possEnemyTiles)
+						if ((tile.getXPos() - checkWithin > otherTiles.getXPos() || tile.getXPos() + checkWithin < otherTiles.getXPos()) || (tile.getYPos() - checkWithin > otherTiles.getYPos() || tile.getYPos() + checkWithin < otherTiles.getYPos()))
 							count++;
 
 					if (count == possEnemyTiles.size() - 1) {
-						tempList.add(coords);
+						tempList.add(tile);
+						tile.setHasEnemy(true);
 						placedCount++;
 					}
+
 				}
 			}
 			checkWithin -= 2;
 		}
-
-		enemyTiles = new Vector2i[tempList.size()];
-		enemyTiles = tempList.toArray(enemyTiles);
+		return tempList;
 	}
 
-	private void addNPCs() {
-		ArrayList<Vector2i> npcList = new ArrayList<>();
 
-		npcList.addAll(possNPCTiles);
+	public ArrayList<Tile> getGenChestTiles() {
+		return chestTiles;
+	}
 
-		npcTiles = new Vector2i[npcList.size()];
-		npcTiles = npcList.toArray(npcTiles);
+	public Tile[][] getGenTiles() {
+		return allTiles;
+	}
 
+	public ArrayList<Tile> getGenEnemyTiles() {
+		return enemyTiles;
+	}
+
+	public ArrayList<Tile> getGenNPCTiles() {
+		return npcTiles;
 	}
 
 

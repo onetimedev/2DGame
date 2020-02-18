@@ -2,6 +2,7 @@ package scc210game.game.map;
 
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Component;
+import scc210game.engine.utils.MapHelper;
 
 import java.util.ArrayList;
 
@@ -11,8 +12,8 @@ import java.util.ArrayList;
 public class Map extends Component {
   private Tile[][] mapTiles;
   private GenerateMap genMap;
-  private Tile[] enemyTiles;
-  private Tile[] npcTiles;
+  private ArrayList<Tile> enemyTiles;
+  private ArrayList<Tile> npcTiles;
   private ArrayList<Vector2i[]> bossCoords;
   private ArrayList<Tile> chestTiles;
 
@@ -25,23 +26,24 @@ public class Map extends Component {
 
   public Map() {
       genMap = new GenerateMap();
-      mapTiles = genMap.getAllTiles();
-      enemyTiles = enemyTiles(genMap.getEnemyTiles());
-      npcTiles = npcTiles(genMap.getNPCTiles());
+      mapTiles = genMap.getGenTiles();
+      enemyTiles = genMap.getGenEnemyTiles();
+      npcTiles = genMap.getGenNPCTiles();
       bossCoords = genMap.getBossCoords();
-      chestTiles = genMap.getChestTiles();
+      chestTiles = genMap.getGenChestTiles();
   }
 
-    public Tile[][] getMap() {
+
+  public Tile[][] getMap() {
       return mapTiles;
   }
 
   public int getWidth() {
-      return genMap.getMapSize().x;
+      return MapHelper.mapSize.x;
   }
 
   public int getHeight() {
-      return genMap.getMapSize().y;
+      return MapHelper.mapSize.y;
   }
 
 	public Tile getTile(int xPos, int yPos) {
@@ -56,26 +58,11 @@ public class Map extends Component {
 		return mapTiles[0].length-1;
 	}
 
-	private Tile[] enemyTiles(Vector2i[] eTiles) {
-  	Tile[] tempTiles = new Tile[eTiles.length];
-		for(int i=0; i < tempTiles.length; i++) {
-			tempTiles[i] = getTile(eTiles[i].x, eTiles[i].y);
-		}
-  	return tempTiles;
-	}
-
-	public Tile[] getEnemyTiles() {
+	public ArrayList<Tile> getEnemyTiles() {
       return enemyTiles;
     }
 
-    private Tile[] npcTiles(Vector2i[] npcTiles) {
-      Tile[] tempTiles = new Tile[npcTiles.length];
-      for(int i=0; i < tempTiles.length; i++)
-          tempTiles[i] = getTile(npcTiles[i].x, npcTiles[i].y);
-      return tempTiles;
-    }
-
-    public Tile[] getNPCTiles() {
+  public ArrayList<Tile> getNPCTiles() {
       return npcTiles;
     }
 
