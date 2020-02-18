@@ -33,8 +33,8 @@ public class TwoInventoryViewState extends InventoryViewStateMethods {
         this.inventory0 = this.cloneContentInto(world, this.sourceInventory0);
         this.inventory1 = this.cloneContentInto(world, this.sourceInventory1);
 
-        spawnInventory(world, this.inventory0, 0.0f);
-        spawnInventory(world, this.inventory1, 0.3f);
+        this.spawnInventory(world, this.inventory0, 0.0f);
+        this.spawnInventory(world, this.inventory1, 0.3f);
     }
 
     @Override

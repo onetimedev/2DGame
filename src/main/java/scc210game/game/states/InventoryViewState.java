@@ -27,7 +27,7 @@ public class InventoryViewState extends InventoryViewStateMethods {
     public void onStart(World world) {
         this.inventory = this.cloneContentInto(world, this.sourceInventory);
 
-        spawnInventory(world, this.inventory, 0.0f);
+        this.spawnInventory(world, this.inventory, 0.0f);
     }
 
     @Override
