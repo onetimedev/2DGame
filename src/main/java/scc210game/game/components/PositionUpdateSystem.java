@@ -99,13 +99,11 @@ public class PositionUpdateSystem implements System {
 		if (map.legalTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)))
 			if (map.getTile((int) Math.floor(left + 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
 				velocity.dy = 0;
-				velocity.dx = 0;
 				return true;
 			}
 		if (map.legalTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)))
 			if (map.getTile((int) Math.floor(right - 0.2), (int) Math.floor(bottom + deltaY)).hasCollision()) {
 				velocity.dy = 0;
-				velocity.dx = 0;
 				return true;
 			}
 		return false;
@@ -124,13 +122,11 @@ public class PositionUpdateSystem implements System {
 	private boolean checkCollisionX(Velocity velocity, Map map, float deltaX, float right, float top, float bottom) {
 		if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)))
 			if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(top + 0.2)).hasCollision()) {
-				velocity.dy = 0;
 				velocity.dx = 0;
 				return true;
 			}
 		if (map.legalTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)))
 			if (map.getTile((int) Math.floor(right + deltaX), (int) Math.floor(bottom - 0.2)).hasCollision()) {
-				velocity.dy = 0;
 				velocity.dx = 0;
 				return true;
 			}
