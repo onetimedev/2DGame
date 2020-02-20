@@ -49,7 +49,7 @@ public class PlayerSpawner implements Spawner {
 				.with(new Player())
 				.with(new Position(15, 106))
 				.with(new Velocity(0, 0))
-				.with(new Steps())
+				.with(new Steps(5, 0))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 				(Entity entity, RenderWindow window, World world) -> {
 					var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
