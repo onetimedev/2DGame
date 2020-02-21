@@ -8,10 +8,12 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
+import scc210game.game.map.PlayerTexture;
 import scc210game.game.map.Tile;
 import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.states.events.TriggerStoryEvent;
+import scc210game.game.utils.MapHelper;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
@@ -27,6 +29,7 @@ public class PositionUpdateSystem implements System {
 		var playerEnt = playerEntO.get();
 		var position = world.fetchComponent(playerEnt, Position.class);
 		var velocity = world.fetchComponent(playerEnt, Velocity.class);
+		var pTexture = world.fetchComponent(playerEnt, PlayerTexture.class);
 
 		var mapEntO = world.applyQuery(Query.builder().require(Map.class).build()).findFirst();
 		if (!mapEntO.isPresent())
@@ -42,11 +45,19 @@ public class PositionUpdateSystem implements System {
 		velocity.dx *= 0.8;
 		velocity.dy *= 0.8;
 
+
 		// Resetting velocity
 		if(velocity.dx > -0.1 && velocity.dx < 0.1)
 			velocity.dx = 0;
 		if(velocity.dy > -0.1 && velocity.dy < 0.1)
 			velocity.dy = 0;
+
+
+		if(velocity.dx == 0 && velocity.dy == 0) {
+			pTexture.texture = MapHelper.loadTexture("player_anim.png");
+			pTexture.speedMs = 400;
+		}
+
 
 		// Bounding box position of player
 		float left = position.xPos;
@@ -57,17 +68,25 @@ public class PositionUpdateSystem implements System {
 		// X Delta collision checks
 		if(deltaX > 0) {  // right
 			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
+			pTexture.texture = MapHelper.loadTexture("player_right.png");
+			pTexture.speedMs = 100;
 		}
 		if(deltaX < 0) {  // left
 			if (checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
+			pTexture.texture = MapHelper.loadTexture("player_left.png");
+			pTexture.speedMs = 100;
 		}
 
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
 			if (checkCollisionY(velocity, map, deltaY, left, right, top)) return;
+			pTexture.texture = MapHelper.loadTexture("player_top.png");
+			pTexture.speedMs = 100;
 		}
 		if(deltaY > 0) {  // bottom
 			if (checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
+			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
+			pTexture.speedMs = 100;
 		}
 
 		// Changing to floored ints to check specific tiles around position

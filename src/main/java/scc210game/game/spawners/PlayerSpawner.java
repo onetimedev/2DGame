@@ -17,6 +17,7 @@ import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
+import scc210game.game.map.PlayerTexture;
 
 import java.nio.file.Paths;
 import java.util.Set;
@@ -50,12 +51,15 @@ public class PlayerSpawner implements Spawner {
 				.with(new Position(15, 106))
 				.with(new Velocity(0, 0))
 				.with(new Steps(5, 0))
+				.with(new PlayerTexture(t, 400))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 				(Entity entity, RenderWindow window, World world) -> {
 					var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
 					var position = world.fetchComponent(playerEnt, Position.class);
 					var steps = world.fetchComponent(playerEnt, Steps.class);
+					var pTexture = world.fetchComponent(playerEnt, PlayerTexture.class);
 
+					pl.setTexture(pTexture.texture);
 					pl.setPosition(position.xPos*64, position.yPos*64);
 
 					//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
@@ -65,10 +69,10 @@ public class PlayerSpawner implements Spawner {
 					var view = world.fetchGlobalResource(MainViewResource.class);
 					view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
-					if(animClock.getElapsedTime().asMilliseconds() >= 800) {
+					if(animClock.getElapsedTime().asMilliseconds() >= pTexture.speedMs) {
 						animClock.restart();
 						frame++;
-						if(frame > 5)
+						if(frame > (pTexture.texture.getSize().x/64)-1)
 							frame = 0;
 						int frameRow = frame / 8;
 						int frameCol = frame % 8;
