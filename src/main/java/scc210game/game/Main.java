@@ -10,30 +10,33 @@ import org.jsfml.window.VideoMode;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
+import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
+import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Movement;
-import scc210game.engine.render.MainViewResource;
-import scc210game.engine.render.RenderSystem;
-import scc210game.engine.render.ViewType;
+import scc210game.engine.render.*;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.engine.utils.Tuple2;
+import scc210game.game.components.PositionUpdateSystem;
 import scc210game.game.states.MainMenuState;
+import scc210game.game.systems.DialogueHandlingSystem;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 
 /**
  * Singleton class to hold game loop, take entities to render, and change mainWindow views
  */
 public class Main {
-    private static final int width = 720;
-    private static final int height = 480;
+    private static final int width = 1920;
+    private static final int height = 1080;
 
     private final RenderWindow mainWindow;
     private final Map<ViewType, Tuple2<FloatRect, View>> views;
@@ -42,15 +45,13 @@ public class Main {
     private Main() {
         this.mainWindow = new RenderWindow();
         this.mainWindow.create(new VideoMode(width, height), "SCC210 Game");
-
+        this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
+
+        var viewOrder = List.of(ViewType.MAIN, ViewType.MINIMAP, ViewType.UI);
 
         this.views = new HashMap<>() {{
             this.put(ViewType.MAIN, new Tuple2<>(
-                    new FloatRect(0f, 0f, 1f, 1f),
-                    new View(new Vector2f(0, 0), new Vector2f(width, height))));
-
-            this.put(ViewType.UI, new Tuple2<>(
                     new FloatRect(0f, 0f, 1f, 1f),
                     new View(new Vector2f(0, 0), new Vector2f(width, height))));
 
@@ -58,23 +59,34 @@ public class Main {
                     new FloatRect(0.8f, 0.05f, 0.15f, 0.15f),
                     new View(new Vector2f(0, 0), new Vector2f(width, height)) {{
                         this.setViewport(new FloatRect(0.8f, 0.05f, 0.15f, 0.15f));
+                        this.zoom(2f);
                     }}));
+
+            this.put(ViewType.UI, new Tuple2<>(
+                    new FloatRect(0f, 0f, 1f, 1f),
+                    new View(new Vector2f(0, 0), new Vector2f(width, height))));
+
         }};
 
         // create a views map of (ViewType -> View), our one has the original viewport included
         var justViews = new HashMap<ViewType, View>();
         this.views.forEach((k, v) -> justViews.put(k, v.r));
 
-        final var systems = List.of(
-                new HandleInteraction(),
-                new HandleHovered(),
-                new HandleDragDrop(),
-                new HandleClicked(),
-                new Movement(),
-                new RenderSystem(this.mainWindow, justViews) // NOTE: always render last
+        final List<Function<ECS, ? extends System>> systems = List.of(
+                HandleInteraction::new,
+                HandleHovered::new,
+                HandleDragDrop::new,
+                HandleClicked::new,
+                (ecs) -> new AnimationUpdater(),
+                Movement::new,
+                (ecs) -> new PositionUpdateSystem(),
+                DialogueHandlingSystem::new,
+                (ecs) -> new RenderSystem(this.mainWindow, justViews, viewOrder) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
         this.ecs.addGlobalResource(new MainViewResource(justViews.get(ViewType.MAIN)));
+        this.ecs.addGlobalResource(new MinimapViewResource(justViews.get(ViewType.MINIMAP)));
+        this.ecs.addGlobalResource(new MainWindowResource(this.mainWindow));
         this.ecs.start();
     }
 

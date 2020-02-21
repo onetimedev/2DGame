@@ -11,7 +11,8 @@ public class ResourceLoader {
     public static Path resolve(String s) {
         try {
             return Paths.get(Objects.requireNonNull(loader.getResource(s)).toURI());
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException | NullPointerException e) {
+            System.err.println("Couldn't load: " + s);
             throw new RuntimeException(e);
         }
     }

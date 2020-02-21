@@ -25,22 +25,22 @@ public class StateMachine {
     }
 
     public State currentState() {
-        return currentSD().state;
+        return this.currentSD().state;
     }
 
     public Instant lastRunInstant() {
-        return currentSD().tLastRun;
+        return this.currentSD().tLastRun;
     }
 
     public Instant lastRunInstant(Instant now) {
-        var c = currentSD();
+        var c = this.currentSD();
         var lr = c.tLastRun;
         c.tLastRun = now;
         return lr;
     }
 
     public World currentWorld() {
-        return currentSD().world;
+        return this.currentSD().world;
     }
 
     private StateData currentSD() {
@@ -129,6 +129,7 @@ public class StateMachine {
             var now = Instant.now();
             assert this.tOnPause != null;
             var td = Duration.between(this.tOnPause, now);
+            this.world.eventQueue.patchDelayDelta(td);
             this.tLastRun = this.tLastRun.plus(td);
             this.state.onResume();
         }

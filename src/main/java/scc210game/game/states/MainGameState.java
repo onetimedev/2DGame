@@ -1,23 +1,49 @@
 package scc210game.game.states;
 
-import scc210game.engine.ecs.Entity;
+import org.jsfml.system.Vector2i;
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
-import scc210game.engine.ui.components.UITransform;
-import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
-import scc210game.engine.ui.spawners.DialogueSpawner;
-import scc210game.engine.ui.spawners.DraggableBoxSpawner;
-import scc210game.engine.ui.spawners.DroppableBoxSpawner;
+import scc210game.game.events.DialogueCreateEvent;
+import scc210game.game.map.Map;
+import scc210game.game.map.Tile;
+import scc210game.game.spawners.*;
 
 public class MainGameState extends BaseInGameState {
 	@Override
 	public void onStart(World world) {
-		world.entityBuilder().with(new DialogueSpawner("Test")).build();
-		world.entityBuilder().with(new DraggableBoxSpawner(0, 0, 0.1f, 0.1f)).build();
-		world.entityBuilder().with(new DroppableBoxSpawner(0.5f, 0.1f, 0.15f, 0.15f)).build();
-		world.entityBuilder().with(new DroppableBoxSpawner(0.5f, 0.27f, 0.15f, 0.15f)).build();
-		world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.07f, 0.07f, "click me", (Entity e, World w) -> {
-			var trans = w.fetchComponent(e, UITransform.class);
-			trans.xPos += 0.01;
-		})).build();
-	}
+        System.out.println("onStart");
+        world.entityBuilder().with(new MapSpawner()).build();
+        System.out.println("After map");
+        world.entityBuilder().with(new PlayerSpawner()).build();
+
+
+        var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().orElseThrow();
+        var map = world.fetchComponent(mapEnt, Map.class);
+
+        // Spawning of all Chests
+        for (final Tile t : map.getChestTiles()) {
+            world.entityBuilder().with(new ChestSpawner(t)).build();
+        }
+
+        // Spawning of all Enemies
+        for (final Tile tile : map.getEnemyTiles()) {
+            world.entityBuilder().with(new EnemySpawner(tile)).build();
+        }
+
+        for (final Tile tile : map.getNPCTiles()) {
+            world.entityBuilder().with(new NPCSpawner(tile)).build();
+        }
+
+        int count = 0;
+        for (final Vector2i[] v : map.getBossCoords()) {
+            world.entityBuilder().with(new BossSpawner(v, count, map)).build();
+            count++;
+        }
+
+        world.entityBuilder().with(new FinalBossSpawner()).build();
+
+        world.eventQueue.broadcast(new DialogueCreateEvent("hello, press q to ignore, enter to accept",
+                (e, w) -> System.out.println("Accepted"),
+                (e, w) -> System.out.println("Ignored")));
+    }
 }
