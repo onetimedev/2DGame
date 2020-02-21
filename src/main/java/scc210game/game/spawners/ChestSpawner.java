@@ -3,23 +3,16 @@ package scc210game.game.spawners;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
-import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Entity;
-import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
-import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.engine.utils.MapHelper;
+import scc210game.game.utils.MapHelper;
 import scc210game.game.map.Chest;
-import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Set;
 
 public class ChestSpawner implements Spawner {

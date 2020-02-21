@@ -1,4 +1,4 @@
-package scc210game.engine.utils;
+package scc210game.game.utils;
 
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
