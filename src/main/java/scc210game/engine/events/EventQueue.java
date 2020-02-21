@@ -26,11 +26,9 @@ public class EventQueue {
 
     public EventQueue() {
         this.queues = new HashMap<>() {{
-            registered.forEach((k, v) -> {
-                v.forEach((r) -> {
-                    listen(r, k);
-                });
-            });
+            registered.forEach((k, v) ->
+                    v.forEach((r) ->
+                            this.put(r, new ArrayDeque<>())));
         }};
         this.delayedEvents = new DelayQueue<>();
         instances.add(this);

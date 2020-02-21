@@ -9,7 +9,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.engine.utils.MapHelper;
+import scc210game.game.utils.MapHelper;
 import scc210game.game.map.NPC;
 import scc210game.game.map.Tile;
 

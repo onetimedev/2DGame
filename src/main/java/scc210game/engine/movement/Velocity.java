@@ -5,34 +5,38 @@ import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.Jsoner;
 import scc210game.engine.ecs.Component;
 
-public class Position extends Component {
+public class Velocity extends Component {
 
-	public float xPos;
-	public float yPos;
+	public float dx;
+	public float dy;
+
 
 	static {
-		register(Position.class, s-> {
+		register(Velocity.class, s-> {
 			final JsonObject json = Jsoner.deserialize(s, new JsonObject());
-			float x = (float) json.get("xPos");
-			float y = (float) json.get("yPos");
+			float velX = (float) json.get("dx");
+			float velY = (float) json.get("dy");
 
-			return new Position(x, y);
+			return new Velocity(velX, velY);
 		});
 	}
 
-	public Position(float x, float y) {
-		xPos = x;
-		yPos = y;
+
+	public Velocity(float dx, float dy) {
+		this.dx = dx;
+		this.dy = dy;
 	}
 
 	@Override
 	public String serialize() {
 		final Jsonable json = new JsonObject() {{
-			this.put("xPos", Position.this.xPos);
-			this.put("yPos", Position.this.yPos);
+			this.put("dx", Velocity.this.dx);
+			this.put("dy", Velocity.this.dy);
 		}};
 
 		return json.toJson();
 	}
+
+
 
 }

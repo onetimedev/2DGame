@@ -1,4 +1,4 @@
-package scc210game.engine.ui.spawners;
+package scc210game.game.spawners.ui;
 
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
@@ -9,31 +9,35 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.Font;
-import scc210game.engine.ui.components.UIHovered;
-import scc210game.engine.ui.components.UIText;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.UiUtils;
+import scc210game.game.components.Dialogue;
 
 import java.awt.*;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 public class DialogueSpawner implements Spawner {
     private final String message;
+    private final BiConsumer<Entity, World> accept;
+    private final BiConsumer<Entity, World> ignore;
 
-    public DialogueSpawner(String message) {
+    public DialogueSpawner(String message, BiConsumer<Entity, World> accept, BiConsumer<Entity, World> ignore) {
         this.message = message;
+        this.accept = accept;
+        this.ignore = ignore;
     }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
         return builder
+                .with(new Dialogue(this.message, this.accept, this.ignore))
                 .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))
-                .with(new UIText(this.message))
-                .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
-                    var textContent = w.fetchComponent(e, UIText.class);
+                    var dialogue = w.fetchComponent(e, Dialogue.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;
+                    var fillColour = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
                     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
@@ -43,7 +47,7 @@ public class DialogueSpawner implements Spawner {
 
                     rw.draw(rect);
 
-                    var text = new Text(textContent.text, Font.freesans, 24) {{
+                    var text = new Text(dialogue.text, Font.freesans, 24) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
                     }};
 
