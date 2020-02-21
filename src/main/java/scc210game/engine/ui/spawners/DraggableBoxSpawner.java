@@ -37,7 +37,7 @@ public class DraggableBoxSpawner implements Spawner {
         return builder
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
                 .with(new UIDraggable())
-                .with(new Renderable(Set.of(ViewType.UI), 3, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
                     var fillColour = w.hasComponent(e, UIHovered.class) ? Color.GREEN : new Color(0.0f, 0.2f, 0.1f, 0.5f);
