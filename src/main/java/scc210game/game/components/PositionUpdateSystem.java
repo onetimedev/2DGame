@@ -15,6 +15,7 @@ import scc210game.game.utils.MapHelper;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
+import java.util.ArrayList;
 
 public class PositionUpdateSystem implements System {
 
@@ -65,32 +66,44 @@ public class PositionUpdateSystem implements System {
 
 		// X Delta collision checks
 		if(deltaX > 0) {  // right
-			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
-			pTexture.texture = MapHelper.loadTexture("player_right.png");
-			pTexture.speedMs = 100;
+			if (checkCollisionX(velocity, map, deltaX, right, top, bottom))
+				deltaX = 0;
+			else {
+				pTexture.texture = MapHelper.loadTexture("player_right.png");
+				pTexture.speedMs = 100;
+			}
 		}
 		if(deltaX < 0) {  // left
-			if (checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
-			pTexture.texture = MapHelper.loadTexture("player_left.png");
-			pTexture.speedMs = 100;
+			if (checkCollisionX(velocity, map, deltaX, left, top, bottom))
+				deltaX = 0;
+			else {
+				pTexture.texture = MapHelper.loadTexture("player_left.png");
+				pTexture.speedMs = 100;
+			}
 		}
 
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
-			if (checkCollisionY(velocity, map, deltaY, left, right, top)) return;
-			pTexture.texture = MapHelper.loadTexture("player_top.png");
-			pTexture.speedMs = 100;
+			if (checkCollisionY(velocity, map, deltaY, left, right, top))
+				deltaY = 0;
+			else {
+				pTexture.texture = MapHelper.loadTexture("player_top.png");
+				pTexture.speedMs = 100;
+			}
 		}
 		if(deltaY > 0) {  // bottom
-			if (checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
-			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
-			pTexture.speedMs = 100;
+			if (checkCollisionY(velocity, map, deltaY, left, right, bottom))
+				deltaY = 0;
+			else {
+				pTexture.texture = MapHelper.loadTexture("player_bottom.png");
+				pTexture.speedMs = 100;
+			}
 		}
 
 		// Changing to floored ints to check specific tiles around position
-		int xPosInt = (int) Math.floor(position.xPos + deltaX);
-		int yPosInt = (int) Math.floor(position.yPos + deltaY);
-		checkSurrounding(world, map, xPosInt, yPosInt);
+		//int xPosInt = (int) Math.floor(position.xPos + deltaX);
+		//int yPosInt = (int) Math.floor(position.yPos + deltaY);
+		checkSurrounding(world, map, deltaX, deltaY, position.xPos, position.yPos);
 
 		// Updating position of player with delta value
 		position.xPos += deltaX;
@@ -150,14 +163,17 @@ public class PositionUpdateSystem implements System {
 		return false;
 	}
 
+
 	/**
 	 * Method that checks the surrounding tiles for presence of a chest, enemy, or NPC
-	 * @param world to trigger events for the whole game
-	 * @param map entity to get the tiles
-	 * @param x coordinate of the player
-	 * @param y coordinate of the player
+	 * @param world
+	 * @param map
+	 * @param dX
+	 * @param dY
+	 * @param posX
+	 * @param posY
 	 */
-	public void checkSurrounding(World world, Map map, int x, int y) {
+	public void checkSurrounding(World world, Map map, float dX, float dY, float posX, float posY) {
 		var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
 		if (!playerEntO.isPresent())
 			return;
@@ -165,15 +181,8 @@ public class PositionUpdateSystem implements System {
 		var steps = world.fetchComponent(playerEnt, Steps.class);
 
 		if(steps.count > steps.oldCount+4) {
-			Tile[] tiles = new Tile[4];
-			if(map.legalTile(x + 1, y))
-				tiles[0] = map.getTile(x + 1, y);
-			if(map.legalTile(x - 1, y))
-				tiles[1] = map.getTile(x - 1, y);
-			if(map.legalTile(x, y+1))
-				tiles[2] = map.getTile(x, y + 1);
-			if(map.legalTile(x, y-1))
-			tiles[3] = map.getTile(x, y - 1);
+			ArrayList<Tile> tiles = getSurrounding(1, map, posX, posY, dX, dY);
+			tiles.addAll(getSurrounding(-1, map, posX, posY, dX, dY));
 
 			for (Tile t : tiles) {
 				if(t == null)
@@ -206,6 +215,38 @@ public class PositionUpdateSystem implements System {
 		}
 
 	}
+
+
+	/**
+	 * Method to get all tiles around the player
+	 * @param num
+	 * @param map
+	 * @param posX
+	 * @param posY
+	 * @param dX
+	 * @param dY
+	 * @return
+	 */
+	private ArrayList<Tile> getSurrounding(int num, Map map, float posX, float posY, float dX, float dY) {
+		int xFloor = (int) Math.floor(posX + dX);
+		int yFloor = (int) Math.floor(posY + dY);
+		int xCeil = (int) Math.ceil(posX + dX);
+		int yCeil = (int) Math.ceil(posY + dY);
+
+		ArrayList<Tile> tiles = new ArrayList<>();
+		tiles.add(map.getTile(xCeil, yCeil + num));
+		tiles.add(map.getTile(xFloor, yCeil + num));
+		tiles.add(map.getTile(xCeil, yFloor + num));
+		tiles.add(map.getTile(xFloor, yFloor + num));
+		tiles.add(map.getTile(xCeil + num, yCeil));
+		tiles.add(map.getTile(xCeil + num, yFloor));
+		tiles.add(map.getTile(xFloor + num, yCeil));
+		tiles.add(map.getTile(xFloor + num, yFloor));
+
+		return tiles;
+	}
+
+
 
 
 	public void test() {
