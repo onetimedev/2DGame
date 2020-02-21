@@ -3,7 +3,6 @@ package scc210game.game.states;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
-import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
 import scc210game.game.spawners.*;
@@ -42,8 +41,5 @@ public class MainGameState extends BaseInGameState {
 
 		world.entityBuilder().with(new FinalBossSpawner()).build();
 
-		world.eventQueue.broadcast(new DialogueCreateEvent("hello, press q to ignore, enter to accept",
-				(e, w) -> System.out.println("Accepted"),
-				(e, w) -> System.out.println("Ignored")));
 	}
 }

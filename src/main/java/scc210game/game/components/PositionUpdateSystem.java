@@ -6,13 +6,11 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
+import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.PlayerTexture;
 import scc210game.game.map.Tile;
-import scc210game.game.states.events.TriggerChestEvent;
-import scc210game.game.states.events.TriggerCombatEvent;
-import scc210game.game.states.events.TriggerStoryEvent;
 import scc210game.game.utils.MapHelper;
 
 import javax.annotation.Nonnull;
@@ -182,19 +180,25 @@ public class PositionUpdateSystem implements System {
 					continue;
 				if (t.getHasEnemy()) {
 					java.lang.System.out.println("Enemy nearby");
-					world.ecs.acceptEvent(new TriggerCombatEvent());
+					world.eventQueue.broadcast(new DialogueCreateEvent("hello im an Enemy, press q to ignore, enter to accept",
+							(e, w) -> test(),
+							(e, w) -> java.lang.System.out.println("Ignored")));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
-					world.ecs.acceptEvent(new TriggerChestEvent());
+					world.eventQueue.broadcast(new DialogueCreateEvent("hello im a Chest, press q to ignore, enter to accept",
+							(e, w) -> test(),
+							(e, w) -> java.lang.System.out.println("Ignored")));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
-					world.ecs.acceptEvent(new TriggerStoryEvent());
+					world.eventQueue.broadcast(new DialogueCreateEvent("hello im an NPC, press q to ignore, enter to accept",
+							(e, w) -> test(),
+							(e, w) -> java.lang.System.out.println("Ignored")));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -203,6 +207,10 @@ public class PositionUpdateSystem implements System {
 
 	}
 
+
+	public void test() {
+		java.lang.System.out.println("Accepted");
+	}
 
 
 
