@@ -28,6 +28,7 @@ public class World {
     public final EventQueue eventQueue;
 
     private boolean isCombatActive = false;
+    private boolean activeAnimation = true;
 
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;
@@ -327,5 +328,15 @@ public class World {
     public boolean getCombatStatus()
     {
         return isCombatActive;
+    }
+
+    public void killAnimation()
+    {
+        this.activeAnimation = false;
+    }
+
+    public boolean getActiveAnimation()
+    {
+        return this.activeAnimation;
     }
 }

@@ -64,46 +64,46 @@ public class EnemyController {
 
     private void initMove()
     {
-
-        if(collisionCount >= 1){
-            new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
-            collisionCount = 0;
-        }else {
-            if (getMove() != 3) {
-                //forward move
-                System.out.println("enemy moving forward");
-                UITransform attributes = new CombatUtils().getOpponent(w, true);
-                float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
-                UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
-                if(new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false)))
-                {
-                    if(!weaponRaised)
-                    {
-                        raiseWeapon();
-                        weaponRaised = true;
-                    }
-
-
-                    System.out.println("collided so moving backward");
-                    collisionCount++;
-                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
-                }else{
-
-                    if(weaponRaised)
-                    {
-                        lowerWeapon();
-                        weaponRaised = false;
-                    }
-                    System.out.println("moving forward");
-                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
-                }
-            } else if (getMove() != 4) {
-                //backwards move
-                System.out.println("enemy moving backward");
+        if(w.getActiveAnimation()) {
+            if (collisionCount >= 1) {
                 new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
+                collisionCount = 0;
             } else {
-                System.out.println("no move");
+                if (getMove() != 3) {
+                    //forward move
+                    System.out.println("enemy moving forward");
+                    UITransform attributes = new CombatUtils().getOpponent(w, true);
+                    float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
+                    UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
+                    if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false))) {
+                        if (!weaponRaised) {
+                            raiseWeapon();
+                            weaponRaised = true;
+                        }
+
+
+                        System.out.println("collided so moving backward");
+                        collisionCount++;
+                        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                    } else {
+
+                        if (weaponRaised) {
+                            lowerWeapon();
+                            weaponRaised = false;
+                        }
+                        System.out.println("moving forward");
+                        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                    }
+                } else if (getMove() != 4) {
+                    //backwards move
+                    System.out.println("enemy moving backward");
+                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
+                } else {
+                    System.out.println("no move");
+                }
             }
+        }else{
+            scheduledExecutorService.shutdown();
         }
     }
 

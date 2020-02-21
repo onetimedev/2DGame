@@ -133,6 +133,7 @@ public class Main {
                         break;
                     }
                     case CLOSED: {
+                        this.ecs.getCurrentWorld().killAnimation();
                         this.mainWindow.close();
                         break;
                     }
