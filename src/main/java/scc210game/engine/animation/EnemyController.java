@@ -25,8 +25,8 @@ public class EnemyController {
 
     private ScheduledExecutorService scheduledExecutorService;
 
-    private float WEAPON_RAISED = 170f;
-    private float WEAPON_HOLSTERED = 50f;
+    private float WEAPON_RAISED = 10f;
+    private float WEAPON_HOLSTERED = 0f;
 
     private int collisionCount = 0;
 
@@ -111,9 +111,9 @@ public class EnemyController {
     private void raiseWeapon()
     {
 
-
-        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).rotation = WEAPON_RAISED;
-        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).xPos -= 0.1f;
+        UITransform weapon = new CombatUtils().getWeapon(w, CombatEnemyWeapon.class);
+        weapon.rotation = WEAPON_RAISED;
+        //weapon.yPos -= 0.15f;
 
 
     }
@@ -121,8 +121,10 @@ public class EnemyController {
 
     private void lowerWeapon()
     {
-        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).rotation = WEAPON_HOLSTERED;
-        new CombatUtils().getWeapon(w, CombatEnemyWeapon.class).xPos += 0.1f;
+        UITransform weapon =  new CombatUtils().getWeapon(w, CombatEnemyWeapon.class);
+        weapon.rotation = WEAPON_HOLSTERED;
+
+
     }
 
 

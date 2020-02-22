@@ -23,8 +23,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class CombatMovement implements System {
     private final EventQueueReader eventReader;
-    private float WEAPON_RAISED = -170f;
-    private float WEAPON_HOLSTERED = -50f;
+    private float WEAPON_RAISED = -70f;
+    private float WEAPON_HOLSTERED = 0f;
     private boolean raised = false;
 
     int animCounter = 0;
@@ -85,7 +85,7 @@ public class CombatMovement implements System {
                         {
                             this.raised = true;
                             cplayerWeaponPosition.rotation = WEAPON_RAISED;
-                            cplayerWeaponPosition.xPos += 0.1f;
+                            //cplayerWeaponPosition.xPos += 0.1f;
                         }
                         break;
                     }
@@ -99,7 +99,7 @@ public class CombatMovement implements System {
                     {
                         raised = false;
                         cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
-                        cplayerWeaponPosition.xPos -= 0.1f;
+                        //cplayerWeaponPosition.xPos -= 0.1f;
                     }
 
                 }

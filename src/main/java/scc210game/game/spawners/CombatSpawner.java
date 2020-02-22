@@ -71,6 +71,7 @@ public class CombatSpawner implements Spawner {
 
                                 pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                                 //pl.setTextureRect(new IntRect(0,0,200,200));
+
                                 rw.draw(pl);
 
                             }

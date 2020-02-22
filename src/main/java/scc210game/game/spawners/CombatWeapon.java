@@ -1,10 +1,8 @@
 package scc210game.game.spawners;
 
-import org.jsfml.graphics.RectangleShape;
-import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
@@ -29,7 +27,7 @@ public class CombatWeapon implements Spawner {
     private float yPosition;
     private float width = 0.05f;
     private float height = 0.1f;
-    private float rotation = -50f;//starting rotation
+    private float rotation = 0f;//starting rotation
 
 
     private boolean enemy;
@@ -43,8 +41,8 @@ public class CombatWeapon implements Spawner {
         {
             var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
             var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-            this.xPosition = (cplayerPosition.width)-0.05f;
-            this.yPosition = (cplayerPosition.height/2)+0.2f;
+            this.xPosition = (cplayerPosition.width)-0.025f;
+            this.yPosition = (cplayerPosition.height/2)+0.15f;
 
         }
         else
@@ -52,7 +50,7 @@ public class CombatWeapon implements Spawner {
             var combatEnemySprite = world.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
             var combatplayerPosition = world.fetchComponent(combatEnemySprite, UITransform.class);
             this.xPosition = combatplayerPosition.xPos;
-            this.yPosition = (combatplayerPosition.height/2)+0.2f;
+            this.yPosition = (combatplayerPosition.height/2)+0.15f;
         }
 
     }
@@ -72,14 +70,14 @@ public class CombatWeapon implements Spawner {
                     var dimensions = w.fetchComponent(e, UITransform.class);
                     Texture t = new Texture();
                     try {
-                        t.loadFromFile(Paths.get("./src/main/resources/textures/sword.png"));
+                        String filePath = this.enemy ? "./src/main/resources/textures/enemy_sword.png" : "./src/main/resources/textures/player_sword.png";
+                        t.loadFromFile(Paths.get(filePath));
                         Sprite pl = new Sprite(t);
-
 
                         pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                         //pl.setTextureRect(new IntRect(0,0,200,200));
+                        pl.setOrigin((xPosition/2),(yPosition/2));
                         pl.setRotation(dimensions.rotation);
-                        pl.setOrigin(0, 0);
                         rw.draw(pl);
 
                     }
