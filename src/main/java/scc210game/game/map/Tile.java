@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -14,7 +15,7 @@ public class Tile {
 	private int xPos;
 	private int yPos;
 	private Boolean hasCollision;
-	private String fileName;
+	private String textureName;
 	private Boolean canHaveChest;
 	private Boolean canHaveEnemy;
 	private Boolean hasEnemy;
@@ -22,7 +23,7 @@ public class Tile {
 
 
 	public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
-		fileName = fn;
+		textureName = fn;
 		String assetsPath = "./src/main/resources/textures/";
 		xPos = x;
 		yPos = y;
@@ -33,7 +34,7 @@ public class Tile {
 		hasEnemy = false;
 
 		try {
-			tileTexture.loadFromFile(Paths.get(assetsPath, fileName));
+			tileTexture.loadFromFile(Paths.get(assetsPath, textureName));
 			textureSize = tileTexture.getSize();
 		}
 		catch(IOException e) {
@@ -47,7 +48,7 @@ public class Tile {
 	 */
 	public JsonObject serialize() {  // returns a JSON object representing the tile
 		JsonObject json = new JsonObject();
-		json.put("texture", fileName);
+		json.put("texture", textureName);
 		json.put("x", xPos);
 		json.put("y", yPos);
 		json.put("collision", hasCollision);
@@ -91,7 +92,7 @@ public class Tile {
   }
 
   public String getTextureName() {
-		return fileName;
+		return textureName;
   }
 
   public Boolean canHaveChest() {
@@ -118,15 +119,10 @@ public class Tile {
         return textureSize;
     }
 
-  public void setTexture(String fn) {
-	  String assetsPath = "./src/main/resources/textures/";
-	  try {
-		  tileTexture.loadFromFile(Paths.get(assetsPath, fn));
-		  textureSize = tileTexture.getSize();
-	  }
-	  catch(IOException e) {
-		  throw new RuntimeException(e);
-	  }
+  public void setTexture(Texture tex, String tn) {
+		tileTexture = tex;
+		textureSize = tex.getSize();
+		textureName = tn;
   }
 
   public void setHasCollision(Boolean b) {

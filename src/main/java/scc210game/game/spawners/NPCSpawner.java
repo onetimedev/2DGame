@@ -36,6 +36,7 @@ public class NPCSpawner implements Spawner {
                 npcTile.setHasCollision(true);
                 npcTile.setCanHaveStory(true);
                 npcTexture = MapHelper.loadTexture("story.png");
+                MapHelper.setTileToBiome(npcTile);
                 break;
             }
         }

@@ -7,10 +7,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.events.DialogueCreateEvent;
-import scc210game.game.map.Map;
-import scc210game.game.map.Player;
-import scc210game.game.map.PlayerTexture;
-import scc210game.game.map.Tile;
+import scc210game.game.map.*;
 import scc210game.game.utils.MapHelper;
 
 import javax.annotation.Nonnull;
@@ -180,6 +177,7 @@ public class PositionUpdateSystem implements System {
 		var playerEnt = playerEntO.get();
 		var steps = world.fetchComponent(playerEnt, Steps.class);
 
+
 		if(steps.count > steps.oldCount+4) {
 			ArrayList<Tile> tiles = getSurrounding(1, map, posX, posY, dX, dY);
 			tiles.addAll(getSurrounding(-1, map, posX, posY, dX, dY));
@@ -188,26 +186,46 @@ public class PositionUpdateSystem implements System {
 				if(t == null)
 					continue;
 				if (t.getHasEnemy()) {
-					java.lang.System.out.println("Enemy nearby");
-					world.eventQueue.broadcast(new DialogueCreateEvent("hello im an Enemy, press q to ignore, enter to accept",
-							(e, w) -> test(),
-							(e, w) -> java.lang.System.out.println("Ignored")));
+					java.lang.System.out.println("TILE TEX:" + t.getTextureName());
+
+					if(t.getTextureName().contains("final")) {
+						java.lang.System.out.println("FinalBoss nearby");
+						world.eventQueue.broadcast(new DialogueCreateEvent("hello im the FinalBoss, press q to ignore, enter to accept",
+								(e, w) -> accept(),
+								(e, w) -> refuse()));
+					}
+					else if(!t.getTextureName().contains("enemy")) {
+						java.lang.System.out.println("Boss nearby");
+						java.lang.System.out.println(checkBiome(t.getTextureName()));
+						world.eventQueue.broadcast(new DialogueCreateEvent("hello im a Boss, press q to ignore, enter to accept",
+								(e, w) -> accept(),
+								(e, w) -> refuse()));
+					}
+					else {
+						java.lang.System.out.println("Enemy nearby");
+						java.lang.System.out.println(checkBiome(t.getTextureName()));
+						world.eventQueue.broadcast(new DialogueCreateEvent("hello im an Enemy, press q to ignore, enter to accept",
+								(e, w) -> accept(),
+								(e, w) -> refuse()));
+					}
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
+					java.lang.System.out.println(checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent("hello im a Chest, press q to ignore, enter to accept",
-							(e, w) -> test(),
-							(e, w) -> java.lang.System.out.println("Ignored")));
+							(e, w) -> accept(),
+							(e, w) -> refuse()));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
+					java.lang.System.out.println(checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent("hello im an NPC, press q to ignore, enter to accept",
-							(e, w) -> test(),
-							(e, w) -> java.lang.System.out.println("Ignored")));
+							(e, w) -> accept(),
+							(e, w) -> refuse()));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -247,10 +265,26 @@ public class PositionUpdateSystem implements System {
 	}
 
 
+	private String checkBiome(String t) {
+		if(t.contains("grass"))
+			return "grass biome";
+		else if(t.contains("sand"))
+			return "water biome";
+		else if(t.contains("snow"))
+			return "snow biome";
+		else
+			return "fire biome";
+	}
 
 
-	public void test() {
+
+	public void accept() {
+
 		java.lang.System.out.println("Accepted");
+	}
+
+	public void refuse() {
+		java.lang.System.out.println("Refused");
 	}
 
 

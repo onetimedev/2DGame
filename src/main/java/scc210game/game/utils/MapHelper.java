@@ -38,13 +38,37 @@ public class MapHelper {
 	 */
 	public static void changeTiles(ArrayList<Tile> tilesToChange, String newTexture, boolean collision, boolean enemy) {
 		for (Tile t: tilesToChange) {
-			t.setTexture(newTexture);
+			t.setTexture(loadTexture(newTexture), newTexture);
 			t.setHasCollision(collision);
 			t.setHasEnemy(enemy);
 		}
-
-
 	}
+
+
+	/**
+	 * Method to change the texture of a tile based on its biome
+	 * @param t
+	 */
+	public static void setTileToBiome(Tile t) {
+		if(t.getYPos() < 60 && t.getXPos() < 60) {
+			t.setTexture(loadTexture("sand.png"), "sand.png");
+		}
+		else if(t.getYPos() < 60 && t.getXPos() > 60) {
+			t.setTexture(loadTexture("light_basalt.png"), "light_basalt.png");
+		}
+		else if(t.getYPos() > 60 && t.getXPos() < 55) {
+			t.setTexture(loadTexture("grass.png"), "grass.png");
+		}
+		else if(t.getYPos() > 60 && t.getXPos() > 40) {
+			t.setTexture(loadTexture("snow.png"), "snow.png");
+		}
+		if((t.getYPos() == 49 && t.getXPos() == 112) || (t.getYPos() == 61 && t.getXPos() == 113)) {
+			t.setTexture(loadTexture("grass.png"), "grass.png");
+		}
+	}
+
+
+
 
 
 }

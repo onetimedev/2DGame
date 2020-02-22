@@ -18,22 +18,12 @@ import java.util.Set;
 public class ChestSpawner implements Spawner {
 
 	private Tile chestTile;
-	private Texture t = new Texture();
+	private Texture t;
 
 	public ChestSpawner(Tile ti) {
 		chestTile = ti;
-		if(chestTile.getYPos() < 60 && chestTile.getXPos() < 60)
-			chestTile.setTexture("sand.png");
-		else if(chestTile.getYPos() < 60 && chestTile.getXPos() > 60)
-			chestTile.setTexture("light_basalt.png");
-		else if(chestTile.getYPos() > 60 && chestTile.getXPos() < 55)
-			chestTile.setTexture("grass.png");
-		else if(chestTile.getYPos() > 60 && chestTile.getXPos() > 40)
-			chestTile.setTexture("snow.png");
-		if((chestTile.getYPos() == 49 && chestTile.getXPos() == 112) || (chestTile.getYPos() == 61 && chestTile.getXPos() == 113))
-			chestTile.setTexture("grass.png");
-
 		t = MapHelper.loadTexture("chest.png");
+		MapHelper.setTileToBiome(chestTile);
 	}
 
 	@Override

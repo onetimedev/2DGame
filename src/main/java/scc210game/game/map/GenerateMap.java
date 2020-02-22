@@ -2,6 +2,8 @@ package scc210game.game.map;
 
 import org.jsfml.system.Vector2i;
 import com.github.cliftonlabs.json_simple.*;
+import scc210game.game.utils.MapHelper;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -328,19 +330,19 @@ public class GenerateMap {
 				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setCanHaveEnemy(true);
 				switch (i) {
 					case 0: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass.png");
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture(MapHelper.loadTexture("grass.png"), "grass.png");
 						break;
 					}
 					case 1: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("sand.png");
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture(MapHelper.loadTexture("sand.png"), "sand.png");
 						break;
 					}
 					case 2: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("light_basalt.png");
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture(MapHelper.loadTexture("light_basalt.png"), "light_basalt.png");
 						break;
 					}
 					case 3: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
+						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture(MapHelper.loadTexture("ice.png"), "ice.png");
 						break;
 					}
 				}
@@ -367,7 +369,7 @@ public class GenerateMap {
 		finalBossCoords[8] = new Vector2i(61,61);
 		Tile[] finalBossTiles = new Tile[9];
 		for(int i=0; i < finalBossTiles.length; i++) {  // Changing tile texture beneath FinalBoss
-		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setTexture("light_basalt.png");
+		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setTexture(MapHelper.loadTexture("light_basalt.png"), "light_basalt.png");
 		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setHasEnemy(true);
 		}
 	}
