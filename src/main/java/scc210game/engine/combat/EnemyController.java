@@ -1,14 +1,11 @@
-package scc210game.engine.animation;
+package scc210game.engine.combat;
 
 import scc210game.engine.ecs.Component;
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
-import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatEnemyWeapon;
-import scc210game.game.components.CombatPlayer;
-import scc210game.game.components.CombatPlayerWeapon;
-import scc210game.game.map.Enemy;
 
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -79,6 +76,7 @@ public class EnemyController {
                         if (!weaponRaised) {
                             raiseWeapon();
                             weaponRaised = true;
+                            damagePlayer();
                         }
 
 
@@ -161,6 +159,13 @@ public class EnemyController {
     public void startFight()
     {
         fight = true;
+    }
+
+    private void damagePlayer()
+    {
+        var handle = w.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
+        var scorer = w.fetchComponent(handle, Scoring.class);
+        scorer.damagePlayer();
     }
 
 }

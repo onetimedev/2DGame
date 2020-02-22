@@ -1,4 +1,4 @@
-package scc210game.engine.animation;
+package scc210game.engine.combat;
 
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;

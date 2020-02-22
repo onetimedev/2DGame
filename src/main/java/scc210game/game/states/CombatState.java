@@ -1,6 +1,7 @@
 package scc210game.game.states;
 
-import scc210game.engine.animation.EnemyController;
+import scc210game.engine.combat.EnemyController;
+import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.StateEvent;
@@ -20,6 +21,8 @@ public class CombatState extends InputHandlingState {
 
         world.entityBuilder().with(new CombatWeapon(true, world)).build();
         world.entityBuilder().with(new CombatWeapon(false, world)).build();
+
+        world.entityBuilder().with(new Scoring(100,100,100)).build();
 
         new EnemyController(world, CombatEnemy.class, CombatPlayerWeapon.class).start();
 

@@ -1,8 +1,9 @@
 package scc210game.engine.movement;
 
 import org.jsfml.window.Keyboard;
-import scc210game.engine.animation.CombatAnimator;
-import scc210game.engine.animation.CombatUtils;
+import scc210game.engine.combat.CombatAnimator;
+import scc210game.engine.combat.CombatUtils;
+import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
@@ -11,7 +12,6 @@ import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.state.event.KeyDepressedEvent;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.engine.ui.components.UITransform;
-import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
 
@@ -105,6 +105,15 @@ public class CombatMovement implements System {
                 }
             }
         }
+    }
+
+
+
+    private void damageEnemy()
+    {
+        var handle = world.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
+        var scorer = world.fetchComponent(handle, Scoring.class);
+        scorer.damageEnemy();
     }
 
 

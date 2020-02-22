@@ -1,11 +1,9 @@
-package scc210game.engine.animation;
+package scc210game.engine.combat;
 
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
-import scc210game.game.components.CombatPlayer;
-import scc210game.game.components.CombatPlayerWeapon;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

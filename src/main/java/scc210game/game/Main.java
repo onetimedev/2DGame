@@ -10,7 +10,7 @@ import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
-import scc210game.engine.animation.AnimationUpdater;
+import scc210game.engine.combat.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.CombatMovement;
