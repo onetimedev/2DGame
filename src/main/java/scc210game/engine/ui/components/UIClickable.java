@@ -1,10 +1,14 @@
 package scc210game.engine.ui.components;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
+import scc210game.engine.utils.SerializableBiConsumer;
+import scc210game.engine.utils.SerializeToBase64;
 
-import java.util.function.BiConsumer;
+import java.util.Map;
 
 /**
  * Component that flags entities that can be clicked
@@ -29,15 +33,15 @@ public class UIClickable extends Component {
      *     }
      * </pre>
      */
-    public final BiConsumer<Entity, World> acceptor;
+    public final SerializableBiConsumer<Entity, World> acceptor;
 
-    public UIClickable(BiConsumer<Entity, World> acceptor) {
+    public UIClickable(SerializableBiConsumer<Entity, World> acceptor) {
         this.acceptor = acceptor;
     }
 
 
     @Override
-    public String serialize() {
-        return "";
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("acceptor", SerializeToBase64.serializeToBase64(this.acceptor)));
     }
 }

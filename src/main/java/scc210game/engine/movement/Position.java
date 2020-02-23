@@ -21,18 +21,18 @@ public class Position extends Component {
 	}
 
 	public Position(float x, float y) {
-		xPos = x;
-		yPos = y;
-	}
+        this.xPos = x;
+        this.yPos = y;
+    }
 
-	@Override
-	public String serialize() {
-		final Jsonable json = new JsonObject() {{
-			this.put("xPos", Position.this.xPos);
-			this.put("yPos", Position.this.yPos);
-		}};
+    @Override
+    public Jsonable serialize() {
+        final Jsonable json = new JsonObject() {{
+            this.put("xPos", Position.this.xPos);
+            this.put("yPos", Position.this.yPos);
+        }};
 
-		return json.toJson();
-	}
+        return json;
+    }
 
 }

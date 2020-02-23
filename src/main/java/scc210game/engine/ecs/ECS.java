@@ -1,6 +1,9 @@
 package scc210game.engine.ecs;
 
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.events.EventQueue;
 import scc210game.engine.state.State;
 import scc210game.engine.state.StateMachine;
@@ -38,7 +41,7 @@ public class ECS {
     public ECS(@Nonnull List<Function<ECS, ? extends System>> systems, @Nonnull State initialState) {
         this.stateMachine = new StateMachine(initialState, this);
         this.globalResources = new HashMap<>();
-        eventQueue = new EventQueue();
+        this.eventQueue = new EventQueue();
         this.systems = systems.stream().map((f) -> f.apply(this)).collect(Collectors.toList());
     }
 
@@ -113,5 +116,34 @@ public class ECS {
     @Nonnull
     public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
         return (T) this.globalResources.get(resourceType);
+    }
+
+    /**
+     * Serialize the ecs to a string
+     *
+     * @return a string representing the serialized ECS
+     */
+    public Jsonable serialize() {
+        final Jsonable globalResourcesS = new JsonObject() {{
+            ECS.this.globalResources.forEach((k, v) -> {
+                this.put(k.getName(), v.serialize());
+            });
+        }};
+
+        final Jsonable futureEvents = new JsonArray() {{
+            ECS.this.eventQueue.fetchDelayedEvents().forEachRemaining((devt) -> {
+                final Jsonable evt = new JsonObject() {{
+                    this.put("end", devt.end);
+                    this.put("e", devt.e.serialize());
+                }};
+                this.add(evt);
+            });
+        }};
+
+        return new JsonObject() {{
+            this.put("states", ECS.this.stateMachine.serialize());
+            this.put("globalResources", globalResourcesS);
+            this.put("futureEvents", futureEvents);
+        }};
     }
 }

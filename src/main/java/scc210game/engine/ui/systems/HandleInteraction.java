@@ -1,5 +1,7 @@
 package scc210game.engine.ui.systems;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
 import scc210game.engine.events.*;
@@ -219,8 +221,8 @@ public class HandleInteraction implements System {
         }
 
         @Override
-        public String serialize() {
-            return "{}";
+        public Jsonable serialize() {
+            return new JsonObject();
         }
     }
 }

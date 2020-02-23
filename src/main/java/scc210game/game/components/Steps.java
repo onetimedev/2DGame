@@ -22,19 +22,19 @@ public class Steps extends Component {
 	}
 
 	public Steps(int cnt, int ocnt) {
-		count = cnt;
-		oldCount = ocnt;
-	}
+        this.count = cnt;
+        this.oldCount = ocnt;
+    }
 
-	@Override
-	public String serialize() {
-		final Jsonable json = new JsonObject() {{
-			this.put("count", Steps.this.count);
-			this.put("oldCount", Steps.this.oldCount);
-		}};
+    @Override
+    public Jsonable serialize() {
+        final Jsonable json = new JsonObject() {{
+            this.put("count", Steps.this.count);
+            this.put("oldCount", Steps.this.oldCount);
+        }};
 
-		return json.toJson();
-	}
+        return json;
+    }
 
 
 

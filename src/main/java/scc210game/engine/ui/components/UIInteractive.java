@@ -1,5 +1,7 @@
 package scc210game.engine.ui.components;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 
 /**
@@ -11,7 +13,7 @@ public class UIInteractive extends Component {
     }
 
     @Override
-    public String serialize() {
-        return "";
+    public Jsonable serialize() {
+        return new JsonObject();
     }
 }

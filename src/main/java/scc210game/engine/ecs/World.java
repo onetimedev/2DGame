@@ -1,6 +1,7 @@
 package scc210game.engine.ecs;
 
 
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.events.EventQueue;
 
 import javax.annotation.Nonnull;
@@ -165,7 +166,7 @@ public class World {
      * @param r the {@link Resource} to add
      */
     public void addGlobalResource(@Nonnull Resource r) {
-        ecs.addGlobalResource(r);
+        this.ecs.addGlobalResource(r);
     }
 
     /**
@@ -176,7 +177,7 @@ public class World {
      */
     @Nonnull
     public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
-        return ecs.fetchGlobalResource(resourceType);
+        return this.ecs.fetchGlobalResource(resourceType);
     }
 
     /**
@@ -250,6 +251,10 @@ public class World {
     @Nonnull
     public EntityBuilder entityBuilder() {
         return new EntityBuilder();
+    }
+
+    public Jsonable serialize() {
+        return null;
     }
 
     /**

@@ -28,13 +28,13 @@ public class Velocity extends Component {
 	}
 
 	@Override
-	public String serialize() {
+	public Jsonable serialize() {
 		final Jsonable json = new JsonObject() {{
 			this.put("dx", Velocity.this.dx);
 			this.put("dy", Velocity.this.dy);
 		}};
 
-		return json.toJson();
+		return json;
 	}
 
 

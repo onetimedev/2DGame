@@ -1,5 +1,7 @@
 package scc210game.engine.ecs;
 
+import com.github.cliftonlabs.json_simple.Jsonable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,7 +48,11 @@ public abstract class SerDe {
     /**
      * Serialize a component
      *
-     * @return a string representing the deserialized component
+     * @return a json object representing the deserialized component
      */
-    public abstract String serialize();
+    public Jsonable serialize() {
+        throw new RuntimeException("You wanted to deserialize a type: " +
+                this.getClass().getName() +
+                ", but it doesn't have serialize implemented");
+    }
 }

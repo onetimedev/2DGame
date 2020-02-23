@@ -9,46 +9,46 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.game.utils.MapHelper;
 import scc210game.game.map.Chest;
 import scc210game.game.map.Tile;
+import scc210game.game.utils.MapHelper;
 
 import java.util.Set;
 
 public class ChestSpawner implements Spawner {
 
-	private Tile chestTile;
-	private Texture t = new Texture();
+    private final Tile chestTile;
+    private Texture t = new Texture();
 
-	public ChestSpawner(Tile ti) {
-		chestTile = ti;
-		if(chestTile.getYPos() < 60 && chestTile.getXPos() < 60)
-			chestTile.setTexture("sand.png");
-		else if(chestTile.getYPos() < 60 && chestTile.getXPos() > 60)
-			chestTile.setTexture("light_basalt.png");
-		else if(chestTile.getYPos() > 60 && chestTile.getXPos() < 55)
-			chestTile.setTexture("grass.png");
-		else if(chestTile.getYPos() > 60 && chestTile.getXPos() > 40)
-			chestTile.setTexture("snow.png");
-		if((chestTile.getYPos() == 49 && chestTile.getXPos() == 112) || (chestTile.getYPos() == 61 && chestTile.getXPos() == 113))
-			chestTile.setTexture("grass.png");
+    public ChestSpawner(Tile ti) {
+        this.chestTile = ti;
+        if (this.chestTile.getYPos() < 60 && this.chestTile.getXPos() < 60)
+            this.chestTile.setTexture("sand.png");
+        else if (this.chestTile.getYPos() < 60 && this.chestTile.getXPos() > 60)
+            this.chestTile.setTexture("light_basalt.png");
+        else if (this.chestTile.getYPos() > 60 && this.chestTile.getXPos() < 55)
+            this.chestTile.setTexture("grass.png");
+        else if (this.chestTile.getYPos() > 60 && this.chestTile.getXPos() > 40)
+            this.chestTile.setTexture("snow.png");
+        if ((this.chestTile.getYPos() == 49 && this.chestTile.getXPos() == 112) || (this.chestTile.getYPos() == 61 && this.chestTile.getXPos() == 113))
+            this.chestTile.setTexture("grass.png");
 
-		t = MapHelper.loadTexture("chest.png");
-	}
+        this.t = MapHelper.loadTexture("chest.png");
+    }
 
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder) {
 		return builder
-				.with(new Chest())
-				.with(new Position(chestTile.getXPos(), chestTile.getYPos()))
+                .with(new Chest())
+                .with(new Position(this.chestTile.getXPos(), this.chestTile.getYPos()))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 						(Entity entity, RenderWindow window, World world) -> {
 
-								Sprite c = new Sprite(t);
-								c.setPosition(chestTile.getXPos()*64, chestTile.getYPos()*64);
-								window.draw(c);
+                            Sprite c = new Sprite(this.t);
+                            c.setPosition(this.chestTile.getXPos() * 64, this.chestTile.getYPos() * 64);
+                            window.draw(c);
 
-						}));
+                        }));
 
 	}
 }

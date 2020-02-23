@@ -92,7 +92,7 @@ This spawner creates a dialogue box with a given piece of text.
 ## Creating components
 
 A component is any class extending `scc210game.engine.ecs.Component`, there is one
-method that needs implementing which is `String serialize()`, but for now this
+method that needs implementing which is `Jsonable serialize()`, but for now this
 can be left as just returning null, eventually this will be used to allow the
 entire game state to be stored in a database for later restoration.
 
@@ -108,7 +108,7 @@ class Position extends Component {
    }
 
    @Override
-   public String serialize() {
+   public Jsonable serialize() {
       return null;
    }
 }

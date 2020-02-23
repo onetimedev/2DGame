@@ -1,5 +1,6 @@
 package scc210game.engine.state;
 
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransNop;
@@ -70,4 +71,6 @@ public abstract class State {
     public Transition onFrame() {
         return TransNop.getInstance();
     }
+
+    public abstract Jsonable serialize();
 }

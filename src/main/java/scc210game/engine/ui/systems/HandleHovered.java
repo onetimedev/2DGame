@@ -3,7 +3,10 @@ package scc210game.engine.ui.systems;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
-import scc210game.engine.events.*;
+import scc210game.engine.events.EntityHoverStartEvent;
+import scc210game.engine.events.EntityHoverStopEvent;
+import scc210game.engine.events.Event;
+import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.ui.components.UIHovered;
 
 import javax.annotation.Nonnull;

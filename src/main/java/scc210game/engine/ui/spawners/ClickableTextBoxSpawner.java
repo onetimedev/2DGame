@@ -14,11 +14,11 @@ import scc210game.engine.ui.components.UIClickable;
 import scc210game.engine.ui.components.UIHovered;
 import scc210game.engine.ui.components.UIText;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.SerializableBiConsumer;
 import scc210game.engine.utils.UiUtils;
 
 import java.awt.*;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 public class ClickableTextBoxSpawner implements Spawner {
     private final float x;
@@ -26,9 +26,9 @@ public class ClickableTextBoxSpawner implements Spawner {
     private final float width;
     private final float height;
     private final String text;
-    private final BiConsumer<Entity, World> clickAction;
+    private final SerializableBiConsumer<Entity, World> clickAction;
 
-    public ClickableTextBoxSpawner(float x, float y, float width, float height, String text, BiConsumer<Entity, World> clickAction) {
+    public ClickableTextBoxSpawner(float x, float y, float width, float height, String text, SerializableBiConsumer<Entity, World> clickAction) {
         this.x = x;
         this.y = y;
         this.width = width;

@@ -126,7 +126,7 @@ public class UITransform extends Component {
     }
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         final Jsonable json = new JsonObject() {{
             this.put("originXPos", UITransform.this.originXPos);
             this.put("originYPos", UITransform.this.originYPos);
@@ -137,7 +137,7 @@ public class UITransform extends Component {
             this.put("height", UITransform.this.height);
         }};
 
-        return json.toJson();
+        return json;
     }
 
     /**

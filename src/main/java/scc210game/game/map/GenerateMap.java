@@ -1,7 +1,11 @@
 package scc210game.game.map;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonException;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsoner;
 import org.jsfml.system.Vector2i;
-import com.github.cliftonlabs.json_simple.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -11,22 +15,22 @@ import java.util.ArrayList;
  */
 public class GenerateMap {
 
-	private Tile[][] allTiles;
-	private Vector2i mapSize;
-	private ArrayList<Tile>  possEnemyTiles = new ArrayList<>();
-	private ArrayList<Tile> npcTiles = new ArrayList<>();
-	private ArrayList<Tile> chestTiles = new ArrayList<>();
-	private ArrayList<Tile> enemyTiles;
+    private final Tile[][] allTiles;
+    private final Vector2i mapSize;
+    private final ArrayList<Tile> possEnemyTiles = new ArrayList<>();
+    private final ArrayList<Tile> npcTiles = new ArrayList<>();
+    private final ArrayList<Tile> chestTiles = new ArrayList<>();
+    private final ArrayList<Tile> enemyTiles;
 
 
-	// Read from object map tile values that are already preset
-	public GenerateMap() {
-		mapSize = new Vector2i(120, 120);
-		allTiles = new Tile[mapSize.x][mapSize.y];
-		jsonToTiles();
-		enemyTiles = addEnemies();
-		createFinalBossTiles();
-	}
+    // Read from object map tile values that are already preset
+    public GenerateMap() {
+        this.mapSize = new Vector2i(120, 120);
+        this.allTiles = new Tile[this.mapSize.x][this.mapSize.y];
+        this.jsonToTiles();
+        this.enemyTiles = this.addEnemies();
+        this.createFinalBossTiles();
+    }
 
 
 	/**
@@ -34,32 +38,31 @@ public class GenerateMap {
 	 */
 	private void jsonToTiles() {
 		try {
-			FileReader fr = new FileReader("./mapdata.json");
-			JsonObject jsonData = (JsonObject) Jsoner.deserialize(fr);
-			JsonArray tileValues = (JsonArray) jsonData.get("data");
+            FileReader fr = new FileReader("./mapdata.json");
+            JsonObject jsonData = (JsonObject) Jsoner.deserialize(fr);
+            JsonArray tileValues = (JsonArray) jsonData.get("data");
 
-			int cnt = 0;  // Count to get each tile value from tileValues
-			for(int y=0; y<mapSize.y; y++)
-				for (int x=0; x<mapSize.x; x++) {
-					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
-					allTiles[x][y] = Tile.deserialize(tileData(tileValues.getInteger(cnt), x, y));
-					if(allTiles[x][y].getTextureName().contains("enemy_"))
-						possEnemyTiles.add(allTiles[x][y]);
+            int cnt = 0;  // Count to get each tile value from tileValues
+            for (int y = 0; y < this.mapSize.y; y++)
+                for (int x = 0; x < this.mapSize.x; x++) {
+                    //System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
+                    this.allTiles[x][y] = Tile.deserialize(this.tileData(tileValues.getInteger(cnt), x, y));
+                    if (this.allTiles[x][y].getTextureName().contains("enemy_"))
+                        this.possEnemyTiles.add(this.allTiles[x][y]);
 
-					if(allTiles[x][y].getTextureName().contains("story.png"))
-						npcTiles.add(allTiles[x][y]);
+                    if (this.allTiles[x][y].getTextureName().contains("story.png"))
+                        this.npcTiles.add(this.allTiles[x][y]);
 
-					if(allTiles[x][y].canHaveChest() && allTiles[x][y].getTextureName().equals("chest.png"))
-						chestTiles.add(allTiles[x][y]);
+                    if (this.allTiles[x][y].canHaveChest() && this.allTiles[x][y].getTextureName().equals("chest.png"))
+                        this.chestTiles.add(this.allTiles[x][y]);
 
-					cnt++;
+                    cnt++;
 
-				}
+                }
 
-		}
-		catch(FileNotFoundException | JsonException e) {
-			throw new RuntimeException();
-		}
+        } catch (final FileNotFoundException | JsonException e) {
+            throw new RuntimeException();
+        }
 	}
 
 
@@ -324,23 +327,23 @@ public class GenerateMap {
 		*/
 		for(int i=0; i< allBossCoords.size(); i++) {
 			for (int j = 0; j < allBossCoords.get(i).length; j++) {
-				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasCollision(true);
-				allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setCanHaveEnemy(true);
-				switch (i) {
-					case 0: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass.png");
-						break;
-					}
-					case 1: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("sand.png");
-						break;
-					}
-					case 2: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("light_basalt.png");
+                this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setHasCollision(true);
+                this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setCanHaveEnemy(true);
+                switch (i) {
+                    case 0: {
+                        this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("grass.png");
+                        break;
+                    }
+                    case 1: {
+                        this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("sand.png");
+                        break;
+                    }
+                    case 2: {
+                        this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("light_basalt.png");
 						break;
 					}
 					case 3: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
+                        this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
 						break;
 					}
 				}
@@ -367,9 +370,9 @@ public class GenerateMap {
 		finalBossCoords[8] = new Vector2i(61,61);
 		Tile[] finalBossTiles = new Tile[9];
 		for(int i=0; i < finalBossTiles.length; i++) {  // Changing tile texture beneath FinalBoss
-		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setTexture("light_basalt.png");
-		allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setHasEnemy(true);
-		}
+            this.allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setTexture("light_basalt.png");
+            this.allTiles[finalBossCoords[i].x][finalBossCoords[i].y].setHasEnemy(true);
+        }
 	}
 
 
@@ -384,21 +387,21 @@ public class GenerateMap {
 		ArrayList<Tile> tempList = new ArrayList<>();
 
 		while (minEnemyTiles > placedCount) {
-			for (Tile tile : possEnemyTiles) {
-				int count = 0;
-				int rng = (int) (Math.random() * 10 + 1);
-				if (rng > 7) {
-					for (Tile otherTiles : possEnemyTiles)
-						if ((tile.getXPos() - checkWithin > otherTiles.getXPos() || tile.getXPos() + checkWithin < otherTiles.getXPos()) || (tile.getYPos() - checkWithin > otherTiles.getYPos() || tile.getYPos() + checkWithin < otherTiles.getYPos()))
-							count++;
+            for (final Tile tile : this.possEnemyTiles) {
+                int count = 0;
+                int rng = (int) (Math.random() * 10 + 1);
+                if (rng > 7) {
+                    for (final Tile otherTiles : this.possEnemyTiles)
+                        if ((tile.getXPos() - checkWithin > otherTiles.getXPos() || tile.getXPos() + checkWithin < otherTiles.getXPos()) || (tile.getYPos() - checkWithin > otherTiles.getYPos() || tile.getYPos() + checkWithin < otherTiles.getYPos()))
+                            count++;
 
-					if (count == possEnemyTiles.size() - 1) {
-						tempList.add(tile);
-						tile.setHasEnemy(true);
-						placedCount++;
-					}
+                    if (count == this.possEnemyTiles.size() - 1) {
+                        tempList.add(tile);
+                        tile.setHasEnemy(true);
+                        placedCount++;
+                    }
 
-				}
+                }
 			}
 			checkWithin -= 2;
 		}
@@ -407,20 +410,20 @@ public class GenerateMap {
 
 
 	public ArrayList<Tile> getGenChestTiles() {
-		return chestTiles;
-	}
+        return this.chestTiles;
+    }
 
 	public Tile[][] getGenTiles() {
-		return allTiles;
-	}
+        return this.allTiles;
+    }
 
 	public ArrayList<Tile> getGenEnemyTiles() {
-		return enemyTiles;
-	}
+        return this.enemyTiles;
+    }
 
 	public ArrayList<Tile> getGenNPCTiles() {
-		return npcTiles;
-	}
+        return this.npcTiles;
+    }
 
 
 

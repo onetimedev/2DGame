@@ -1,5 +1,7 @@
 package scc210game.game.map;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 
 public class Boss extends Component {
@@ -9,7 +11,7 @@ public class Boss extends Component {
 	}
 
 	@Override
-	public String serialize() {
-		return "";
+	public Jsonable serialize() {
+		return new JsonObject();
 	}
 }

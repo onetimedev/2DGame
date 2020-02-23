@@ -1,5 +1,8 @@
 package scc210game.engine.state;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.event.StateEvent;
@@ -25,22 +28,22 @@ public class StateMachine {
     }
 
     public State currentState() {
-        return currentSD().state;
+        return this.currentSD().state;
     }
 
     public Instant lastRunInstant() {
-        return currentSD().tLastRun;
+        return this.currentSD().tLastRun;
     }
 
     public Instant lastRunInstant(Instant now) {
-        var c = currentSD();
+        var c = this.currentSD();
         var lr = c.tLastRun;
         c.tLastRun = now;
         return lr;
     }
 
     public World currentWorld() {
-        return currentSD().world;
+        return this.currentSD().world;
     }
 
     private StateData currentSD() {
@@ -105,6 +108,21 @@ public class StateMachine {
         } else {
             throw new RuntimeException("Unknown transition type: " + t);
         }
+    }
+
+    public Jsonable serialize() {
+        return new JsonArray() {{
+            StateMachine.this.states.forEach(sd -> {
+                final Jsonable sdjson = new JsonObject() {{
+                    this.put("state", sd.state.serialize());
+                    this.put("world", sd.world.serialize());
+                    this.put("tLastRun", sd.tLastRun);
+                    this.put("tOnPause", sd.tOnPause);
+                }};
+
+                this.add(sdjson);
+            });
+        }};
     }
 
     static class StateData {

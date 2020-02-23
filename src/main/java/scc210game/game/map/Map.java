@@ -1,5 +1,6 @@
 package scc210game.game.map;
 
+import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Component;
 import scc210game.game.utils.MapHelper;
@@ -10,32 +11,31 @@ import java.util.ArrayList;
  * Create map as part of the ECS
  */
 public class Map extends Component {
-  private Tile[][] mapTiles;
-  private GenerateMap genMap;
-  private ArrayList<Tile> enemyTiles;
-  private ArrayList<Tile> npcTiles;
-  private ArrayList<Vector2i[]> bossCoords;
-  private ArrayList<Tile> chestTiles;
+    private final Tile[][] mapTiles;
+    private final GenerateMap genMap;
+    private final ArrayList<Tile> enemyTiles;
+    private final ArrayList<Tile> npcTiles;
+    private final ArrayList<Vector2i[]> bossCoords;
+    private final ArrayList<Tile> chestTiles;
 
 
-  @Override
-  public String serialize() {
-      return null;
-  }
+    @Override
+    public Jsonable serialize() {
+        return null;
+    }
 
-
-  public Map() {
-      genMap = new GenerateMap();
-      mapTiles = genMap.getGenTiles();
-      enemyTiles = genMap.getGenEnemyTiles();
-      npcTiles = genMap.getGenNPCTiles();
-      bossCoords = genMap.getBossCoords();
-      chestTiles = genMap.getGenChestTiles();
-  }
+    public Map() {
+        this.genMap = new GenerateMap();
+        this.mapTiles = this.genMap.getGenTiles();
+        this.enemyTiles = this.genMap.getGenEnemyTiles();
+        this.npcTiles = this.genMap.getGenNPCTiles();
+        this.bossCoords = this.genMap.getBossCoords();
+        this.chestTiles = this.genMap.getGenChestTiles();
+    }
 
 
   public Tile[][] getMap() {
-      return mapTiles;
+      return this.mapTiles;
   }
 
   public int getWidth() {
@@ -47,37 +47,35 @@ public class Map extends Component {
   }
 
 	public Tile getTile(int xPos, int yPos) {
-		return mapTiles[xPos][yPos];
-	}
+        return this.mapTiles[xPos][yPos];
+    }
 
 	public boolean legalTile(int xPos, int yPos) {
-  	if(xPos > MapHelper.mapSize.x || xPos < 0 || yPos > MapHelper.mapSize.y || yPos < 0)
-  		return false;
-  	return true;
-	}
+        return xPos <= MapHelper.mapSize.x && xPos >= 0 && yPos <= MapHelper.mapSize.y && yPos >= 0;
+    }
 
 	public int getTileMaxX() {
-		return mapTiles.length-1;
-	}
+        return this.mapTiles.length - 1;
+    }
 
 	public int getTileMaxY() {
-		return mapTiles[0].length-1;
-	}
+        return this.mapTiles[0].length - 1;
+    }
 
 	public ArrayList<Tile> getEnemyTiles() {
-      return enemyTiles;
+        return this.enemyTiles;
     }
 
   public ArrayList<Tile> getNPCTiles() {
-      return npcTiles;
+      return this.npcTiles;
     }
 
   public ArrayList<Vector2i[]> getBossCoords() {
-  	return bossCoords;
+      return this.bossCoords;
   }
 
 	public ArrayList<Tile> getChestTiles() {
-		return chestTiles;
-	}
+        return this.chestTiles;
+    }
 
 }

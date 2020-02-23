@@ -26,6 +26,11 @@ class BasicState extends State {
                 .with(new Velocity(1, 0))
                 .build();
     }
+
+    @Override
+    public Jsonable serialize() {
+        return null;
+    }
 }
 
 class Velocity extends Component {
@@ -49,13 +54,13 @@ class Velocity extends Component {
     }
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         final Jsonable json = new JsonObject() {{
             this.put("dx", Velocity.this.dx);
             this.put("dy", Velocity.this.dy);
         }};
 
-        return json.toJson();
+        return json;
     }
 }
 
@@ -97,13 +102,13 @@ class Position extends Component {
     }
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         final Jsonable json = new JsonObject() {{
             this.put("x", Position.this.x);
             this.put("y", Position.this.y);
         }};
 
-        return json.toJson();
+        return json;
     }
 }
 
@@ -151,7 +156,7 @@ public class ECSTest {
 
         Position testPos = new Position(100, -100);
 
-        assertEquals(testPos, Component.deserialize(testPos.serialize(), Position.class));
+        assertEquals(testPos, Component.deserialize(testPos.serialize().toJson(), Position.class));
 
         ecs.getCurrentWorld().removeEntity(s.e);
         s.e = null;
