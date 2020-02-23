@@ -1,6 +1,8 @@
 package scc210game.engine.ecs;
 
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.events.EventQueue;
 
@@ -19,7 +21,7 @@ public class World {
     @Nonnull
     private final Map<Entity, Set<Class<? extends Component>>> entityComponents;
     @Nonnull
-    private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
+    private final Map<Entity, Map<Class<? extends Component>, Component>> componentMaps;
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
 
@@ -74,9 +76,9 @@ public class World {
         Set<Class<? extends Component>> componentSet = this.entityComponents.computeIfAbsent(e, k -> new HashSet<>());
         componentSet.add(component.getClass());
 
-        Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
+        Map<Class<? extends Component>, Component> componentStorage =
                 this.componentMaps.computeIfAbsent(e, k -> new HashMap<>());
-        componentStorage.put(component.getClass(), new ComponentMeta<>(component));
+        componentStorage.put(component.getClass(), component);
     }
 
     /**
@@ -92,7 +94,7 @@ public class World {
         assert componentSet != null;
         componentSet.remove(componentType);
 
-        Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
+        Map<Class<? extends Component>, Component> componentStorage =
                 this.componentMaps.get(e);
         assert componentStorage != null;
         componentStorage.remove(componentType);
@@ -192,38 +194,7 @@ public class World {
     @Nonnull
     @SuppressWarnings("unchecked")
     public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
-        return (T) this.componentMaps.get(e).get(componentType).component;
-    }
-
-    /**
-     * Reset the modification state of all components for the given {@link Entity} to unmodified
-     *
-     * @param e the {@link Entity} to modify
-     */
-    public void resetModifiedState(Entity e) {
-        this.componentMaps.get(e).values().forEach(m -> m.isModified = false);
-    }
-
-    /**
-     * Flag an entity's component as modified
-     *
-     * @param e             the {@link Entity} for which the component to be flagged as modified belongs to
-     * @param componentType the type of {@link Component} to flag as modified
-     */
-    public void setModified(Entity e, Class<? extends Component> componentType) {
-        this.setModifiedState(e, componentType, true);
-    }
-
-    /**
-     * Set the modified state of an entity's component
-     *
-     * @param e             the {@link Entity} for which the component to set the modified flag belongs to
-     * @param componentType the type of {@link Component} to set the modified flag on
-     * @param state         the state to set the modified flag to
-     */
-    @SuppressWarnings("BooleanParameter")
-    public void setModifiedState(Entity e, Class<? extends Component> componentType, boolean state) {
-        this.componentMaps.get(e).get(componentType).isModified = state;
+        return (T) this.componentMaps.get(e).get(componentType);
     }
 
     /**
@@ -237,9 +208,7 @@ public class World {
 
         return this.entities.parallelStream().filter(e -> {
             Set<Class<? extends Component>> componentSet = this.entityComponents.get(e);
-            Map<Class<? extends Component>, ComponentMeta<Component>> componentMap = this.componentMaps.get(e);
-
-            return q.testEntity(componentSet, componentMap);
+            return q.testEntity(componentSet);
         }).sequential();
     }
 
@@ -254,7 +223,13 @@ public class World {
     }
 
     public Jsonable serialize() {
-        return null;
+        var entitesS = new JsonArray() {{
+            World.this.entities.forEach(e -> {
+
+            });
+        }};
+
+        return new JsonObject();
     }
 
     /**

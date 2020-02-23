@@ -126,7 +126,6 @@ public class ECSTest {
                 final Stream<Entity> entities = world.applyQuery(this.q);
 
                 entities.forEach(e -> {
-                    world.resetModifiedState(e);
                     this.actOnEntity(e, world, timeDelta);
                 });
             }
@@ -137,8 +136,6 @@ public class ECSTest {
 
                 pos.x += vel.dx;
                 pos.y += vel.dy;
-
-                world.setModified(e, Position.class);
             }
         }
 
