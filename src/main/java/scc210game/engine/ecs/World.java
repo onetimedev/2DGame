@@ -223,13 +223,35 @@ public class World {
     }
 
     public Jsonable serialize() {
-        var entitesS = new JsonArray() {{
+        var entitesS = new JsonObject() {{
             World.this.entities.forEach(e -> {
-
+                var json = new JsonObject() {{
+                    World.this.componentMaps.get(e).forEach((klass, component) -> {
+                        if (!component.shouldKeep())
+                            return;
+                        this.put(klass.getName(), component.serialize());
+                    });
+                }};
+                this.put(String.valueOf(e.unsafeGetID()), json);
             });
         }};
 
-        return new JsonObject();
+        var resourcesS = new JsonObject() {{
+            World.this.resourceMap.forEach((klass, resource) ->
+                    this.put(klass.getName(), resource.serialize()));
+        }};
+
+        var futureEvents = new JsonArray() {{
+            World.this.eventQueue.fetchDelayedEvents().forEachRemaining((devt) -> {
+                final Jsonable evt = new JsonObject() {{
+                    this.put("end", devt.end);
+                    this.put("e", devt.e.serialize());
+                }};
+                this.add(evt);
+            });
+        }};
+
+        return new JsonObject(Map.of("entities", entitesS, "resources", resourcesS, "futureEvents", futureEvents));
     }
 
     /**

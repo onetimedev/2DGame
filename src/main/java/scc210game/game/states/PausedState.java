@@ -17,6 +17,8 @@ public class PausedState extends BaseInGameState {
                 (Entity e, World w) -> world.ecs.acceptEvent(new TogglePauseEvent()))).build();
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Main Menu",
                 (Entity e, World w) -> world.ecs.acceptEvent(new ReturnToMainMenuEvent()))).build();
+
+        System.out.println(world.ecs.serialize().toJson());
     }
 
     @Override
