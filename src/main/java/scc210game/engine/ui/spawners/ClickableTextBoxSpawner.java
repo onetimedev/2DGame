@@ -46,7 +46,7 @@ public class ClickableTextBoxSpawner implements Spawner {
                 .with(new UIText(this.text))
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
                 .with(new UIClickable(this.clickAction))
-                .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var textContent = w.fetchComponent(e, UIText.class);
 

@@ -4,9 +4,13 @@ import scc210game.engine.ecs.Component;
 
 public class Chest extends Component {
 
-	@Override
-	public String serialize() {
-		return null;
-	}
+    static {
+        register(Chest.class, S -> new Chest());
+    }
+
+    @Override
+    public String serialize() {
+        return "";
+    }
 
 }

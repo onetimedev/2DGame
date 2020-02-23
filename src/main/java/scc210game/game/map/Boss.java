@@ -4,8 +4,12 @@ import scc210game.engine.ecs.Component;
 
 public class Boss extends Component {
 
-	@Override
-	public String serialize() {
-		return null;
-	}
+    static {
+        register(Boss.class, s -> new Boss());
+    }
+
+    @Override
+    public String serialize() {
+        return "";
+    }
 }
