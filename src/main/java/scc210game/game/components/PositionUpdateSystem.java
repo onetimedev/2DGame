@@ -14,11 +14,13 @@ import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.states.events.TriggerStoryEvent;
 import scc210game.game.utils.MapHelper;
+import scc210game.engine.audio.Audio;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
 
 public class PositionUpdateSystem implements System {
+	Audio au = new Audio();
 
 
 	@Override
@@ -45,7 +47,6 @@ public class PositionUpdateSystem implements System {
 		velocity.dx *= 0.8;
 		velocity.dy *= 0.8;
 
-
 		// Resetting velocity
 		if(velocity.dx > -0.1 && velocity.dx < 0.1)
 			velocity.dx = 0;
@@ -70,23 +71,29 @@ public class PositionUpdateSystem implements System {
 			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_right.png");
 			pTexture.speedMs = 100;
+			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
 		}
 		if(deltaX < 0) {  // left
 			if (checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_left.png");
 			pTexture.speedMs = 100;
+			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
 		}
-
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
 			if (checkCollisionY(velocity, map, deltaY, left, right, top)) return;
 			pTexture.texture = MapHelper.loadTexture("player_top.png");
 			pTexture.speedMs = 100;
+			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
 		}
 		if(deltaY > 0) {  // bottom
 			if (checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
 			pTexture.speedMs = 100;
+			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
+		}
+		if(deltaX == 0 && deltaY == 0) {
+			au.stopSound();
 		}
 
 		// Changing to floored ints to check specific tiles around position
