@@ -10,6 +10,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.map.Enemy;
+import scc210game.game.map.TextureStorage;
 import scc210game.game.map.Tile;
 import scc210game.game.utils.MapHelper;
 
@@ -57,21 +58,24 @@ public class EnemySpawner implements Spawner {
   }
 
 
-  @Override
-  public World.EntityBuilder inject(World.EntityBuilder builder) {
-    return builder
-            .with(new Enemy(false))
-            .with(new Position(this.xSpawn, this.ySpawn))
-      .with(new Renderable(Set.of(ViewType.MAIN), 5,
-        (Entity entity, RenderWindow window, World world) -> {
+    @Override
+    public World.EntityBuilder inject(World.EntityBuilder builder) {
+        return builder
+                .with(new Enemy(false))
+                .with(new Position(this.xSpawn, this.ySpawn))
+                .with(new TextureStorage(this.enemyTexture))
+                .with(new Renderable(Set.of(ViewType.MAIN), 5,
+                        //TODO: Get if specific enemy has been defeated
+                        //if(defeated == false) {
+                        //}
+                        EnemySpawner::accept));
+    }
 
-            //TODO: Get if specific enemy has been defeated
-            //if(defeated == false) {
-            Sprite en = new Sprite(this.enemyTexture);
-            en.setPosition(this.xSpawn * 64, this.ySpawn * 64);
-            window.draw(en);
-            //}
-
-        }));
-  }
+    private static void accept(Entity entity, RenderWindow window, World world) {
+        var p = world.fetchComponent(entity, Position.class);
+        var t = world.fetchComponent(entity, TextureStorage.class);
+        Sprite en = new Sprite(t.texture);
+        en.setPosition(p.xPos * 64, p.yPos * 64);
+        window.draw(en);
+    }
 }

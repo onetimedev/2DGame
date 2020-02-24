@@ -1,7 +1,6 @@
 package scc210game.engine.ecs;
 
 
-import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.events.EventQueue;
@@ -124,26 +123,11 @@ public class ECS {
      * @return a string representing the serialized ECS
      */
     public Jsonable serialize() {
-        final Jsonable globalResourcesS = new JsonObject() {{
-            ECS.this.globalResources.forEach((k, v) -> {
-                this.put(k.getName(), v.serialize());
-            });
-        }};
-
-        final Jsonable futureEvents = new JsonArray() {{
-            ECS.this.eventQueue.fetchDelayedEvents().forEachRemaining((devt) -> {
-                final Jsonable evt = new JsonObject() {{
-                    this.put("end", devt.end);
-                    this.put("e", devt.e.serialize());
-                }};
-                this.add(evt);
-            });
-        }};
+        // we don't serialize global resources or future events,
+        // since they are created at the start of the game and don't need replacing
 
         return new JsonObject() {{
             this.put("states", ECS.this.stateMachine.serialize());
-            this.put("globalResources", globalResourcesS);
-            this.put("futureEvents", futureEvents);
         }};
     }
 }

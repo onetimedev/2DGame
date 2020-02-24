@@ -1,5 +1,6 @@
 package scc210game.game.components;
 
+import scc210game.engine.animation.Animate;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
@@ -8,7 +9,7 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
-import scc210game.game.map.PlayerTexture;
+import scc210game.game.map.TextureStorage;
 import scc210game.game.map.Tile;
 import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
@@ -29,7 +30,8 @@ public class PositionUpdateSystem implements System {
 		var playerEnt = playerEntO.get();
 		var position = world.fetchComponent(playerEnt, Position.class);
 		var velocity = world.fetchComponent(playerEnt, Velocity.class);
-		var pTexture = world.fetchComponent(playerEnt, PlayerTexture.class);
+		var pTexture = world.fetchComponent(playerEnt, TextureStorage.class);
+		var pAnimate = world.fetchComponent(playerEnt, Animate.class);
 
 		var mapEntO = world.applyQuery(Query.builder().require(Map.class).build()).findFirst();
 		if (!mapEntO.isPresent())
@@ -55,7 +57,7 @@ public class PositionUpdateSystem implements System {
 
 		if(velocity.dx == 0 && velocity.dy == 0) {
 			pTexture.texture = MapHelper.loadTexture("player_anim.png");
-			pTexture.speedMs = 400;
+			pAnimate.updateDuration(Duration.ofMillis((400 * pTexture.texture.getSize().x) / 64));
 		}
 
 
@@ -67,32 +69,32 @@ public class PositionUpdateSystem implements System {
 
 		// X Delta collision checks
 		if(deltaX > 0) {  // right
-			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
+			if (this.checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_right.png");
-			pTexture.speedMs = 100;
+			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 		if(deltaX < 0) {  // left
-			if (checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
+			if (this.checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_left.png");
-			pTexture.speedMs = 100;
+			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
-			if (checkCollisionY(velocity, map, deltaY, left, right, top)) return;
+			if (this.checkCollisionY(velocity, map, deltaY, left, right, top)) return;
 			pTexture.texture = MapHelper.loadTexture("player_top.png");
-			pTexture.speedMs = 100;
+			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
-		if(deltaY > 0) {  // bottom
-			if (checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
+		if (deltaY > 0) {  // bottom
+			if (this.checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
-			pTexture.speedMs = 100;
+			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 
 		// Changing to floored ints to check specific tiles around position
 		int xPosInt = (int) Math.floor(position.xPos + deltaX);
 		int yPosInt = (int) Math.floor(position.yPos + deltaY);
-		checkSurrounding(world, map, xPosInt, yPosInt);
+		this.checkSurrounding(world, map, xPosInt, yPosInt);
 
 		// Updating position of player with delta value
 		position.xPos += deltaX;
@@ -100,7 +102,7 @@ public class PositionUpdateSystem implements System {
 
 		// Getting and updating the view by its center
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.setCenter(position.xPos*64, position.yPos*64);
+		view.mainView.setCenter(position.xPos * 64, position.yPos * 64);
 
 	}
 
@@ -168,25 +170,24 @@ public class PositionUpdateSystem implements System {
 
 		if(steps.count > steps.oldCount+4) {
 			Tile[] tiles = new Tile[4];
-			if(map.legalTile(x + 1, y))
+			if (map.legalTile(x + 1, y))
 				tiles[0] = map.getTile(x + 1, y);
-			if(map.legalTile(x - 1, y))
+			if (map.legalTile(x - 1, y))
 				tiles[1] = map.getTile(x - 1, y);
-			if(map.legalTile(x, y+1))
+			if (map.legalTile(x, y + 1))
 				tiles[2] = map.getTile(x, y + 1);
-			if(map.legalTile(x, y-1))
-			tiles[3] = map.getTile(x, y - 1);
+			if (map.legalTile(x, y - 1))
+				tiles[3] = map.getTile(x, y - 1);
 
-			for (Tile t : tiles) {
-				if(t == null)
+			for (final Tile t : tiles) {
+				if (t == null)
 					continue;
 				if (t.getHasEnemy()) {
 					java.lang.System.out.println("Enemy nearby");
 					world.ecs.acceptEvent(new TriggerCombatEvent());
 					steps.oldCount = steps.count;
 					break;
-				}
-				else if (t.canHaveChest()) {
+				} else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
 					world.ecs.acceptEvent(new TriggerChestEvent());
 					steps.oldCount = steps.count;

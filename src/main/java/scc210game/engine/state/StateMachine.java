@@ -116,8 +116,8 @@ public class StateMachine {
                 final Jsonable sdjson = new JsonObject() {{
                     this.put("state", sd.state.serialize());
                     this.put("world", sd.world.serialize());
-                    this.put("tLastRun", sd.tLastRun);
-                    this.put("tOnPause", sd.tOnPause);
+                    this.put("tLastRun", sd.tLastRun.toString());
+                    this.put("tOnPause", sd.tOnPause == null ? null : sd.tOnPause.toString());
                 }};
 
                 this.add(sdjson);
@@ -147,6 +147,7 @@ public class StateMachine {
             var now = Instant.now();
             assert this.tOnPause != null;
             var td = Duration.between(this.tOnPause, now);
+            this.tOnPause = null;
             this.world.eventQueue.patchDelayDelta(td);
             this.tLastRun = this.tLastRun.plus(td);
             this.state.onResume();

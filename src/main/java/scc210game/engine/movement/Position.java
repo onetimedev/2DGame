@@ -34,5 +34,4 @@ public class Position extends Component {
 
         return json;
     }
-
 }

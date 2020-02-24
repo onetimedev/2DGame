@@ -28,31 +28,33 @@ public class DialogueSpawner implements Spawner {
         this.ignore = ignore;
     }
 
+    private static void accept(Entity e, RenderWindow rw, World w) {
+        var trans = w.fetchComponent(e, UITransform.class);
+        var dialogue = w.fetchComponent(e, Dialogue.class);
+
+        var fillColour = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+
+        var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
+            this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+            this.setFillColor(UiUtils.transformColor(fillColour));
+            this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
+        }};
+
+        rw.draw(rect);
+
+        var text = new Text(dialogue.text, Font.freesans, 24) {{
+            this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+        }};
+
+        rw.draw(text);
+    }
+
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
         return builder
                 .with(new Dialogue(this.message, this.accept, this.ignore))
                 .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))
-                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
-                    var trans = w.fetchComponent(e, UITransform.class);
-                    var dialogue = w.fetchComponent(e, Dialogue.class);
-
-                    var fillColour = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-
-                    var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
-                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-                        this.setFillColor(UiUtils.transformColor(fillColour));
-                        this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
-                    }};
-
-                    rw.draw(rect);
-
-                    var text = new Text(dialogue.text, Font.freesans, 24) {{
-                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-                    }};
-
-                    rw.draw(text);
-                }));
+                .with(new Renderable(Set.of(ViewType.UI), 100, DialogueSpawner::accept));
     }
 }
 

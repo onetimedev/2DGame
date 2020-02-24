@@ -9,26 +9,35 @@ import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.TransQuit;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.states.events.QuitGameEvent;
 import scc210game.game.states.events.StartGameEvent;
 
 public class MainMenuState extends InputHandlingState {
     Audio au = new Audio();
 
+    private static void startClick(Entity e, World w) {
+        w.ecs.acceptEvent(new StartGameEvent());
+    }
+
+    private static void quitClick(Entity e, World w) {
+        w.ecs.acceptEvent(new QuitGameEvent());
+    }
+
     @Override
     public void onStart(World world) {
-        au.playSound("./src/main/resources/sounds/311 - Love From Afar.wav", true);
+        this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Start Game",
-                (Entity e, World w) -> world.ecs.acceptEvent(new StartGameEvent()))).build();
+                MainMenuState::startClick)).build();
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Quit Game",
-                (Entity e, World w) -> world.ecs.acceptEvent(new QuitGameEvent()))).build();
+                MainMenuState::quitClick)).build();
     }
 
     @Override
     public Transition handleEvent(StateEvent evt, World world) {
         if (evt instanceof StartGameEvent) {
-            au.stopSound();
-            au.playSound("./src/main/resources/sounds/menuSelect.wav", false);
+            this.au.stopSound();
+            this.au.playSound(ResourceLoader.resolve("sounds/menuSelect.wav"), false);
             // transition to the main game state
             return new TransPush(new MainGameState());
         }

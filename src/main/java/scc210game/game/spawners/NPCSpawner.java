@@ -10,6 +10,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.map.NPC;
+import scc210game.game.map.TextureStorage;
 import scc210game.game.map.Tile;
 import scc210game.game.utils.MapHelper;
 
@@ -47,14 +48,16 @@ public class NPCSpawner implements Spawner {
         return builder
                 .with(new NPC())
                 .with(new Position(this.xSpawn, this.ySpawn))
+                .with(new TextureStorage(this.npcTexture))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
-                        (Entity entity, RenderWindow window, World world) -> {
-
-                            Sprite npc = new Sprite(this.npcTexture);
-                            npc.setPosition(this.xSpawn * 64, this.ySpawn * 64);
-
-                            window.draw(npc);
-                        }));
+                        NPCSpawner::accept));
     }
 
+    private static void accept(Entity entity, RenderWindow window, World world) {
+        var p = world.fetchComponent(entity, Position.class);
+        var t = world.fetchComponent(entity, TextureStorage.class);
+        Sprite en = new Sprite(t.texture);
+        en.setPosition(p.xPos * 64, p.yPos * 64);
+        window.draw(en);
     }
+}

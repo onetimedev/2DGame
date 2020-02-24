@@ -4,26 +4,26 @@ import org.jsfml.audio.Sound;
 import org.jsfml.audio.SoundBuffer;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class Audio {
     Sound sound = new Sound();
 
-    public void playSound(String soundPath, boolean loop) {
+    public void playSound(Path soundPath, boolean loop) {
         SoundBuffer sB = new SoundBuffer();
         try {
-            sB.loadFromFile(Paths.get(soundPath));
-        } catch (IOException e) {
+            sB.loadFromFile(soundPath);
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
-        sound.setBuffer(sB);
-        sound.setVolume(20.0f);
-        sound.setLoop(loop);
-        sound.play();
+        this.sound.setBuffer(sB);
+        this.sound.setVolume(20.0f);
+        this.sound.setLoop(loop);
+        this.sound.play();
     }
     public void stopSound() {
-        sound.stop();
+        this.sound.stop();
     }
 }
 

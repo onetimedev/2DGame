@@ -4,14 +4,12 @@ import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Component;
 
-public class PlayerTexture extends Component {
+public class TextureStorage extends Component {
 
-	public Texture texture;
-	public int speedMs;
+    public Texture texture;
 
-	public PlayerTexture(Texture t, int spMs) {
+    public TextureStorage(Texture t) {
         this.texture = t;
-        this.speedMs = spMs;
     }
 
 

@@ -244,7 +244,7 @@ public class World {
         var futureEvents = new JsonArray() {{
             World.this.eventQueue.fetchDelayedEvents().forEachRemaining((devt) -> {
                 final Jsonable evt = new JsonObject() {{
-                    this.put("end", devt.end);
+                    this.put("end", devt.end.toString());
                     this.put("e", devt.e.serialize());
                 }};
                 this.add(evt);

@@ -37,6 +37,27 @@ public class ClickableTextBoxSpawner implements Spawner {
         this.clickAction = clickAction;
     }
 
+    private static void accept(Entity e, RenderWindow rw, World w) {
+        var trans = w.fetchComponent(e, UITransform.class);
+        var textContent = w.fetchComponent(e, UIText.class);
+
+        var fillColour = w.hasComponent(e, UIHovered.class) ? Color.blue : Color.lightGray;
+
+        var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
+            this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+            this.setFillColor(UiUtils.transformColor(fillColour));
+            this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
+        }};
+
+        rw.draw(rect);
+
+        var text = new Text(textContent.text, Font.freesans, 24) {{
+            this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+        }};
+
+        rw.draw(text);
+    }
+
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
         var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
@@ -46,25 +67,6 @@ public class ClickableTextBoxSpawner implements Spawner {
                 .with(new UIText(this.text))
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
                 .with(new UIClickable(this.clickAction))
-                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
-                    var trans = w.fetchComponent(e, UITransform.class);
-                    var textContent = w.fetchComponent(e, UIText.class);
-
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.blue : Color.lightGray;
-
-                    var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
-                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-                        this.setFillColor(UiUtils.transformColor(fillColour));
-                        this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
-                    }};
-
-                    rw.draw(rect);
-
-                    var text = new Text(textContent.text, Font.freesans, 24) {{
-                        this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-                    }};
-
-                    rw.draw(text);
-                }));
+                .with(new Renderable(Set.of(ViewType.UI), 100, ClickableTextBoxSpawner::accept));
     }
 }
