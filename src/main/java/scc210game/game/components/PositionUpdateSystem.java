@@ -1,5 +1,6 @@
 package scc210game.game.components;
 
+import org.jsfml.graphics.Texture;
 import scc210game.engine.animation.Animate;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
@@ -14,9 +15,10 @@ import scc210game.game.map.Tile;
 import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.states.events.TriggerStoryEvent;
-import scc210game.game.utils.MapHelper;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 public class PositionUpdateSystem implements System {
@@ -56,7 +58,15 @@ public class PositionUpdateSystem implements System {
 
 
 		if(velocity.dx == 0 && velocity.dy == 0) {
-			pTexture.texture = MapHelper.loadTexture("player_anim.png");
+			Texture result;
+			try {
+				Texture t = new Texture();
+				t.loadFromFile(Paths.get("./src/main/resources/textures/", "player_anim.png"));
+				result = t;
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+			pTexture.texture = result;
 			pAnimate.updateDuration(Duration.ofMillis((400 * pTexture.texture.getSize().x) / 64));
 		}
 
@@ -70,24 +80,56 @@ public class PositionUpdateSystem implements System {
 		// X Delta collision checks
 		if(deltaX > 0) {  // right
 			if (this.checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
-			pTexture.texture = MapHelper.loadTexture("player_right.png");
+			Texture result;
+			try {
+				Texture t = new Texture();
+				t.loadFromFile(Paths.get("./src/main/resources/textures/", "player_right.png"));
+				result = t;
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+			pTexture.texture = result;
 			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 		if(deltaX < 0) {  // left
 			if (this.checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
-			pTexture.texture = MapHelper.loadTexture("player_left.png");
+			Texture result;
+			try {
+				Texture t = new Texture();
+				t.loadFromFile(Paths.get("./src/main/resources/textures/", "player_left.png"));
+				result = t;
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+			pTexture.texture = result;
 			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
 			if (this.checkCollisionY(velocity, map, deltaY, left, right, top)) return;
-			pTexture.texture = MapHelper.loadTexture("player_top.png");
+			Texture result;
+			try {
+				Texture t = new Texture();
+				t.loadFromFile(Paths.get("./src/main/resources/textures/", "player_top.png"));
+				result = t;
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+			pTexture.texture = result;
 			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 		if (deltaY > 0) {  // bottom
 			if (this.checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
-			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
+			Texture result;
+			try {
+				Texture t = new Texture();
+				t.loadFromFile(Paths.get("./src/main/resources/textures/", "player_bottom.png"));
+				result = t;
+			} catch (final IOException e) {
+				throw new RuntimeException(e);
+			}
+			pTexture.texture = result;
 			pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.texture.getSize().x) / 64));
 		}
 

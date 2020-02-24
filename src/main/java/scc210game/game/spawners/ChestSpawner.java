@@ -2,7 +2,6 @@ package scc210game.game.spawners;
 
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
@@ -12,14 +11,11 @@ import scc210game.engine.render.ViewType;
 import scc210game.game.map.Chest;
 import scc210game.game.map.TextureStorage;
 import scc210game.game.map.Tile;
-import scc210game.game.utils.MapHelper;
 
 import java.util.Set;
 
 public class ChestSpawner implements Spawner {
-
     private final Tile chestTile;
-    private Texture t = new Texture();
 
     public ChestSpawner(Tile ti) {
         this.chestTile = ti;
@@ -33,8 +29,6 @@ public class ChestSpawner implements Spawner {
             this.chestTile.setTexture("snow.png");
         if ((this.chestTile.getYPos() == 49 && this.chestTile.getXPos() == 112) || (this.chestTile.getYPos() == 61 && this.chestTile.getXPos() == 113))
             this.chestTile.setTexture("grass.png");
-
-        this.t = MapHelper.loadTexture("chest.png");
     }
 
 	@Override
@@ -42,7 +36,7 @@ public class ChestSpawner implements Spawner {
         return builder
                 .with(new Chest(this.chestTile))
                 .with(new Position(this.chestTile.getXPos(), this.chestTile.getYPos()))
-                .with(new TextureStorage(this.t))
+                .with(new TextureStorage("textures/chest.png"))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
                         ChestSpawner::accept));
 

@@ -2,7 +2,6 @@ package scc210game.game.spawners;
 
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Spawner;
@@ -14,12 +13,11 @@ import scc210game.game.map.Boss;
 import scc210game.game.map.Enemy;
 import scc210game.game.map.Map;
 import scc210game.game.map.TextureStorage;
-import scc210game.game.utils.MapHelper;
 
 import java.util.Set;
 
 public class BossSpawner implements Spawner {
-    private Texture bossTexture = new Texture();
+    private String bossTexturePath;
     private final int bossNum;
     private final Vector2i[] bossCoords;
 
@@ -37,19 +35,19 @@ public class BossSpawner implements Spawner {
 
         switch (this.bossNum) {
             case 0: {
-                this.bossTexture = MapHelper.loadTexture("boss_grass.png");
+                this.bossTexturePath = "textures/boss_grass.png";
                 break;
             }
             case 1: {
-                this.bossTexture = MapHelper.loadTexture("boss_water.png");
+                this.bossTexturePath = "textures/boss_water.png";
                 break;
             }
             case 2: {
-                this.bossTexture = MapHelper.loadTexture("boss_fire.png");
+                this.bossTexturePath = "textures/boss_fire.png";
 				break;
 			}
 			case 3: {
-                this.bossTexture = MapHelper.loadTexture("boss_snow.png");
+                this.bossTexturePath = "textures/boss_snow.png";
 				break;
 			}
 		}
@@ -61,7 +59,7 @@ public class BossSpawner implements Spawner {
                 .with(new Enemy(false))
                 .with(new Boss())
                 .with(new Position(this.bossCoords[0].x, this.bossCoords[0].y))
-                .with(new TextureStorage(this.bossTexture))
+                .with(new TextureStorage(this.bossTexturePath))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5, BossSpawner::accept));
     }
 
