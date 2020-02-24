@@ -33,6 +33,7 @@ public class PositionUpdateSystem implements System {
 		var mapEnt = mapEntO.get();
 		var map = world.fetchComponent(mapEnt, Map.class);
 
+
 		// Delta of velocity movement around time
 		var deltaX = velocity.dx * ((float) timeDelta.toMillis()) / 1000;
 		var deltaY = velocity.dy * ((float) timeDelta.toMillis()) / 1000;
@@ -186,27 +187,25 @@ public class PositionUpdateSystem implements System {
 				if(t == null)
 					continue;
 				if (t.getHasEnemy()) {
-					java.lang.System.out.println("TILE TEX:" + t.getTextureName());
-
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent("hello im the FinalBoss, press q to ignore, enter to accept",
-								(e, w) -> accept(),
-								(e, w) -> refuse()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im the FinalBoss, \n press q to ignore, enter to accept"),
+								(e, w) -> accept(world),
+								(e, w) -> refuse(world)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent("hello im a Boss, press q to ignore, enter to accept",
-								(e, w) -> accept(),
-								(e, w) -> refuse()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im a Boss, press q to ignore, enter to accept"),
+								(e, w) -> accept(world),
+								(e, w) -> refuse(world)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent("hello im an Enemy, press q to ignore, enter to accept",
-								(e, w) -> accept(),
-								(e, w) -> refuse()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im an Enemy, press q to ignore, enter to accept"),
+								(e, w) -> accept(world),
+								(e, w) -> refuse(world)));
 					}
 					steps.oldCount = steps.count;
 					break;
@@ -214,18 +213,18 @@ public class PositionUpdateSystem implements System {
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent("hello im a Chest, press q to ignore, enter to accept",
-							(e, w) -> accept(),
-							(e, w) -> refuse()));
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im a Chest, press q to ignore, enter to accept"),
+							(e, w) -> accept(world),
+							(e, w) -> refuse(world)));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent("hello im an NPC, press q to ignore, enter to accept",
-							(e, w) -> accept(),
-							(e, w) -> refuse()));
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im an NPC, press q to ignore, enter to accept"),
+							(e, w) -> accept(world),
+							(e, w) -> refuse(world)));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -278,15 +277,24 @@ public class PositionUpdateSystem implements System {
 
 
 
-	public void accept() {
+	public String test(World world, String msg) {
+		var view = world.fetchGlobalResource(MainViewResource.class);
+		view.mainView.zoom(0.6f);
+		java.lang.System.out.println("Zoomed in");
 
+		return msg;
+	}
+
+	public void accept(World world) {
+		var view = world.fetchGlobalResource(MainViewResource.class);
+		view.mainView.zoom(1f/0.6f);
 		java.lang.System.out.println("Accepted");
 	}
 
-	public void refuse() {
+	public void refuse(World world) {
+		var view = world.fetchGlobalResource(MainViewResource.class);
+		view.mainView.zoom(1f/0.6f);
 		java.lang.System.out.println("Refused");
 	}
-
-
 
 }
