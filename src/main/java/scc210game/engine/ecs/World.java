@@ -42,6 +42,10 @@ public class World {
         this.entityAllocator = new EntityAllocator();
     }
 
+    public static World deserialize(Jsonable world, ECS ecs) {
+        return null;
+    }
+
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.entities.add(e);
 

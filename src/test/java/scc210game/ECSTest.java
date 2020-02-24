@@ -2,14 +2,12 @@ package scc210game;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
-import com.github.cliftonlabs.json_simple.Jsoner;
 import org.junit.Test;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
 import scc210game.engine.state.State;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
@@ -35,13 +33,13 @@ class BasicState extends State {
 
 class Velocity extends Component {
     static {
-        register(Velocity.class, s -> {
-            final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+        register(Velocity.class, j -> {
+            var json = (JsonObject) j;
 
-            BigDecimal dx = (BigDecimal) json.get("dx");
-            BigDecimal dy = (BigDecimal) json.get("dy");
+            var dx = (Integer) json.get("dx");
+            var dy = (Integer) json.get("dy");
 
-            return new Velocity(dx.intValue(), dy.intValue());
+            return new Velocity(dx, dy);
         });
     }
 
@@ -66,13 +64,13 @@ class Velocity extends Component {
 
 class Position extends Component {
     static {
-        register(Position.class, s -> {
-            final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+        register(Position.class, j -> {
+            var json = (JsonObject) j;
 
-            BigDecimal x = (BigDecimal) json.get("x");
-            BigDecimal y = (BigDecimal) json.get("y");
+            var x = (Integer) json.get("x");
+            var y = (Integer) json.get("y");
 
-            return new Position(x.intValue(), y.intValue());
+            return new Position(x, y);
         });
     }
 
@@ -153,7 +151,7 @@ public class ECSTest {
 
         Position testPos = new Position(100, -100);
 
-        assertEquals(testPos, Component.deserialize(testPos.serialize().toJson(), Position.class));
+        assertEquals(testPos, Component.deserialize(testPos.serialize(), Position.class));
 
         ecs.getCurrentWorld().removeEntity(s.e);
         s.e = null;

@@ -2,7 +2,6 @@ package scc210game.game.components;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
-import com.github.cliftonlabs.json_simple.Jsoner;
 import scc210game.engine.ecs.Component;
 
 
@@ -12,8 +11,8 @@ public class Steps extends Component {
 	public int oldCount = 0;
 
 	static {
-		register(Steps.class, s-> {
-			final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+		register(Steps.class, j -> {
+            var json = (JsonObject) j;
 			int cnt = (int) json.get("count");
 			int ocnt = (int) json.get("oldCount");
 

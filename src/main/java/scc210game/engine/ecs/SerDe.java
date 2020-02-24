@@ -10,8 +10,8 @@ import java.util.function.Function;
  * Class representing types that can be serialized and deserialized
  */
 public abstract class SerDe {
-    private static final Map<Class<? extends SerDe>, Function<String, ? extends SerDe>> deserializers = new HashMap<>();
-    private static final Map<String, Function<String, ? extends SerDe>> deserializersByName = new HashMap<>();
+    private static final Map<Class<? extends SerDe>, Function<Jsonable, ? extends SerDe>> deserializers = new HashMap<>();
+    private static final Map<String, Function<Jsonable, ? extends SerDe>> deserializersByName = new HashMap<>();
 
     /**
      * Register a component
@@ -19,30 +19,29 @@ public abstract class SerDe {
      * @param klass        the inheriting class
      * @param deserializer the method used to deserialize to this class
      */
-    protected static void register(Class<? extends SerDe> klass, Function<String, ? extends SerDe> deserializer) {
+    protected static void register(Class<? extends SerDe> klass, Function<Jsonable, ? extends SerDe> deserializer) {
         String name = klass.getName();
         SerDe.deserializers.put(klass, deserializer);
         SerDe.deserializersByName.put(name, deserializer);
     }
 
     /**
-     * @param s   The string to deserialize
+     * @param j   the json data to deserialize from
      * @param <T> the type to deserialize to
      * @return The deserialized component
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends SerDe> T deserialize(String s, Class<T> type) {
-        return (T) SerDe.deserializers.get(type).apply(s);
+    public static <T extends SerDe> T deserialize(Jsonable j, Class<T> type) {
+        // java.lang.System.err.println("type=" + type + ", result=" + SerDe.deserializers.get(type).apply(j));
+        return type.cast(SerDe.deserializers.get(type).apply(j));
     }
 
     /**
-     * @param s   The string to deserialize
+     * @param j   the json data to deserialize from
      * @param <T> the type to deserialize to
      * @return The deserialized component
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends SerDe> T deserialize(String s, String type) {
-        return (T) SerDe.deserializersByName.get(type).apply(s);
+    public static <T extends SerDe> T deserialize(Jsonable j, String type, Class<T> parentType) {
+        return parentType.cast(SerDe.deserializersByName.get(type).apply(j));
     }
 
     /**

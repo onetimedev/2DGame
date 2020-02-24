@@ -8,7 +8,10 @@ import java.util.Map;
 
 public class UIText extends Component {
     static {
-        register(UIText.class, UIText::new);
+        register(UIText.class, j -> {
+            var json = (JsonObject) j;
+            return new UIText((String) json.get("text"));
+        });
     }
 
     public String text;

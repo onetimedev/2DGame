@@ -2,7 +2,6 @@ package scc210game.engine.ui.components;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
-import com.github.cliftonlabs.json_simple.Jsoner;
 import org.jsfml.system.Vector2f;
 import scc210game.engine.ecs.Component;
 
@@ -14,8 +13,8 @@ import java.math.BigDecimal;
  */
 public class UITransform extends Component {
     static {
-        register(UITransform.class, s -> {
-            final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+        register(UITransform.class, j -> {
+            var json = (JsonObject) j;
 
             BigDecimal originXPos = (BigDecimal) json.get("originXPos");
             BigDecimal originYPos = (BigDecimal) json.get("originYPos");

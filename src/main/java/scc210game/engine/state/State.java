@@ -1,6 +1,6 @@
 package scc210game.engine.state;
 
-import com.github.cliftonlabs.json_simple.Jsonable;
+import scc210game.engine.ecs.SerDe;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransNop;
@@ -13,7 +13,7 @@ import scc210game.engine.state.trans.Transition;
  * Thus when the game is in the 'paused' state, no entities in the 'running' state or 'menu' state
  * are accessible
  */
-public abstract class State {
+public abstract class State extends SerDe {
     /**
      * Called when this game state is entered
      *
@@ -71,6 +71,4 @@ public abstract class State {
     public Transition onFrame() {
         return TransNop.getInstance();
     }
-
-    public abstract Jsonable serialize();
 }

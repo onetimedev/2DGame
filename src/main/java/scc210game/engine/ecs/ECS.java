@@ -1,6 +1,7 @@
 package scc210game.engine.ecs;
 
 
+import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.events.EventQueue;
@@ -129,5 +130,10 @@ public class ECS {
         return new JsonObject() {{
             this.put("states", ECS.this.stateMachine.serialize());
         }};
+    }
+
+    public void deserializeAndReplace(Jsonable json) {
+        var obj = (JsonObject) json;
+        this.stateMachine.deserializeAndReplace((JsonArray) obj.get("states"));
     }
 }
