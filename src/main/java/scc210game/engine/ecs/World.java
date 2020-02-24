@@ -4,9 +4,13 @@ package scc210game.engine.ecs;
 import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
+import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueue;
+import scc210game.engine.utils.Tuple2;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -42,8 +46,14 @@ public class World {
         this.entityAllocator = new EntityAllocator();
     }
 
-    public static World deserialize(Jsonable world, ECS ecs) {
-        return null;
+    private World(@Nonnull ECS ecs, @Nonnull EntityAllocator entityAllocator) {
+        this.ecs = ecs;
+        this.entities = new ArrayList<>();
+        this.entityComponents = new WeakHashMap<>();
+        this.componentMaps = new WeakHashMap<>();
+        this.resourceMap = new WeakHashMap<>();
+        this.eventQueue = new EventQueue();
+        this.entityAllocator = entityAllocator;
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
@@ -248,10 +258,13 @@ public class World {
                     this.put(klass.getName(), resource.serialize()));
         }};
 
+        var now = Instant.now();
+
         var futureEvents = new JsonArray() {{
             World.this.eventQueue.fetchDelayedEvents().forEachRemaining((devt) -> {
                 final Jsonable evt = new JsonObject() {{
-                    this.put("end", devt.end.toString());
+                    this.put("deltaAtSave", Duration.between(now, devt.end).toString());
+                    this.put("eClass", devt.e.getClass().getName());
                     this.put("e", devt.e.serialize());
                 }};
                 this.add(evt);
@@ -263,6 +276,55 @@ public class World {
                 "resources", resourcesS,
                 "futureEvents", futureEvents,
                 "entityAllocator", this.entityAllocator.serialize()));
+    }
+
+    public static World deserialize(Jsonable j, ECS ecs) {
+        var json = (JsonObject) j;
+
+        var entities = new HashMap<Entity, List<Component>>();
+        var resources = new ArrayList<Resource>();
+        var futureEvents = new ArrayList<Tuple2<Instant, Event>>();
+
+        var entitiesS = (JsonObject) json.get("entities");
+        entitiesS.forEach((id, componentsS) -> {
+            var entity = Entity.unsafeMakeEntity(Long.parseLong(id));
+
+            var components = new ArrayList<Component>();
+
+            ((JsonObject) componentsS).forEach((compType, componentS) ->
+                        components.add(SerDe.deserialize((Jsonable) componentS, compType, Component.class)));
+
+            entities.put(entity, components);
+        });
+
+        var resourcesS = (JsonObject) json.get("resources");
+        resourcesS.forEach((resourceType, resourceS) ->
+                resources.add(SerDe.deserialize((Jsonable) resourceS, resourceType, Resource.class)));
+
+        var now = Instant.now();
+        var futureEventsS = (JsonArray) json.get("futureEvents");
+        futureEventsS.forEach(ej -> {
+            var ejson = (JsonObject) ej;
+
+            var eClass = (String) ejson.get("eClass");
+            var e = SerDe.deserialize((Jsonable) ejson.get("e"), eClass, Event.class);
+
+            var delta = Duration.parse((String) ejson.get("deltaAtSave"));
+            var end = now.plus(delta);
+
+            futureEvents.add(new Tuple2<>(end, e));
+        });
+
+        var entityAllocator = EntityAllocator.deserialize((Jsonable) json.get("entityAllocator"));
+
+        var world = new World(ecs, entityAllocator);
+
+        entities.forEach(world::addEntity);
+        resources.forEach(world::addResource);
+
+        futureEvents.forEach((t) -> world.eventQueue.broadcastAt(t.r, t.l));
+
+        return world;
     }
 
     /**

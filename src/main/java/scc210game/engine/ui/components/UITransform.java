@@ -5,8 +5,6 @@ import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.system.Vector2f;
 import scc210game.engine.ecs.Component;
 
-import java.math.BigDecimal;
-
 
 /**
  * Component that describes entities that have a UI position on the screen
@@ -16,15 +14,15 @@ public class UITransform extends Component {
         register(UITransform.class, j -> {
             var json = (JsonObject) j;
 
-            BigDecimal originXPos = (BigDecimal) json.get("originXPos");
-            BigDecimal originYPos = (BigDecimal) json.get("originYPos");
-            BigDecimal xPos = (BigDecimal) json.get("xPos");
-            BigDecimal yPos = (BigDecimal) json.get("yPos");
-            BigDecimal zPos = (BigDecimal) json.get("zPos");
-            BigDecimal width = (BigDecimal) json.get("width");
-            BigDecimal height = (BigDecimal) json.get("height");
+            Float originXPos = (Float) json.get("originXPos");
+            Float originYPos = (Float) json.get("originYPos");
+            Float xPos = (Float) json.get("xPos");
+            Float yPos = (Float) json.get("yPos");
+            Integer zPos = (Integer) json.get("zPos");
+            Float width = (Float) json.get("width");
+            Float height = (Float) json.get("height");
 
-            return new UITransform(originXPos.floatValue(), originYPos.floatValue(), xPos.floatValue(), yPos.floatValue(), zPos.intValue(), width.floatValue(), height.floatValue());
+            return new UITransform(originXPos, originYPos, xPos, yPos, zPos, width, height);
         });
     }
 

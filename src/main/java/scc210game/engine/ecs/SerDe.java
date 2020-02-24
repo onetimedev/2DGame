@@ -2,6 +2,7 @@ package scc210game.engine.ecs;
 
 import com.github.cliftonlabs.json_simple.Jsonable;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,8 +31,10 @@ public abstract class SerDe {
      * @param <T> the type to deserialize to
      * @return The deserialized component
      */
-    public static <T extends SerDe> T deserialize(Jsonable j, Class<T> type) {
+    public static <T extends SerDe> T deserialize(@Nonnull Jsonable j, Class<T> type) {
         // java.lang.System.err.println("type=" + type + ", result=" + SerDe.deserializers.get(type).apply(j));
+        assert (SerDe.deserializers.get(type) != null): "No Deserialize implementation for: " + type;
+
         return type.cast(SerDe.deserializers.get(type).apply(j));
     }
 
@@ -40,7 +43,9 @@ public abstract class SerDe {
      * @param <T> the type to deserialize to
      * @return The deserialized component
      */
-    public static <T extends SerDe> T deserialize(Jsonable j, String type, Class<T> parentType) {
+    public static <T extends SerDe> T deserialize(@Nonnull Jsonable j, String type, Class<T> parentType) {
+        assert (SerDe.deserializersByName.get(type) != null): "No Deserialize implementation for: " + type;
+
         return parentType.cast(SerDe.deserializersByName.get(type).apply(j));
     }
 

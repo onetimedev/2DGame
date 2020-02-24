@@ -14,6 +14,10 @@ import scc210game.game.states.events.QuitGameEvent;
 import scc210game.game.states.events.StartGameEvent;
 
 public class MainMenuState extends InputHandlingState {
+    static {
+        register(MainMenuState.class, (j) -> new MainMenuState());
+    }
+
     Audio au = new Audio();
 
     private static void startClick(Entity e, World w) {

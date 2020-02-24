@@ -8,8 +8,8 @@ import org.jsfml.graphics.RenderWindow;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
+import scc210game.engine.utils.SerDeBase64;
 import scc210game.engine.utils.SerializableTriConsumer;
-import scc210game.engine.utils.SerializeToBase64;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,6 +18,25 @@ import java.util.stream.Collectors;
 
 
 public class Renderable extends Component {
+	static {
+		register(Renderable.class, j -> {
+			var json = (JsonObject)	j;
+
+			var includedViews = ((JsonArray) json.get("includedViews"))
+					.stream()
+					.map(f -> ViewType.valueOf((String) f))
+					.collect(Collectors.toSet());
+
+			@SuppressWarnings("unchecked")
+			var renderFn = SerDeBase64.deserializeFromBase64((String) json.get("renderFn"),
+					(Class<SerializableTriConsumer<Entity, RenderWindow, World>>)(Class<?>)SerializableTriConsumer.class);
+
+			var height = (Integer) json.get("height");
+
+			return new Renderable(includedViews, height, renderFn);
+		});
+	}
+
 	/**
 	 * Which views this renderable renders in
 	 */
@@ -63,7 +82,7 @@ public class Renderable extends Component {
 
 		return new JsonObject(Map.of(
 				"includedViews", views,
-				"renderFn", SerializeToBase64.serializeToBase64(this.renderFn),
+				"renderFn", SerDeBase64.serializeToBase64(this.renderFn),
 				"height", this.height));
 	}
 }

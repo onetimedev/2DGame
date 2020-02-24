@@ -25,7 +25,7 @@ public class PausedState extends BaseInGameState {
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Main Menu",
                 PausedState::mainMenuButton)).build();
 
-        System.out.println(world.ecs.serialize().toJson());
+        world.ecs.deserializeAndReplace(world.ecs.serialize());
     }
 
     @Override

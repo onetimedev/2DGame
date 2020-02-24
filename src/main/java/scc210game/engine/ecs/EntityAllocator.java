@@ -13,11 +13,15 @@ import java.util.Map;
  * In the future we could increase the amount of possible
  * entities performance by re-using entity IDs
  */
-class EntityAllocator extends SerDe {
+class EntityAllocator {
     private long currentID;
 
     EntityAllocator() {
         this.currentID = 0;
+    }
+
+    EntityAllocator(long initialID) {
+        this.currentID = initialID;
     }
 
     /**
@@ -32,8 +36,12 @@ class EntityAllocator extends SerDe {
         return new Entity(id);
     }
 
-    @Override
     public Jsonable serialize() {
         return new JsonObject(Map.of("currentID", this.currentID));
+    }
+
+    public static EntityAllocator deserialize(Jsonable j) {
+        var json = (JsonObject) j;
+        return new EntityAllocator((Long) json.get("currentID"));
     }
 }

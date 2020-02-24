@@ -30,7 +30,7 @@ public class Entity {
      * @param id the ID of the entity to create
      * @return an entity with the given ID
      */
-    public Entity unsafeMakeEntity(long id) {
+    public static Entity unsafeMakeEntity(long id) {
         return new Entity(id);
     }
 

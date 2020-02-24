@@ -5,8 +5,8 @@ import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
+import scc210game.engine.utils.SerDeBase64;
 import scc210game.engine.utils.SerializableBiConsumer;
-import scc210game.engine.utils.SerializeToBase64;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
@@ -52,6 +52,6 @@ public class Animate extends Component {
                 "duration", this.duration.toString(),
                 "pctComplete", this.pctComplete,
                 "looping", this.looping,
-                "completionCallback", SerializeToBase64.serializeToBase64(this.completionCallback)));
+                "completionCallback", SerDeBase64.serializeToBase64(this.completionCallback)));
     }
 }

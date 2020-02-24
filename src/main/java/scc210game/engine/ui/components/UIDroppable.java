@@ -5,8 +5,8 @@ import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
+import scc210game.engine.utils.SerDeBase64;
 import scc210game.engine.utils.SerializableTriConsumer;
-import scc210game.engine.utils.SerializeToBase64;
 
 import java.util.Map;
 
@@ -42,6 +42,6 @@ public class UIDroppable extends Component {
 
     @Override
     public Jsonable serialize() {
-        return new JsonObject(Map.of("acceptor", SerializeToBase64.serializeToBase64(this.acceptor)));
+        return new JsonObject(Map.of("acceptor", SerDeBase64.serializeToBase64(this.acceptor)));
     }
 }

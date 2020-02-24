@@ -77,5 +77,4 @@ public class Map extends Component {
 	public ArrayList<Tile> getChestTiles() {
         return this.chestTiles;
     }
-
 }

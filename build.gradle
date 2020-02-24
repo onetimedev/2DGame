@@ -55,3 +55,7 @@ application {
         applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
     }
 }
+
+run {
+  enableAssertions = true
+}

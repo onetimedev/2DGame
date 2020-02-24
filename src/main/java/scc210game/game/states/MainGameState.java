@@ -9,6 +9,10 @@ import scc210game.game.map.Tile;
 import scc210game.game.spawners.*;
 
 public class MainGameState extends BaseInGameState {
+	static {
+		register(MainGameState.class, (j) -> new MainGameState());
+	}
+
 	@Override
 	public void onStart(World world) {
 		System.out.println("onStart");

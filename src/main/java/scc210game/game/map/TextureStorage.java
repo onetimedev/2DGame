@@ -10,6 +10,16 @@ import java.io.IOException;
 import java.util.Map;
 
 public class TextureStorage extends Component {
+    static {
+        register(TextureStorage.class, j -> {
+            var json = (JsonObject) j;
+
+            var path = (String) json.get("path");
+
+            return new TextureStorage(path);
+        });
+    }
+
     private String path;
     private Texture texture;
 

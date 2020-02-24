@@ -32,6 +32,8 @@ public class ECS {
     @Nonnull
     public final EventQueue eventQueue;
 
+    public Jsonable toReload = null;
+
     /**
      * Construct the ECS wrapper from a list of systems to run
      *
@@ -73,6 +75,11 @@ public class ECS {
 
         for (final System s : this.systems) {
             s.run(this.stateMachine.currentWorld(), delta);
+        }
+
+        if (this.toReload != null) {
+            this.deserializeAndReplaceInner(this.toReload);
+            this.toReload = null;
         }
     }
 
@@ -132,8 +139,12 @@ public class ECS {
         }};
     }
 
-    public void deserializeAndReplace(Jsonable json) {
+    private void deserializeAndReplaceInner(Jsonable json) {
         var obj = (JsonObject) json;
         this.stateMachine.deserializeAndReplace((JsonArray) obj.get("states"));
+    }
+
+    public void deserializeAndReplace(Jsonable json) {
+        this.toReload = json;
     }
 }

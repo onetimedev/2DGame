@@ -10,19 +10,19 @@ import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.Font;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.SerializableBiConsumer;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.Dialogue;
 
 import java.awt.*;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 public class DialogueSpawner implements Spawner {
     private final String message;
-    private final BiConsumer<Entity, World> accept;
-    private final BiConsumer<Entity, World> ignore;
+    private final SerializableBiConsumer<Entity, World> accept;
+    private final SerializableBiConsumer<Entity, World> ignore;
 
-    public DialogueSpawner(String message, BiConsumer<Entity, World> accept, BiConsumer<Entity, World> ignore) {
+    public DialogueSpawner(String message, SerializableBiConsumer<Entity, World> accept, SerializableBiConsumer<Entity, World> ignore) {
         this.message = message;
         this.accept = accept;
         this.ignore = ignore;
