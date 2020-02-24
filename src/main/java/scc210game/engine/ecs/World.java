@@ -24,6 +24,8 @@ public class World {
     private final Map<Entity, Map<Class<? extends Component>, Component>> componentMaps;
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
+    @Nonnull
+    private final EntityAllocator entityAllocator;
 
     @Nonnull
     public final ECS ecs;
@@ -37,6 +39,7 @@ public class World {
         this.componentMaps = new WeakHashMap<>();
         this.resourceMap = new WeakHashMap<>();
         this.eventQueue = new EventQueue();
+        this.entityAllocator = new EntityAllocator();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
@@ -251,7 +254,11 @@ public class World {
             });
         }};
 
-        return new JsonObject(Map.of("entities", entitesS, "resources", resourcesS, "futureEvents", futureEvents));
+        return new JsonObject(Map.of(
+                "entities", entitesS,
+                "resources", resourcesS,
+                "futureEvents", futureEvents,
+                "entityAllocator", this.entityAllocator.serialize()));
     }
 
     /**
@@ -265,7 +272,7 @@ public class World {
         private boolean built;
 
         public EntityBuilder() {
-            this.entity = Entity.make();
+            this.entity = World.this.entityAllocator.allocate();
             this.components = new ArrayList<>();
             this.built = false;
         }

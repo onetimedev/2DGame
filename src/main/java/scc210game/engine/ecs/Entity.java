@@ -1,6 +1,5 @@
 package scc210game.engine.ecs;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -33,11 +32,6 @@ public class Entity {
      */
     public Entity unsafeMakeEntity(long id) {
         return new Entity(id);
-    }
-
-    @Nonnull
-    public static Entity make() {
-        return EntityAllocator.allocate();
     }
 
     @Override

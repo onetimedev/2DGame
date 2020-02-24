@@ -1,6 +1,7 @@
 package scc210game.engine.render;
 
 
+import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.graphics.RenderWindow;
@@ -10,9 +11,10 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.utils.SerializableTriConsumer;
 import scc210game.engine.utils.SerializeToBase64;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class Renderable extends Component {
@@ -54,8 +56,13 @@ public class Renderable extends Component {
 	}
 
 	public Jsonable serialize() {
+		var views = new JsonArray(this.includedViews
+				.stream()
+				.map(Enum::toString)
+				.collect(Collectors.toCollection(ArrayList::new)));
+
 		return new JsonObject(Map.of(
-				"includedViews", List.of(this.includedViews),
+				"includedViews", views,
 				"renderFn", SerializeToBase64.serializeToBase64(this.renderFn),
 				"height", this.height));
 	}

@@ -1,7 +1,10 @@
 package scc210game.engine.ecs;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * A class for allocating entities.
@@ -10,21 +13,11 @@ import javax.annotation.Nullable;
  * In the future we could increase the amount of possible
  * entities performance by re-using entity IDs
  */
-class EntityAllocator {
+class EntityAllocator extends SerDe {
     private long currentID;
 
-    @Nullable
-    private static EntityAllocator instance = null;
-
-    private EntityAllocator() {
+    EntityAllocator() {
         this.currentID = 0;
-    }
-
-    @Nonnull
-    private Entity allocateInner() {
-        long id = this.currentID++;
-
-        return new Entity(id);
     }
 
     /**
@@ -33,15 +26,14 @@ class EntityAllocator {
      * @return The newly allocated entity
      */
     @Nonnull
-    static Entity allocate() {
-        return getInstance().allocateInner();
+    Entity allocate() {
+        long id = this.currentID++;
+
+        return new Entity(id);
     }
 
-    @Nonnull
-    static EntityAllocator getInstance() {
-        if (EntityAllocator.instance == null)
-            EntityAllocator.instance = new EntityAllocator();
-
-        return EntityAllocator.instance;
+    @Override
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("currentID", this.currentID));
     }
 }
