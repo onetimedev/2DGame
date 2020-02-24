@@ -61,7 +61,7 @@ public class PlayerSpawner implements Spawner {
 		var oldPosition = world.fetchComponent(playerEnt, OldPosition.class);
 		var animation = world.fetchComponent(playerEnt, Animate.class);
 
-		var sprite = new Sprite(playerTexture.texture);
+		var sprite = new Sprite(playerTexture.getTexture());
 
 		sprite.setPosition(position.xPos * 64, position.yPos * 64);
 
@@ -72,7 +72,7 @@ public class PlayerSpawner implements Spawner {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.setCenter(position.xPos * 64, position.yPos * 64);
 
-		var numFrames = (playerTexture.texture.getSize().x / 64);
+		var numFrames = (playerTexture.getTexture().getSize().x / 64);
 
 		var frame = (int) Math.floor(animation.pctComplete * (float) numFrames);
 

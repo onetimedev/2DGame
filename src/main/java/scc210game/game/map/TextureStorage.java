@@ -11,10 +11,14 @@ import java.util.Map;
 
 public class TextureStorage extends Component {
     private String path;
-    public Texture texture;
+    private Texture texture;
 
     public TextureStorage(String p) {
         this.reloadTexture(p);
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 
     public void reloadTexture(String p) {

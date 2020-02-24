@@ -28,7 +28,7 @@ public class FinalBossSpawner implements Spawner {
     private static void accept(Entity entity, RenderWindow window, World world) {
         var p = world.fetchComponent(entity, Position.class);
         var t = world.fetchComponent(entity, TextureStorage.class);
-        Sprite en = new Sprite(t.texture);
+        Sprite en = new Sprite(t.getTexture());
         en.setPosition(p.xPos * 64, p.yPos * 64);
         window.draw(en);
     }

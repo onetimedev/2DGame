@@ -46,7 +46,7 @@ public class ChestSpawner implements Spawner {
         var t = world.fetchComponent(entity, TextureStorage.class);
         var c = world.fetchComponent(entity, Chest.class);
 
-        Sprite s = new Sprite(t.texture);
+        Sprite s = new Sprite(t.getTexture());
         s.setPosition(c.tile.getXPos() * 64, c.tile.getYPos() * 64);
         window.draw(s);
     }
