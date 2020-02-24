@@ -189,21 +189,21 @@ public class PositionUpdateSystem implements System {
 				if (t.getHasEnemy()) {
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im the FinalBoss, \n press q to ignore, enter to accept"),
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 4, checkBiome(t.getTextureName())),
 								(e, w) -> accept(world),
 								(e, w) -> refuse(world)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im a Boss, press q to ignore, enter to accept"),
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 3, checkBiome(t.getTextureName())),
 								(e, w) -> accept(world),
 								(e, w) -> refuse(world)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im an Enemy, press q to ignore, enter to accept"),
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 0, checkBiome(t.getTextureName())),
 								(e, w) -> accept(world),
 								(e, w) -> refuse(world)));
 					}
@@ -213,7 +213,7 @@ public class PositionUpdateSystem implements System {
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im a Chest, press q to ignore, enter to accept"),
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 2, checkBiome(t.getTextureName())),
 							(e, w) -> accept(world),
 							(e, w) -> refuse(world)));
 					steps.oldCount = steps.count;
@@ -222,7 +222,7 @@ public class PositionUpdateSystem implements System {
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world,"hello im an NPC, press q to ignore, enter to accept"),
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 1, checkBiome(t.getTextureName())),
 							(e, w) -> accept(world),
 							(e, w) -> refuse(world)));
 					steps.oldCount = steps.count;
@@ -264,25 +264,25 @@ public class PositionUpdateSystem implements System {
 	}
 
 
-	private String checkBiome(String t) {
+	private int checkBiome(String t) {
 		if(t.contains("grass"))
-			return "grass biome";
+			return 0;
 		else if(t.contains("sand"))
-			return "water biome";
-		else if(t.contains("snow"))
-			return "snow biome";
+			return 1;
+		else if(t.contains("snow") || t.contains("ice"))
+			return 3;
 		else
-			return "fire biome";
+			return 2;
 	}
 
 
 
-	public String test(World world, String msg) {
+	public String test(World world, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(0.6f);
 		java.lang.System.out.println("Zoomed in");
 
-		return msg;
+		return new DialogueMessage(type, biome).getMessage();
 	}
 
 	public void accept(World world) {
