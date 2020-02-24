@@ -2,6 +2,7 @@ package scc210game.game.states;
 
 
 import org.jsfml.window.Keyboard;
+import scc210game.engine.audio.Audio;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.KeyDepressedEvent;
@@ -16,6 +17,7 @@ import scc210game.game.states.events.TogglePauseEvent;
  * A base state for every state in our game, handles input and pausing etc
  */
 public class BaseInGameState extends InputHandlingState {
+    Audio au = new Audio();
 
     @Override
     public Transition handleEvent(StateEvent evt, World world) {
@@ -28,6 +30,7 @@ public class BaseInGameState extends InputHandlingState {
         }
 
         if (evt instanceof TogglePauseEvent) {
+            au.playSound("./src/main/resources/sounds/pause.wav", false);
             return new TransPush(new PausedState());
         }
 

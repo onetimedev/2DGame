@@ -65,7 +65,7 @@ Look at the existing test cases for examples.
   entity by adding all the required components as one, for example an entity
   used in the UI will be created using a spawner that attaches the required
   components for being a UI entity, such as `UIText`, `UITransform`, and
-  `Renderable`. Examples are: `scc210game.engine.ui.spawners.DialogueSpawner` and
+  `Renderable`. Examples are: `scc210game.game.ui.spawners.DialogueSpawner` and
   `scc210game.game.spawners.MapSpawner`.
   
 ## Common components
@@ -81,11 +81,11 @@ It takes three parameters:
      render above those with lower.
 3.	renderFn :: The function to call to render this entity
 
-An example construction is located at: `scc210game.engine.ui.spawners.DialogueSpawner`
+An example construction is located at: `scc210game.game.ui.spawners.DialogueSpawner`
 
 ## Common spawners
 
-### scc210game.engine.ui.spawners.DialogueSpawner
+### scc210game.game.ui.spawners.DialogueSpawner
 
 This spawner creates a dialogue box with a given piece of text.
 

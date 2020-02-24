@@ -10,6 +10,7 @@ import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 
 public class PausedState extends BaseInGameState {
+
     @Override
     public void onStart(World world) {
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Resume Game",
