@@ -1,5 +1,7 @@
 package scc210game.game.map;
 
+import java.util.ArrayList;
+
 public class DialogueMessage {
 
 	private String message = "";
@@ -96,16 +98,39 @@ public class DialogueMessage {
 		}
 
 	private void iceNPCDialogue() {
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("Most people lost everything when the monsters came, but me, I wasn’t good at anything, but now I get paid a kings fee to hunt monsters.");
+		possDialogs.add("Have you seen my friend Joseph, he went to hunt some food but never came back, I hope he’s alright.");
+
+		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
 
 	private void fireNPCDialogue() {
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("I can’t believe our beloved king, sits in his high castle eating like a pig, while we are all starving and getting slaughtered by the monsters.");
+		"I’ve heard that these monsters are from hell and the devil has come up from the underworld to punish us all.");
+
+		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
 
 	private void waterNPCDialogue() {
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("Before all these monsters plagued this land, I had everything, my own shop, house, family, but now I have nothing.");
+		possDialogs.add("This place used to be so beautiful, now look at it.");
+
+		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
 
 	private void grassNPCDialogue() {
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("I lost my wife and son to these hideous monsters");
+		possDialogs.add("I really hope our kings saves us soon!");
+		possDialogs.add("I have a theory that someone is controlling all these monsters, there’s no way they can all be this coordinated without a leader.");
+
+		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
+
+
 
 
 	private void chestDialogue() {
