@@ -15,6 +15,7 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.game.components.Inventory;
 import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
 import scc210game.game.map.PlayerLocked;
@@ -48,6 +49,7 @@ public class PlayerSpawner implements Spawner {
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Player())
+				.with(new Inventory(5))
 				.with(new Position(15, 106))
 				.with(new Velocity(0, 0))
 				.with(new PlayerLocked(false))

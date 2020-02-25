@@ -1,9 +1,7 @@
 package scc210game.game.components;
 
-import scc210game.engine.ecs.Entity;
-import scc210game.engine.ecs.Query;
+import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.System;
-import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
@@ -14,9 +12,9 @@ import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.PlayerTexture;
 import scc210game.game.map.Tile;
+import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.utils.MapHelper;
 import scc210game.engine.audio.Audio;
-
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -212,21 +210,21 @@ public class PositionUpdateSystem implements System {
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, checkBiome(t.getTextureName())),
-								(e, w) -> accept(world, 0, playerEnt),
+								(e, w) -> accept(world, 0, playerEnt, null),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, checkBiome(t.getTextureName())),
-								(e, w) -> accept(world, 0, playerEnt),
+								(e, w) -> accept(world, 0, playerEnt, null),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, checkBiome(t.getTextureName())),
-								(e, w) -> accept(world, 0, playerEnt),
+								(e, w) -> accept(world, 0, playerEnt, null),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					steps.oldCount = steps.count;
@@ -234,9 +232,10 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveChest()) {  // Chest check
 					java.lang.System.out.println("Chest nearby");
+					var chestEnt = getEntityAtPos(world, t, Chest.class);
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, checkBiome(t.getTextureName())),
-							(e, w) -> accept(world, 1, playerEnt),
+							(e, w) -> accept(world, 1, playerEnt, chestEnt),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
@@ -245,13 +244,28 @@ public class PositionUpdateSystem implements System {
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, checkBiome(t.getTextureName())),
-							(e, w) -> accept(world, 2, playerEnt),
+							(e, w) -> accept(world, 2, playerEnt, null),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Method to check the single entity against a position
+	 * @param world the world for the state
+	 * @param t tile being checked
+	 * @param klass component class being searched for
+	 * @return
+	 */
+	private Entity getEntityAtPos(World world, Tile t, Class<? extends Component> klass) {
+		return world.applyQuery(Query.builder().require(klass).build()).filter(e -> {
+			var pos = world.fetchComponent(e, Position.class);
+			return pos.xPos == t.getXPos() && pos.yPos == t.getYPos();
+		}).findFirst().orElseThrow();
 	}
 
 
@@ -328,7 +342,7 @@ public class PositionUpdateSystem implements System {
 	 * @param eventType the type of entity event that should be triggered
 	 * @param player the player entity
 	 */
-	public void accept(World world, int eventType, Entity player) {
+	public void accept(World world, int eventType, Entity player, Entity target) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
 
@@ -338,11 +352,13 @@ public class PositionUpdateSystem implements System {
 		switch(eventType) {  // Checking which event should be sent to the queue
 			case 0: {
 				java.lang.System.out.println("Combat State Initiated");
-				//world.ecs.acceptEvent(new CombatStateEvent());
+				//world.ecs.acceptEvent(new CombatStateEvent());  TODO: Need to know params that should be passed to combat
 			}
 			case 1: {
 				java.lang.System.out.println("Chest State Initiated");
-				//world.ecs.acceptEvent(new ChestStateEvent());
+				var playerInv = world.fetchComponent(player, Inventory.class);
+				var targetInv = world.fetchComponent(target, Inventory.class);
+				world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, targetInv, player, target));
 			}
 
 		}
