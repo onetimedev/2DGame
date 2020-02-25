@@ -6,7 +6,6 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
-import scc210game.engine.render.MinimapViewResource;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
