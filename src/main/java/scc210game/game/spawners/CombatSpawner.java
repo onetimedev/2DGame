@@ -55,14 +55,14 @@ public class CombatSpawner implements Spawner {
 
         return builder
                 .with((this.enemy ? new CombatEnemy() : new CombatPlayer()))
-                .with(new UITransform(position.x, position.y, 0, size.x, size.y))
+                .with(new UITransform(position.x, position.y, 1, size.x, size.y))
                 .with(new Renderable(Set.of(ViewType.MAIN), 2,
                         (Entity e, RenderWindow rw, World w) -> {
 
                             var dimensions = w.fetchComponent(e, UITransform.class);
                             Texture t = new Texture();
                             try {
-                                String spriteImage = this.enemy ? "./src/main/resources/textures/combat_enemy_player.png" : "./src/main/resources/textures/combat_player.png";
+                                String spriteImage = this.enemy ? "./src/main/resources/textures/boss_final.png" : "./src/main/resources/textures/player.png";
                                 t.loadFromFile(Paths.get(spriteImage));
 
                                 Sprite pl = new Sprite(t);
@@ -72,6 +72,15 @@ public class CombatSpawner implements Spawner {
                                 pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                                 //pl.setTextureRect(new IntRect(0,0,200,200));
 
+                                if(!this.enemy)
+                                {
+                                    pl.setScale(new Vector2f(6, 6));
+                                }
+                                else
+                                {
+                                    pl.setScale(new Vector2f(2,2));
+                                }
+
                                 rw.draw(pl);
 
                             }
@@ -80,21 +89,6 @@ public class CombatSpawner implements Spawner {
                                 throw new RuntimeException();
                             }
 
-
-
-                    /*
-                    var dimensions = w.fetchComponent(e, UITransform.class);
-                    var color = Color.BLUE;
-                    var shape = new RectangleShape(UiUtils.convertUiSize(rw, dimensions.size())){{
-                        this.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
-                        this.setFillColor(UiUtils.transformColor(color));
-                        this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
-
-                    }};
-
-                    rw.draw(shape);
-
-                     */
                 }));
     }
 }

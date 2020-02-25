@@ -46,4 +46,24 @@ public class CombatUtils
 
     }
 
+    public void damagePlayer(World w)
+    {
+        var handle = w.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
+        var scorer = w.fetchComponent(handle, Scoring.class);
+        scorer.damagePlayer();
+    }
+
+    public void damageEnemy(World w)
+    {
+        var handle = w.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
+        var scorer = w.fetchComponent(handle, Scoring.class);
+        scorer.damageEnemy();
+    }
+
+
+    public CombatResources getCombatResources(World w)
+    {
+        var handle = w.applyQuery(Query.builder().require(CombatResources.class).build()).findFirst().get();
+        return w.fetchComponent(handle, CombatResources.class);
+    }
 }

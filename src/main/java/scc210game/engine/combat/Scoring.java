@@ -5,25 +5,24 @@ import scc210game.engine.ecs.Component;
 public class Scoring extends Component {
 
 
-    private int playerExperiance;
+    private int playerExperience;
     private int playerHealth;
-
     private int enemyHealth;
 
 
-    public Scoring(int playerExperiance, int playerHealth, int enemyHealth)
+    public Scoring(int playerExperience, int playerHealth, int enemyHealth)
     {
 
-        this.playerExperiance = playerExperiance;
+        this.playerExperience = playerExperience;
         this.playerHealth = playerHealth;
         this.enemyHealth = enemyHealth;
     }
 
 
 
-    public int getPlayerExperiance()
+    public int getPlayerExperience()
     {
-        return this.playerExperiance;
+        return this.playerExperience;
     }
 
     public int getPlayerHealth()
@@ -47,6 +46,11 @@ public class Scoring extends Component {
     {
         this.playerHealth--;
         System.out.println("damaged player");
+    }
+
+    public void addExperience()
+    {
+        this.playerExperience++;
     }
 
 

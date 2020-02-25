@@ -25,7 +25,6 @@ public class CombatMovement implements System {
     private final EventQueueReader eventReader;
     private float WEAPON_RAISED = -70f;
     private float WEAPON_HOLSTERED = 0f;
-    private boolean raised = false;
 
     int animCounter = 0;
     private ScheduledExecutorService scheduledExecutorService;
@@ -81,9 +80,9 @@ public class CombatMovement implements System {
 
                     case SPACE: {
                         //attack
-                        if(!raised)
+                        if(!new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
                         {
-                            this.raised = true;
+                            new CombatUtils().getCombatResources(world).raisePlayerWeapon();
                             cplayerWeaponPosition.rotation = WEAPON_RAISED;
                             //cplayerWeaponPosition.xPos += 0.1f;
                         }
@@ -95,9 +94,9 @@ public class CombatMovement implements System {
                 KeyDepressedEvent type = (KeyDepressedEvent) event;
 
                 if(type.key == Keyboard.Key.SPACE){
-                    if(raised)
+                    if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
                     {
-                        raised = false;
+                        new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
                         cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
                         //cplayerWeaponPosition.xPos -= 0.1f;
                     }
@@ -106,17 +105,6 @@ public class CombatMovement implements System {
             }
         }
     }
-
-
-
-    private void damageEnemy()
-    {
-        var handle = world.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
-        var scorer = world.fetchComponent(handle, Scoring.class);
-        scorer.damageEnemy();
-    }
-
-
 
 
 

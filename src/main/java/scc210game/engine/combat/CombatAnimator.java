@@ -69,6 +69,10 @@ public class CombatAnimator {
                     weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
                     continueAnimation();
                 }else{
+                    if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
+                    {
+                        new CombatUtils().damageEnemy(world);
+                    }
                     exit();
                 }
                 break;
@@ -111,6 +115,10 @@ public class CombatAnimator {
 
                     continueAnimation();
                 }else{
+                    if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
+                    {
+                        new CombatUtils().damageEnemy(world);
+                    }
                     System.out.println("enemy exiting");
                     exit();
                 }

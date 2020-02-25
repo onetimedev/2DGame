@@ -27,7 +27,6 @@ public class EnemyController {
 
     private int collisionCount = 0;
 
-    private boolean weaponRaised = false;
 
     public EnemyController(World w, Class<? extends Component> spriteClass, Class<? extends Component> weaponClass){
         this.w = w;
@@ -73,10 +72,10 @@ public class EnemyController {
                     float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
                     UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
                     if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false))) {
-                        if (!weaponRaised) {
+                        if (!new CombatUtils().getCombatResources(w).getEnemyWeaponRaised()) {
+                            new CombatUtils().getCombatResources(w).raiseEnemyWeapon();
                             raiseWeapon();
-                            weaponRaised = true;
-                            damagePlayer();
+                            new CombatUtils().damagePlayer(w);
                         }
 
 
@@ -85,9 +84,9 @@ public class EnemyController {
                         new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                     } else {
 
-                        if (weaponRaised) {
+                        if (new CombatUtils().getCombatResources(w).getEnemyWeaponRaised()) {
+                            new CombatUtils().getCombatResources(w).lowerEnemyWeapon();
                             lowerWeapon();
-                            weaponRaised = false;
                         }
                         System.out.println("moving forward");
                         new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
@@ -161,11 +160,5 @@ public class EnemyController {
         fight = true;
     }
 
-    private void damagePlayer()
-    {
-        var handle = w.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
-        var scorer = w.fetchComponent(handle, Scoring.class);
-        scorer.damagePlayer();
-    }
 
 }
