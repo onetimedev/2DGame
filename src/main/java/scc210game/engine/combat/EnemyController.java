@@ -72,22 +72,10 @@ public class EnemyController {
                     float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
                     UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
                     if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false))) {
-                        if (!new CombatUtils().getCombatResources(w).getEnemyWeaponRaised()) {
-                            new CombatUtils().getCombatResources(w).raiseEnemyWeapon();
-                            raiseWeapon();
-                            new CombatUtils().damagePlayer(w);
-                        }
-
-
                         System.out.println("collided so moving backward");
                         collisionCount++;
                         new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                     } else {
-
-                        if (new CombatUtils().getCombatResources(w).getEnemyWeaponRaised()) {
-                            new CombatUtils().getCombatResources(w).lowerEnemyWeapon();
-                            lowerWeapon();
-                        }
                         System.out.println("moving forward");
                         new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                     }
@@ -102,26 +90,6 @@ public class EnemyController {
         }else{
             scheduledExecutorService.shutdown();
         }
-    }
-
-
-    private void raiseWeapon()
-    {
-
-        UITransform weapon = new CombatUtils().getWeapon(w, CombatEnemyWeapon.class);
-        weapon.rotation = WEAPON_RAISED;
-        //weapon.yPos -= 0.15f;
-
-
-    }
-
-
-    private void lowerWeapon()
-    {
-        UITransform weapon =  new CombatUtils().getWeapon(w, CombatEnemyWeapon.class);
-        weapon.rotation = WEAPON_HOLSTERED;
-
-
     }
 
 

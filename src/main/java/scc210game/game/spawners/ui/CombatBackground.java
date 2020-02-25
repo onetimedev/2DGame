@@ -41,7 +41,7 @@ public class CombatBackground implements Spawner {
                             var dimensions = w.fetchComponent(e, UITransform.class);
                             Texture t = new Texture();
                             try {
-                                String spriteImage = "./src/main/resources/textures/";
+                                String spriteImage = "./src/main/resources/textures/backgrounds/grassBackground.png";
                                 t.loadFromFile(Paths.get(spriteImage));
                                 Sprite bg = new Sprite(t);
                                 bg.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));

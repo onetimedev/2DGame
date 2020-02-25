@@ -23,7 +23,7 @@ import java.util.Set;
 public class CombatSpawner implements Spawner {
 
     private float xPosition;
-    private float yPosition = 0.25f;
+    private float yPosition;
     private float width = 0.2f;
     private float height = 0.3f;
 
@@ -38,10 +38,12 @@ public class CombatSpawner implements Spawner {
         if(!enemy)
         {
             xPosition = 0.0f;
+            yPosition = 0.33f;
         }
         else
         {
             xPosition = 0.75f;
+            yPosition = 0.05f;
         }
 
         this.enemy = enemy;
@@ -74,11 +76,11 @@ public class CombatSpawner implements Spawner {
 
                                 if(!this.enemy)
                                 {
-                                    pl.setScale(new Vector2f(6, 6));
+                                    pl.setScale(new Vector2f(4, 4));
                                 }
                                 else
                                 {
-                                    pl.setScale(new Vector2f(2,2));
+                                    pl.setScale(new Vector2f(3,3));
                                 }
 
                                 rw.draw(pl);

@@ -104,21 +104,13 @@ public class CombatAnimator {
         var sprite = world.applyQuery(Query.builder().require(spriteClass).build()).findFirst().get();
         var spriteAttributes = world.fetchComponent(sprite, UITransform.class);
 
-        var weapon = world.applyQuery(Query.builder().require(weaponClass).build()).findFirst().get();
-        var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
-
         switch (this.direction){
             case CombatUtils.FORWARD: {
                 if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, false))) {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    weaponAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
 
                     continueAnimation();
                 }else{
-                    if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
-                    {
-                        new CombatUtils().damageEnemy(world);
-                    }
                     System.out.println("enemy exiting");
                     exit();
                 }
@@ -129,7 +121,6 @@ public class CombatAnimator {
                 if(spriteAttributes.xPos <= getEnd()) {
 
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
 
                     continueAnimation();
                 }else{

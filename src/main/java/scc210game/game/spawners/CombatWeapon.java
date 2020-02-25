@@ -37,21 +37,13 @@ public class CombatWeapon implements Spawner {
     public CombatWeapon(boolean enemy, World world)
     {
         this.enemy = enemy;
-        if(!enemy)
-        {
-            var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
-            var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-            this.xPosition = (cplayerPosition.width)-0.025f;
-            this.yPosition = (cplayerPosition.height/2)+0.15f;
+        var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
+        var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
+        this.xPosition = (cplayerPosition.width)-0.0f;
+        this.yPosition = (cplayerPosition.height/2)+0.23f;
 
-        }
-        else
-        {
-            var combatEnemySprite = world.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
-            var combatplayerPosition = world.fetchComponent(combatEnemySprite, UITransform.class);
-            this.xPosition = combatplayerPosition.xPos;
-            this.yPosition = (combatplayerPosition.height/2)+0.15f;
-        }
+
+
 
     }
 
@@ -62,7 +54,7 @@ public class CombatWeapon implements Spawner {
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
         return builder
-                .with((this.enemy ? new CombatEnemyWeapon() : new CombatPlayerWeapon()))
+                .with(new CombatPlayerWeapon())
                 .with(new UITransform(position.x, position.y, 2, size.x, size.y, rotation))
                 .with(new Renderable(Set.of(ViewType.MAIN), 2,
                         (Entity e, RenderWindow rw, World w) -> {
@@ -70,13 +62,14 @@ public class CombatWeapon implements Spawner {
                     var dimensions = w.fetchComponent(e, UITransform.class);
                     Texture t = new Texture();
                     try {
-                        String filePath = this.enemy ? "./src/main/resources/textures/enemy_sword.png" : "./src/main/resources/textures/player_sword.png";
+                        String filePath =  "./src/main/resources/textures/player_sword.png";
                         t.loadFromFile(Paths.get(filePath));
                         Sprite pl = new Sprite(t);
 
                         pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
+                        pl.setScale(new Vector2f(1,1));
                         //pl.setTextureRect(new IntRect(0,0,200,200));
-                        pl.setOrigin((xPosition/2),(yPosition/2));
+                        pl.setOrigin((xPosition/2)+30,(yPosition/2)+30);
                         pl.setRotation(dimensions.rotation);
                         rw.draw(pl);
 
@@ -86,20 +79,6 @@ public class CombatWeapon implements Spawner {
                         throw new RuntimeException();
                     }
 
-                    /*
-                    var dimensions = w.fetchComponent(e, UITransform.class);
-                    var color = Color.YELLOW;
-                    var shape = new RectangleShape(UiUtils.convertUiSize(rw, dimensions.size())){{
-                        this.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
-                        this.setFillColor(UiUtils.transformColor(color));
-                        this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
-                        this.setRotation(dimensions.rotation);
-
-                    }};
-
-                    rw.draw(shape);
-
-                     */
 
                 }));
     }
