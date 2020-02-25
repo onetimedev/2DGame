@@ -7,6 +7,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.MinimapViewResource;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.PlayerTexture;
@@ -72,26 +73,26 @@ public class PositionUpdateSystem implements System {
 			if (this.checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_right.png");
 			pTexture.speedMs = 100;
-			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
+			au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 		}
 		if (deltaX < 0) {  // left
 			if (this.checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_left.png");
 			pTexture.speedMs = 100;
-			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
+			au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 		}
 		// Y Delta collision checks
 		if (deltaY < 0) {  // top
 			if (this.checkCollisionY(velocity, map, deltaY, left, right, top)) return;
 			pTexture.texture = MapHelper.loadTexture("player_top.png");
 			pTexture.speedMs = 100;
-			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
+			au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 		}
 		if (deltaY > 0) {  // bottom
 			if (this.checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
 			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
 			pTexture.speedMs = 100;
-			au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
+			au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 		}
 		if(deltaX == 0 && deltaY == 0) {
 			au.stopSound();
