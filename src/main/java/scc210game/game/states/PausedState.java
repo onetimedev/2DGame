@@ -10,6 +10,10 @@ import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 
 public class PausedState extends BaseInGameState {
+    static {
+        register(PausedState.class, (j) -> new PausedState());
+    }
+
     private static void resumeButton(Entity e, World w) {
         w.ecs.acceptEvent(new TogglePauseEvent());
     }

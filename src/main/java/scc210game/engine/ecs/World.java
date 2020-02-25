@@ -290,14 +290,15 @@ public class World {
             var entity = Entity.unsafeMakeEntity(Long.parseLong(id));
 
             var components = new ArrayList<Component>();
-
+            //noinspection RedundantCast
             ((JsonObject) componentsS).forEach((compType, componentS) ->
-                        components.add(SerDe.deserialize((Jsonable) componentS, compType, Component.class)));
+                    components.add(SerDe.deserialize((Jsonable) componentS, compType, Component.class)));
 
             entities.put(entity, components);
         });
 
         var resourcesS = (JsonObject) json.get("resources");
+        //noinspection RedundantCast
         resourcesS.forEach((resourceType, resourceS) ->
                 resources.add(SerDe.deserialize((Jsonable) resourceS, resourceType, Resource.class)));
 

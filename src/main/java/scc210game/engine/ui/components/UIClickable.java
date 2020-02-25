@@ -15,7 +15,15 @@ import java.util.Map;
  */
 public class UIClickable extends Component {
     static {
-        register(UIClickable.class, s -> new UIInteractive());
+        register(UIClickable.class, j -> {
+            var json = (JsonObject) j;
+
+            @SuppressWarnings("unchecked")
+            var acceptor = SerDeBase64.deserializeFromBase64((String) json.get("acceptor"),
+                    (Class<SerializableBiConsumer<Entity, World>>)(Class<?>)SerializableBiConsumer.class);
+
+            return new UIClickable(acceptor);
+        });
     }
 
     /**

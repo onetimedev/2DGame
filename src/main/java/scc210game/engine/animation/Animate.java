@@ -27,6 +27,13 @@ public class Animate extends Component {
         this.pctComplete = 0.0f;
     }
 
+    Animate(Duration duration, float pctComplete, boolean looping, @Nonnull SerializableBiConsumer<Entity, World> completionCallback) {
+        this.duration = duration;
+        this.pctComplete = pctComplete;
+        this.looping = looping;
+        this.completionCallback = completionCallback;
+    }
+
     public void update(Duration td) {
         var pct = (float) td.toNanos() / (float) this.duration.toNanos();
         this.pctComplete += pct;
@@ -44,6 +51,22 @@ public class Animate extends Component {
 
     public boolean isComplete() {
         return this.pctComplete >= 1.0f;
+    }
+
+    static {
+        register(Animate.class, j -> {
+            var json = (JsonObject) j;
+
+            var duration = Duration.parse((String) json.get("duration"));
+            var pctComplete = (Float) json.get("pctComplete");
+            var looping = (Boolean) json.get("looping");
+
+            @SuppressWarnings("unchecked")
+            var completionCallback = SerDeBase64.deserializeFromBase64((String) json.get("completionCallback"),
+                    (Class<SerializableBiConsumer<Entity, World>>)(Class<?>)SerializableBiConsumer.class);
+
+            return new Animate(duration, pctComplete, looping, completionCallback);
+        });
     }
 
     @Override

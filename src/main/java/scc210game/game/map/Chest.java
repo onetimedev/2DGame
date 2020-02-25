@@ -10,8 +10,10 @@ public class Chest extends Component {
     public final Tile tile;
 
     static {
-        // TODO
-        register(Chest.class, s -> new Chest(null));
+        register(Chest.class, j -> {
+            var json = (JsonObject) j;
+            return new Chest(Tile.deserialize((JsonObject) json.get("tile")));
+        });
     }
 
     public Chest(Tile tile) {
