@@ -28,8 +28,6 @@ public class PausedState extends BaseInGameState {
                 PausedState::resumeButton)).build();
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Main Menu",
                 PausedState::mainMenuButton)).build();
-
-        world.ecs.deserializeAndReplace(world.ecs.serialize());
     }
 
     @Override
