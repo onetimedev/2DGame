@@ -37,7 +37,7 @@ public class HealthBarSpawner implements Spawner {
 
         return builder
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
                     var outerRect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
