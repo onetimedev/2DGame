@@ -23,7 +23,7 @@ import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
-import scc210game.game.components.PositionUpdateSystem;
+import scc210game.game.systems.PositionUpdateSystem;
 import scc210game.game.states.MainMenuState;
 import scc210game.game.systems.DialogueHandlingSystem;
 import scc210game.game.systems.InventoryLeaveHandler;

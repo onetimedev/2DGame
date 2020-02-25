@@ -1,10 +1,12 @@
-package scc210game.game.components;
+package scc210game.game.systems;
 
 import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
+import scc210game.game.components.Inventory;
+import scc210game.game.components.Steps;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.engine.utils.ResourceLoader;
