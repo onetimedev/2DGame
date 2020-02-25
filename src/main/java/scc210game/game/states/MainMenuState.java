@@ -10,6 +10,7 @@ import scc210game.engine.state.trans.TransQuit;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
 import scc210game.engine.utils.ResourceLoader;
+import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.states.events.QuitGameEvent;
 import scc210game.game.states.events.StartGameEvent;
 
@@ -23,6 +24,9 @@ public class MainMenuState extends InputHandlingState {
                 (Entity e, World w) -> world.ecs.acceptEvent(new StartGameEvent()))).build();
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Quit Game",
                 (Entity e, World w) -> world.ecs.acceptEvent(new QuitGameEvent()))).build();
+
+        //TODO: Create background here, custom texture
+        world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
     }
 
     @Override
