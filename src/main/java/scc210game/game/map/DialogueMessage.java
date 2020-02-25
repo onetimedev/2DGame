@@ -2,6 +2,9 @@ package scc210game.game.map;
 
 import java.util.ArrayList;
 
+/**
+ * Class holding all dialogue messages.
+*/
 public class DialogueMessage {
 
 	private String message = "";

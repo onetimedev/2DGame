@@ -17,7 +17,13 @@ import java.util.ArrayList;
 
 public class PositionUpdateSystem implements System {
 
-
+	/**
+	 * Run method that will continue while the system is active.
+	 * Calculates the players velocity and delta X/Y and checks
+	 * collision and any surrounding entities.
+	 * @param world the world entity
+	 * @param timeDelta
+	 */
 	@Override
 	public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
 		var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
@@ -34,7 +40,6 @@ public class PositionUpdateSystem implements System {
 		var mapEnt = mapEntO.get();
 		var map = world.fetchComponent(mapEnt, Map.class);
 
-
 		// Delta of velocity movement around time
 		var deltaX = velocity.dx * ((float) timeDelta.toMillis()) / 1000;
 		var deltaY = velocity.dy * ((float) timeDelta.toMillis()) / 1000;
@@ -42,7 +47,6 @@ public class PositionUpdateSystem implements System {
 		// Decrementing velocity over time
 		velocity.dx *= 0.8;
 		velocity.dy *= 0.8;
-
 
 		// Resetting velocity
 		if(velocity.dx > -0.1 && velocity.dx < 0.1)
@@ -55,7 +59,6 @@ public class PositionUpdateSystem implements System {
 			pTexture.texture = MapHelper.loadTexture("player_anim.png");
 			pTexture.speedMs = 400;
 		}
-
 
 		// Bounding box position of player
 		float left = position.xPos;
@@ -99,9 +102,6 @@ public class PositionUpdateSystem implements System {
 			}
 		}
 
-		// Changing to floored ints to check specific tiles around position
-		//int xPosInt = (int) Math.floor(position.xPos + deltaX);
-		//int yPosInt = (int) Math.floor(position.yPos + deltaY);
 		checkSurrounding(world, map, deltaX, deltaY, position.xPos, position.yPos);
 
 		// Updating position of player with delta value
@@ -113,6 +113,7 @@ public class PositionUpdateSystem implements System {
 		view.mainView.setCenter(position.xPos*64, position.yPos*64);
 
 	}
+
 
 	/**
 	 * Method to check the collision of tiles horizontally around the player
@@ -137,6 +138,7 @@ public class PositionUpdateSystem implements System {
 			}
 		return false;
 	}
+
 
 	/**
 	 * Method to check the collision of tiles horizontally around the player
@@ -165,12 +167,12 @@ public class PositionUpdateSystem implements System {
 
 	/**
 	 * Method that checks the surrounding tiles for presence of a chest, enemy, or NPC
-	 * @param world
-	 * @param map
-	 * @param dX
-	 * @param dY
-	 * @param posX
-	 * @param posY
+	 * @param world the world for the current state
+	 * @param map the map entity
+	 * @param dX delta X
+	 * @param dY delta Y
+	 * @param posX players X position
+	 * @param posY players Y position
 	 */
 	public void checkSurrounding(World world, Map map, float dX, float dY, float posX, float posY) {
 		var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
@@ -179,52 +181,51 @@ public class PositionUpdateSystem implements System {
 		var playerEnt = playerEntO.get();
 		var steps = world.fetchComponent(playerEnt, Steps.class);
 
-
+		// Cooldown check, player needs to have moved 4+ tiles before another dialogue / entity trigger
 		if(steps.count > steps.oldCount+4) {
-
 			ArrayList<Tile> tiles = getSurrounding(1, map, posX, posY, dX, dY);
 			tiles.addAll(getSurrounding(-1, map, posX, posY, dX, dY));
 
-			for (Tile t : tiles) {
+			for (Tile t : tiles) {  // Checks each surrounding tile
 				if(t == null)
 					continue;
-				if (t.getHasEnemy()) {
+				if (t.getHasEnemy()) {  // Enemy checks
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,4, checkBiome(t.getTextureName())),
+						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,3, checkBiome(t.getTextureName())),
+						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,0, checkBiome(t.getTextureName())),
+						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					steps.oldCount = steps.count;
 					break;
 				}
-				else if (t.canHaveChest()) {
+				else if (t.canHaveChest()) {  // Chest check
 					java.lang.System.out.println("Chest nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,2, checkBiome(t.getTextureName())),
+					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, checkBiome(t.getTextureName())),
 							(e, w) -> accept(world, 1, playerEnt),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
 				}
-				else if (t.canHaveStory()) {
+				else if (t.canHaveStory()) {  // NPC check
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,1, checkBiome(t.getTextureName())),
+					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, checkBiome(t.getTextureName())),
 							(e, w) -> accept(world, 2, playerEnt),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
@@ -232,19 +233,18 @@ public class PositionUpdateSystem implements System {
 				}
 			}
 		}
-
 	}
 
 
 	/**
 	 * Method to get all tiles around the player
-	 * @param num
-	 * @param map
-	 * @param posX
-	 * @param posY
-	 * @param dX
-	 * @param dY
-	 * @return
+	 * @param num positive or negative to be checked
+	 * @param map the map entity
+	 * @param posX players X position
+	 * @param posY players Y position
+	 * @param dX delta X
+	 * @param dY delta Y
+	 * @return all tiles surrounding player
 	 */
 	private ArrayList<Tile> getSurrounding(int num, Map map, float posX, float posY, float dX, float dY) {
 		int xFloor = (int) Math.floor(posX + dX);
@@ -266,6 +266,11 @@ public class PositionUpdateSystem implements System {
 	}
 
 
+	/**
+	 * Method to check the biome given a texture name as string
+	 * @param t name of texture / string to be checked
+	 * @return the biome number (Grass = 0, Water = 1, Fire = 2, Ice = 3))
+	 */
 	private int checkBiome(String t) {
 		if(t.contains("grass"))
 			return 0;
@@ -278,8 +283,16 @@ public class PositionUpdateSystem implements System {
 	}
 
 
-
-	public String test(World world, Entity player, int type, int biome) {
+	/**
+	 * Method for when the player is viewing a dialogue, displays a random message
+	 * based on the entity type and biome.
+	 * @param world the world for the state
+	 * @param player the player entity
+	 * @param type the type of entity (Enemy = 0, NPC = 1, Chest = 2, Boss = 3, FinalBoss = 4)
+	 * @param biome the type of biome (Grass = 0, Water = 1, Fire = 2, Ice = 3)
+	 * @return the message to be displayed in the dialogue
+	 */
+	public String inDialogue(World world, Entity player, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(0.6f);
 		java.lang.System.out.println("Zoomed in");
@@ -290,14 +303,20 @@ public class PositionUpdateSystem implements System {
 	}
 
 
+	/**
+	 * Method triggered upon player acceptance of an entities dialogue option.
+	 * @param world the world for this state
+	 * @param eventType the type of entity event that should be triggered
+	 * @param player the player entity
+	 */
 	public void accept(World world, int eventType, Entity player) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
-		java.lang.System.out.println("Accepted");
+
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 
-		switch(eventType) {
+		switch(eventType) {  // Checking which event should be sent to the queue
 			case 0: {
 				java.lang.System.out.println("Combat State Initiated");
 				//world.ecs.acceptEvent(new CombatStateEvent());
@@ -311,10 +330,15 @@ public class PositionUpdateSystem implements System {
 
 	}
 
+
+	/**
+	 * Method triggered upon player refusal of an entities dialogue option.
+	 * @param world the world for this state
+	 * @param player the player entity
+	 */
 	public void refuse(World world, Entity player) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
-		java.lang.System.out.println("Refused");
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 	}
