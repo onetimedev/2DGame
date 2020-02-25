@@ -1,5 +1,6 @@
 package scc210game.game.components;
 
+import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
@@ -180,6 +181,7 @@ public class PositionUpdateSystem implements System {
 
 
 		if(steps.count > steps.oldCount+4) {
+
 			ArrayList<Tile> tiles = getSurrounding(1, map, posX, posY, dX, dY);
 			tiles.addAll(getSurrounding(-1, map, posX, posY, dX, dY));
 
@@ -189,23 +191,23 @@ public class PositionUpdateSystem implements System {
 				if (t.getHasEnemy()) {
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 4, checkBiome(t.getTextureName())),
-								(e, w) -> accept(world),
-								(e, w) -> refuse(world)));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,4, checkBiome(t.getTextureName())),
+								(e, w) -> accept(world, 0, playerEnt),
+								(e, w) -> refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 3, checkBiome(t.getTextureName())),
-								(e, w) -> accept(world),
-								(e, w) -> refuse(world)));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,3, checkBiome(t.getTextureName())),
+								(e, w) -> accept(world, 0, playerEnt),
+								(e, w) -> refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
 						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 0, checkBiome(t.getTextureName())),
-								(e, w) -> accept(world),
-								(e, w) -> refuse(world)));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,0, checkBiome(t.getTextureName())),
+								(e, w) -> accept(world, 0, playerEnt),
+								(e, w) -> refuse(world, playerEnt)));
 					}
 					steps.oldCount = steps.count;
 					break;
@@ -213,18 +215,18 @@ public class PositionUpdateSystem implements System {
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 2, checkBiome(t.getTextureName())),
-							(e, w) -> accept(world),
-							(e, w) -> refuse(world)));
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,2, checkBiome(t.getTextureName())),
+							(e, w) -> accept(world, 1, playerEnt),
+							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 1, checkBiome(t.getTextureName())),
-							(e, w) -> accept(world),
-							(e, w) -> refuse(world)));
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, playerEnt,1, checkBiome(t.getTextureName())),
+							(e, w) -> accept(world, 2, playerEnt),
+							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -277,24 +279,44 @@ public class PositionUpdateSystem implements System {
 
 
 
-	public String test(World world, int type, int biome) {
+	public String test(World world, Entity player, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(0.6f);
 		java.lang.System.out.println("Zoomed in");
+		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
+		positionLocked.locked = true;
 
 		return new DialogueMessage(type, biome).getMessage();
 	}
 
-	public void accept(World world) {
+
+	public void accept(World world, int eventType, Entity player) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
 		java.lang.System.out.println("Accepted");
+		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
+		positionLocked.locked = false;
+
+		switch(eventType) {
+			case 0: {
+				java.lang.System.out.println("Combat State Initiated");
+				//world.ecs.acceptEvent(new CombatStateEvent());
+			}
+			case 1: {
+				java.lang.System.out.println("Chest State Initiated");
+				//world.ecs.acceptEvent(new ChestStateEvent());
+			}
+
+		}
+
 	}
 
-	public void refuse(World world) {
+	public void refuse(World world, Entity player) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
 		java.lang.System.out.println("Refused");
+		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
+		positionLocked.locked = false;
 	}
 
 }

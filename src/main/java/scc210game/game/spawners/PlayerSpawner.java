@@ -17,6 +17,7 @@ import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
+import scc210game.game.map.PlayerLocked;
 import scc210game.game.map.PlayerTexture;
 
 import java.nio.file.Paths;
@@ -50,6 +51,7 @@ public class PlayerSpawner implements Spawner {
 				.with(new Player())
 				.with(new Position(15, 106))
 				.with(new Velocity(0, 0))
+				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
 				.with(new PlayerTexture(t, 400))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
