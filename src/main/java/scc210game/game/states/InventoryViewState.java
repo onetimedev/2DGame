@@ -10,6 +10,7 @@ import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.utils.Tuple2;
 import scc210game.game.components.Inventory;
+import scc210game.game.events.InventoryUpdateEvent;
 import scc210game.game.states.events.LeaveInventoryEvent;
 
 public class InventoryViewState extends InventoryViewStateMethods {
@@ -35,7 +36,9 @@ public class InventoryViewState extends InventoryViewStateMethods {
         if (evt instanceof KeyDepressedEvent) {
             KeyDepressedEvent evt1 = (KeyDepressedEvent) evt;
             if (evt1.key == Keyboard.Key.ESCAPE) {
-                world.ecs.acceptEvent(new LeaveInventoryEvent(new Tuple2<>(this.sourceInventoryEnt, this.inventory)));
+                world.ecs.acceptEvent(new LeaveInventoryEvent());
+                world.ecs.eventQueue.broadcast(new InventoryUpdateEvent(
+                        new Tuple2<>(this.sourceInventoryEnt, this.inventory)));
                 return TransNop.getInstance();
             }
         }
