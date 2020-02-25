@@ -6,9 +6,9 @@ import scc210game.engine.ecs.Component;
  * Component that flags entities that can be dragged using the mouse
  */
 public class UIDraggable extends Component {
-    static {
-        register(UIDraggable.class, s -> new UIInteractive());
-    }
+//    static {
+//        register(UIDraggable.class, s -> new UIDraggable());
+//    }
 
     @Override
     public String serialize() {

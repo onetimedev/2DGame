@@ -9,13 +9,14 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.game.utils.MapHelper;
 import scc210game.game.map.Chest;
 import scc210game.game.map.Tile;
+import scc210game.game.utils.MapHelper;
 
 import java.util.Set;
 
 public class ChestSpawner implements Spawner {
+
 
 	private Tile chestTile;
 	private Texture t;
@@ -26,19 +27,21 @@ public class ChestSpawner implements Spawner {
 		MapHelper.setTileToBiome(chestTile);
 	}
 
+
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
-				.with(new Chest())
-				.with(new Position(chestTile.getXPos(), chestTile.getYPos()))
+        .with(new Chest())
+        .with(new FilledInventorySpawner())
+        .with(new Position(this.chestTile.getXPos(), this.chestTile.getYPos()))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						(Entity entity, RenderWindow window, World world) -> {
+						(Entity e, RenderWindow rw, World w) -> {
 
-								Sprite c = new Sprite(t);
-								c.setPosition(chestTile.getXPos()*64, chestTile.getYPos()*64);
-								window.draw(c);
+                            Sprite c = new Sprite(this.t);
+                            c.setPosition(this.chestTile.getXPos() * 64, this.chestTile.getYPos() * 64);
+                            rw.draw(c);
 
-						}));
+                        }));
 
 	}
 }

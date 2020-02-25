@@ -9,38 +9,38 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.game.utils.MapHelper;
 import scc210game.game.map.Enemy;
 import scc210game.game.map.FinalBoss;
+import scc210game.game.utils.MapHelper;
 
 import java.util.Set;
 
 public class FinalBossSpawner implements Spawner {
 
-	private Texture finalBossTexture;
+    private final Texture finalBossTexture;
 
 
-	public FinalBossSpawner() {
-		finalBossTexture = MapHelper.loadTexture("boss_final.png");
-	}
+    public FinalBossSpawner() {
+        this.finalBossTexture = MapHelper.loadTexture("boss_final.png");
+    }
 
-	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
-		return builder
-				.with(new Enemy(false))
+    @Override
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
+        return builder
+                .with(new Enemy(false))
 				.with(new FinalBoss())
 				.with(new Position(59, 59))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						(Entity entity, RenderWindow window, World world) -> {
+						(Entity e, RenderWindow rw, World w) -> {
 
-						//TODO: Get if specific enemy has been defeated
-						//if(defeated == false) {
-							Sprite en = new Sprite(finalBossTexture);
-							en.setPosition(59*64, 59*64);
-							window.draw(en);
-						//}
+                            //TODO: Get if specific enemy has been defeated
+                            //if(defeated == false) {
+                            Sprite en = new Sprite(this.finalBossTexture);
+                            en.setPosition(59 * 64, 59 * 64);
+                            rw.draw(en);
+                            //}
 
-						}));
+                        }));
 	}
 	
 }

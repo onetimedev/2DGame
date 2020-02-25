@@ -18,14 +18,14 @@ public class MapHelper {
 	 * @return
 	 */
 	public static Texture loadTexture(String fileName) {
-		try {
-			Texture t = new Texture();
-			t.loadFromFile(Paths.get("./src/main/resources/textures/", fileName));
-			return t;
-		}
-		catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            Texture t = new Texture();
+            t.loadFromFile(Paths.get("./src/main/resources/textures/", fileName));
+            return t;
+        }
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 
@@ -66,8 +66,6 @@ public class MapHelper {
 			t.setTexture(loadTexture("grass.png"), "grass.png");
 		}
 	}
-
-
 
 
 

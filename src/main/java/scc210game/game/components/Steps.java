@@ -12,7 +12,7 @@ public class Steps extends Component {
 	public int oldCount = 0;
 
 	static {
-		register(Steps.class, s-> {
+		register(Steps.class, s -> {
 			final JsonObject json = Jsoner.deserialize(s, new JsonObject());
 			int cnt = (int) json.get("count");
 			int ocnt = (int) json.get("oldCount");
@@ -22,8 +22,8 @@ public class Steps extends Component {
 	}
 
 	public Steps(int cnt, int ocnt) {
-		count = cnt;
-		oldCount = ocnt;
+		this.count = cnt;
+		this.oldCount = ocnt;
 	}
 
 	@Override
@@ -35,9 +35,6 @@ public class Steps extends Component {
 
 		return json.toJson();
 	}
-
-
-
 
 
 }

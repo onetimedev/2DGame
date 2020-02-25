@@ -10,6 +10,7 @@ import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 
@@ -30,7 +31,7 @@ public class BaseInGameState extends InputHandlingState {
         }
 
         if (evt instanceof TogglePauseEvent) {
-            au.playSound("./src/main/resources/sounds/pause.wav", false);
+            this.au.playSound(ResourceLoader.resolve("sounds/pause.wav"), false);
             return new TransPush(new PausedState());
         }
 

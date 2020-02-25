@@ -26,19 +26,18 @@ import java.util.Set;
 
 public class PlayerSpawner implements Spawner {
 
-	private Texture t = new Texture();
+	private final Texture t = new Texture();
 	private Vector2i oldCoords = new Vector2i(15, 106);
-	private Sprite pl;
+	private final Sprite pl;
 	private int frame = 0;
-	private Clock animClock = new Clock();
+	private final Clock animClock = new Clock();
 
 	public PlayerSpawner() {
 		try {
-			t.loadFromFile(Paths.get("./src/main/resources/textures/player_anim.png"));
-			pl = new Sprite(t);
-			pl.setTextureRect(new IntRect(0, 0, 64, 64));
-		}
-		catch(Exception e) {
+			this.t.loadFromFile(Paths.get("./src/main/resources/textures/player_anim.png"));
+			this.pl = new Sprite(this.t);
+			this.pl.setTextureRect(new IntRect(0, 0, 64, 64));
+		} catch (final Exception e) {
 			throw new RuntimeException();
 		}
 
@@ -46,43 +45,43 @@ public class PlayerSpawner implements Spawner {
 
 
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Player())
 				.with(new Position(15, 106))
 				.with(new Velocity(0, 0))
 				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
-				.with(new PlayerTexture(t, 400))
+				.with(new PlayerTexture(this.t, 400))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-				(Entity entity, RenderWindow window, World world) -> {
-					var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
-					var position = world.fetchComponent(playerEnt, Position.class);
-					var steps = world.fetchComponent(playerEnt, Steps.class);
-					var pTexture = world.fetchComponent(playerEnt, PlayerTexture.class);
+				(Entity e, RenderWindow rw, World w) -> {
+					var playerEnt = w.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+					var position = w.fetchComponent(playerEnt, Position.class);
+					var steps = w.fetchComponent(playerEnt, Steps.class);
+					var pTexture = w.fetchComponent(playerEnt, PlayerTexture.class);
 
-					pl.setTexture(pTexture.texture);
-					pl.setPosition(position.xPos*64, position.yPos*64);
+					this.pl.setTexture(pTexture.texture);
+					this.pl.setPosition(position.xPos * 64, position.yPos * 64);
 
 					//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
-					if(oldCoords.x != Math.floor(position.xPos) || oldCoords.y != Math.floor(position.yPos))
+					if (this.oldCoords.x != Math.floor(position.xPos) || this.oldCoords.y != Math.floor(position.yPos))
 						steps.count++;
 
 					var view = world.fetchGlobalResource(MainViewResource.class);
-					view.mainView.setCenter(position.xPos*64, position.yPos*64);
+					view.mainView.setCenter(position.xPos * 64, position.yPos * 64);
 
-					if(animClock.getElapsedTime().asMilliseconds() >= pTexture.speedMs) {
-						animClock.restart();
-						frame++;
-						if(frame > (pTexture.texture.getSize().x/64)-1)
-							frame = 0;
-						int frameRow = frame / 8;
-						int frameCol = frame % 8;
-						pl.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
+					if (this.animClock.getElapsedTime().asMilliseconds() >= pTexture.speedMs) {
+						this.animClock.restart();
+						this.frame++;
+						if (this.frame > (pTexture.texture.getSize().x / 64) - 1)
+							this.frame = 0;
+						int frameRow = this.frame / 8;
+						int frameCol = this.frame % 8;
+						this.pl.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
 					}
 
-					oldCoords = new Vector2i((int) Math.floor(position.xPos), (int) Math.floor(position.yPos));
-					window.draw(pl);
+					this.oldCoords = new Vector2i((int) Math.floor(position.xPos), (int) Math.floor(position.yPos));
+					rw.draw(this.pl);
 				}));
 
 	}

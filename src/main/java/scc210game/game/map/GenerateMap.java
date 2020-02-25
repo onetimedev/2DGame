@@ -1,9 +1,12 @@
 package scc210game.game.map;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonException;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsoner;
 import org.jsfml.system.Vector2i;
 import com.github.cliftonlabs.json_simple.*;
 import scc210game.game.utils.MapHelper;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;

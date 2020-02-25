@@ -9,26 +9,23 @@ public class Enemy extends Component {
     public boolean defeated = false;
 
     static {
-        register(Enemy.class, s-> {
-          final JsonObject json = Jsoner.deserialize(s, new JsonObject());
-          boolean defeat;
-          if(s.equals("true"))
-            defeat = true;
-          else
-            defeat = false;
+        register(Enemy.class, s -> {
+            final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+            boolean defeat;
+            defeat = s.equals("true");
 
-          return new Enemy(defeat);
+            return new Enemy(defeat);
         });
     }
 
 
     @Override
     public String serialize() {
-        return Boolean.toString(defeated);
+        return Boolean.toString(this.defeated);
     }
 
 
     public Enemy(boolean defeat) {
-        defeated = defeat;
+        this.defeated = defeat;
     }
 }

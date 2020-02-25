@@ -5,15 +5,15 @@ import scc210game.engine.ecs.Resource;
 
 public class MainWindowResource extends Resource {
 
-	public RenderWindow mainWindow;
+    public RenderWindow mainWindow;
 
-	public MainWindowResource(RenderWindow rw) {
-		mainWindow = rw;
-	}
+    public MainWindowResource(RenderWindow rw) {
+        this.mainWindow = rw;
+    }
 
 
-	@Override
-	public String serialize() {
-		return null;
-	}
+    @Override
+    public String serialize() {
+        return null;
+    }
 }

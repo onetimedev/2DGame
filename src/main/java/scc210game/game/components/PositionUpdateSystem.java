@@ -9,13 +9,20 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
+import scc210game.engine.utils.ResourceLoader;
+import scc210game.game.map.Map;
+import scc210game.game.map.Player;
+import scc210game.game.map.PlayerTexture;
+import scc210game.game.map.Tile;
 import scc210game.game.utils.MapHelper;
+import scc210game.engine.audio.Audio;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.ArrayList;
 
 public class PositionUpdateSystem implements System {
+	Audio au = new Audio();
 
 	/**
 	 * Run method that will continue while the system is active.
@@ -60,6 +67,7 @@ public class PositionUpdateSystem implements System {
 			pTexture.speedMs = 400;
 		}
 
+
 		// Bounding box position of player
 		float left = position.xPos;
 		float right = position.xPos + 1;
@@ -73,6 +81,7 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_right.png");
 				pTexture.speedMs = 100;
+				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 			}
 		}
 		if(deltaX < 0) {  // left
@@ -81,6 +90,7 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_left.png");
 				pTexture.speedMs = 100;
+				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 			}
 		}
 
@@ -91,6 +101,7 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_top.png");
 				pTexture.speedMs = 100;
+				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 			}
 		}
 		if(deltaY > 0) {  // bottom
@@ -99,7 +110,13 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_bottom.png");
 				pTexture.speedMs = 100;
+				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
+
 			}
+		}
+
+		if(deltaX == 0 && deltaY == 0) {
+			au.stopSound();
 		}
 
 		checkSurrounding(world, map, deltaX, deltaY, position.xPos, position.yPos);
@@ -110,13 +127,14 @@ public class PositionUpdateSystem implements System {
 
 		// Getting and updating the view by its center
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.setCenter(position.xPos*64, position.yPos*64);
+		view.mainView.setCenter(position.xPos * 64, position.yPos * 64);
 
 	}
 
 
 	/**
 	 * Method to check the collision of tiles horizontally around the player
+	 *
 	 * @param velocity of the player
 	 * @param map entity that holds the tiles
 	 * @param deltaY delta value of Y axis
@@ -142,6 +160,7 @@ public class PositionUpdateSystem implements System {
 
 	/**
 	 * Method to check the collision of tiles horizontally around the player
+	 *
 	 * @param velocity of the player
 	 * @param map entity that holds the tiles
 	 * @param deltaX delta value of X axis

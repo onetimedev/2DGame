@@ -9,8 +9,8 @@ public class PlayerTexture extends Component {
 	public int speedMs;
 
 	public PlayerTexture(Texture t, int spMs) {
-		texture = t;
-		speedMs = spMs;
+		this.texture = t;
+		this.speedMs = spMs;
 	}
 
 

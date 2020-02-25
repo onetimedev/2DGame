@@ -19,20 +19,20 @@ import java.util.Set;
 public class MapSpawner implements Spawner {
 
   @Override
-  public World.EntityBuilder inject(World.EntityBuilder builder) {
+  public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
     return builder
       .with(new Map())
       .with(new Renderable(Set.of(ViewType.MAIN), 0,
-      (Entity entity, RenderWindow window, World world) -> {
-        Map m = world.fetchComponent(entity, Map.class);
+      (Entity e, RenderWindow rw, World w) -> {
+        Map m = w.fetchComponent(e, Map.class);
 
-        var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
-        var position = world.fetchComponent(playerEnt, Position.class);
+        var playerEnt = w.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+        var position = w.fetchComponent(playerEnt, Position.class);
         Vector2f playerCoords = new Vector2f(position.xPos, position.yPos);
 
         // Number of tiles that can fit in windows X and Y
-        Vector2f mapSize = window.getView().getSize();
-        Vector2f origin = window.getView().getCenter();
+        Vector2f mapSize = rw.getView().getSize();
+        Vector2f origin = rw.getView().getCenter();
 
         int mapLeft = (int) (origin.x - (mapSize.x /2)) /64;
         int mapRight = (int) (origin.x + (mapSize.x /2)) /64;
@@ -50,8 +50,8 @@ public class MapSpawner implements Spawner {
 
             Sprite tile = new Sprite(m.getTile(x, y).getTexture());
             tile.setPosition(x*64, y*64);
-            //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
-            window.draw(tile);
+            //System.out.println("["+ tileCount + "] " + "TextureStorage: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
+            rw.draw(tile);
             //tileCount++;
             }
 

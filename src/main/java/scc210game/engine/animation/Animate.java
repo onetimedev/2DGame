@@ -21,8 +21,14 @@ public class Animate extends Component {
         this.pctComplete = 0.0f;
     }
 
+    public Animate(Duration duration, float pctComplete, @Nonnull BiConsumer<Entity, World> completionCallback) {
+        this.duration = duration;
+        this.pctComplete = pctComplete;
+        this.completionCallback = completionCallback;
+    }
+
     public void update(Duration td) {
-        var pct = td.dividedBy(this.duration);
+        var pct = (float) td.toNanos() / (float) this.duration.toNanos();
         this.pctComplete += pct;
     }
 

@@ -9,9 +9,9 @@ import scc210game.engine.utils.TriConsumer;
  * Component that flags entities that can have dragged entities dropped onto them
  */
 public class UIDroppable extends Component {
-    static {
-        register(UIDroppable.class, s -> new UIInteractive());
-    }
+//    static {
+//        register(UIDroppable.class, s -> new UIDroppable());
+//    }
 
     /**
      * The function to call to accept an entity being dropped onto this entity
