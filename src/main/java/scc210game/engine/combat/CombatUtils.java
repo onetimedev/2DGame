@@ -12,10 +12,12 @@ public class CombatUtils
     public static final int FORWARD = 0;
     public static final int BACKWARD = 1;
     public static final int ROTATE = 2;
+    public static final int PLAYER = 0;
+    public static final int BOSS = 1;
 
     public static final float X_AXIS_MOVE_DISTANCE = 0.005f;
 
-    public boolean hasCollided(UITransform rect1, UITransform rect2)
+   public boolean hasCollided(UITransform rect1, UITransform rect2)
     {
 
         if (rect1.xPos < rect2.xPos + rect2.width &&
@@ -25,9 +27,12 @@ public class CombatUtils
             return true;
         }
 
+
         return false;
 
     }
+
+
 
     public UITransform getOpponent(World w, boolean enemy){
         if(enemy){
@@ -65,5 +70,28 @@ public class CombatUtils
     {
         var handle = w.applyQuery(Query.builder().require(CombatResources.class).build()).findFirst().get();
         return w.fetchComponent(handle, CombatResources.class);
+    }
+
+    public float getHealth(World w, boolean enemy)
+    {
+        var handle = w.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
+        var scoringComp = w.fetchComponent(handle, Scoring.class);
+        if (enemy)
+        {
+            return scoringComp.getHealthPercentage(scoringComp.getEnemyAbsHealth());
+
+        }
+        else
+        {
+            return scoringComp.getHealthPercentage(scoringComp.getPlayerAbsHealth());
+        }
+
+    }
+
+    public float getAbsHealth(World w)
+    {
+        var handle = w.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().get();
+        return w.fetchComponent(handle, Scoring.class).getPlayerAbsHealth();
+
     }
 }

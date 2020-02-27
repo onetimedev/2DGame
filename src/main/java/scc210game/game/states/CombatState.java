@@ -1,8 +1,6 @@
 package scc210game.game.states;
 
-import scc210game.engine.combat.CombatResources;
-import scc210game.engine.combat.EnemyController;
-import scc210game.engine.combat.Scoring;
+import scc210game.engine.combat.*;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.StateEvent;
@@ -19,13 +17,16 @@ public class CombatState extends InputHandlingState {
     @Override
     public void onStart(World world) {
         world.activateCombat();
+
         world.entityBuilder().with(new CombatBackground()).build();
-        //world.entityBuilder().with(new HealthBarSpawner(0,0, 100, 50, null)).build();
-        world.entityBuilder().with(new CombatSpawner(true)).build();
-        world.entityBuilder().with(new CombatSpawner(false)).build();
+        world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
+        world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();
+
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", "./src/main/resources/textures/boss_water.png", true, 1))).build();
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("player", "./src/main/resources/textures/player.png", false, 0))).build();
         world.entityBuilder().with(new CombatWeapon(false, world)).build();
 
-        world.entityBuilder().with(new Scoring(100,100,100)).build();
+        world.entityBuilder().with(new Scoring(80,100,100)).build();
         world.entityBuilder().with(new CombatResources()).build();
 
 

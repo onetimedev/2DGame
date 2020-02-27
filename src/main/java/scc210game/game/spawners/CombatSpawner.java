@@ -2,6 +2,7 @@ package scc210game.game.spawners;
 
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
+import scc210game.engine.combat.SpriteType;
 import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.movement.Position;
@@ -26,19 +27,18 @@ public class CombatSpawner implements Spawner {
     private float yPosition;
     private float width = 0.2f;
     private float height = 0.3f;
-
-
-    private boolean enemy;
+    private SpriteType spriteInfo;
 
 
 
-    public CombatSpawner(boolean enemy)
+    public CombatSpawner(SpriteType spriteInfo)
     {
+        this.spriteInfo = spriteInfo;
 
-        if(!enemy)
+        if(!this.spriteInfo.getEnemyStatus())
         {
             xPosition = 0.0f;
-            yPosition = 0.33f;
+            yPosition = 0.32f;
         }
         else
         {
@@ -46,7 +46,6 @@ public class CombatSpawner implements Spawner {
             yPosition = 0.05f;
         }
 
-        this.enemy = enemy;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class CombatSpawner implements Spawner {
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
         return builder
-                .with((this.enemy ? new CombatEnemy() : new CombatPlayer()))
+                .with((this.spriteInfo.getEnemyStatus() ? new CombatEnemy() : new CombatPlayer()))
                 .with(new UITransform(position.x, position.y, 1, size.x, size.y))
                 .with(new Renderable(Set.of(ViewType.MAIN), 2,
                         (Entity e, RenderWindow rw, World w) -> {
@@ -64,17 +63,16 @@ public class CombatSpawner implements Spawner {
                             var dimensions = w.fetchComponent(e, UITransform.class);
                             Texture t = new Texture();
                             try {
-                                String spriteImage = this.enemy ? "./src/main/resources/textures/boss_final.png" : "./src/main/resources/textures/player.png";
-                                t.loadFromFile(Paths.get(spriteImage));
-
+                                //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
+                                t.loadFromFile(Paths.get(this.spriteInfo.getTextureLocation()));
                                 Sprite pl = new Sprite(t);
-
+                                if(!this.spriteInfo.getEnemyStatus()) pl.setTextureRect(new IntRect(0, 0, 64, 64));
 
 
                                 pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                                 //pl.setTextureRect(new IntRect(0,0,200,200));
 
-                                if(!this.enemy)
+                                if(!this.spriteInfo.getEnemyStatus())
                                 {
                                     pl.setScale(new Vector2f(4, 4));
                                 }

@@ -62,13 +62,17 @@ public class CombatAnimator {
         var weapon = world.applyQuery(Query.builder().require(weaponClass).build()).findFirst().get();
         var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
 
-        switch (this.direction){
+        switch (this.direction)
+        {
             case CombatUtils.FORWARD: {
-                if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true))) {
+                if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)))
+                {
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
                     weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
                     continueAnimation();
-                }else{
+                }
+                else
+                {
                     if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
                     {
                         new CombatUtils().damageEnemy(world);
@@ -79,12 +83,15 @@ public class CombatAnimator {
             }
 
             case CombatUtils.BACKWARD: {
-                if(!(spriteAttributes.xPos <= getEnd())) {
+                if(!(spriteAttributes.xPos <= getEnd()))
+                {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
                     weaponAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
 
                     continueAnimation();
-                }else{
+                }
+                else
+                {
                     exit();
                 }
                 break;
@@ -104,13 +111,17 @@ public class CombatAnimator {
         var sprite = world.applyQuery(Query.builder().require(spriteClass).build()).findFirst().get();
         var spriteAttributes = world.fetchComponent(sprite, UITransform.class);
 
-        switch (this.direction){
+        switch (this.direction)
+        {
             case CombatUtils.FORWARD: {
-                if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, false))) {
+                if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, false)))
+                {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
 
                     continueAnimation();
-                }else{
+                }
+                else
+                {
                     System.out.println("enemy exiting");
                     exit();
                 }
@@ -118,12 +129,15 @@ public class CombatAnimator {
             }
 
             case CombatUtils.BACKWARD: {
-                if(spriteAttributes.xPos <= getEnd()) {
+                if(spriteAttributes.xPos <= getEnd())
+                {
 
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
 
                     continueAnimation();
-                }else{
+                }
+                else
+                {
                     System.out.println("enemy exiting");
                     exit();
                 }
@@ -151,7 +165,7 @@ public class CombatAnimator {
 
     private float getEnd()
     {
-        return enemy ? 0.75f : 0.0f;
+        return enemy ? 0.85f : 0.0f;
     }
 
 

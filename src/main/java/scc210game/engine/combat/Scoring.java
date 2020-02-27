@@ -8,7 +8,7 @@ public class Scoring extends Component {
     private int playerExperience;
     private int playerHealth;
     private int enemyHealth;
-
+    private static int maxHealth = 100;
 
     public Scoring(int playerExperience, int playerHealth, int enemyHealth)
     {
@@ -25,15 +25,22 @@ public class Scoring extends Component {
         return this.playerExperience;
     }
 
-    public int getPlayerHealth()
-    {
-       return this.playerHealth;
-    }
 
-    public int getEnemyHealth()
+    public int getPlayerAbsHealth()
+
+    {
+        return this.playerHealth;
+    }
+    public int getEnemyAbsHealth()
     {
         return this.enemyHealth;
     }
+
+    public float getHealthPercentage(int healthVal)
+    {
+        return ((float)healthVal/(float) maxHealth);
+    }
+
 
 
     public void damageEnemy()
