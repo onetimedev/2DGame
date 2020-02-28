@@ -1,6 +1,5 @@
 package scc210game.engine.ecs;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -15,9 +14,24 @@ public class Entity {
         this.id = id;
     }
 
-    @Nonnull
-    public static Entity make() {
-        return EntityAllocator.allocate();
+    /**
+     * get the ID of the entity, don't do this unless you know what you're doing
+     *
+     * @return the ID of the entity
+     */
+    public long unsafeGetID() {
+        return this.id;
+    }
+
+    /**
+     * construct an entity unsafely, don't do this unless you know what you're doing
+     * you have no way to know if the entity ID is already used or not.
+     *
+     * @param id the ID of the entity to create
+     * @return an entity with the given ID
+     */
+    public static Entity unsafeMakeEntity(long id) {
+        return new Entity(id);
     }
 
     @Override

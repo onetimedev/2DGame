@@ -10,10 +10,5 @@ public class ItemSlot extends Component {
         this.inventory = inventory;
         this.slotID = slotID;
     }
-
-    @Override
-    public String serialize() {
-        return ((Integer) this.slotID).toString();
-    }
 }
 

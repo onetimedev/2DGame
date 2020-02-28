@@ -59,11 +59,11 @@ public class InventoryViewStateMethods extends BaseInGameState {
         world.addComponentToEntity(itemEnt, new Renderable(Set.of(ViewType.UI), 3, (Entity e, RenderWindow rw, World w) -> {
             var trans = w.fetchComponent(e, UITransform.class);
             var itemTex = w.fetchComponent(e, TextureStorage.class);
-            var sprite = new Sprite(itemTex.texture);
+            var sprite = new Sprite(itemTex.getTexture());
             sprite.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
 
 
-            var realItemSize = new Vector2f(itemTex.texture.getSize());
+            var realItemSize = new Vector2f(itemTex.getTexture().getSize());
             var mainViewSize = rw.getDefaultView().getSize().x;
             var itemScale = trans.width / (realItemSize.x / mainViewSize);
             sprite.setScale(itemScale, itemScale);

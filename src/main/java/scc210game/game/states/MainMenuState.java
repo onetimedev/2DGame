@@ -15,18 +15,32 @@ import scc210game.game.states.events.QuitGameEvent;
 import scc210game.game.states.events.StartGameEvent;
 
 public class MainMenuState extends InputHandlingState {
+    static {
+        register(MainMenuState.class, (j) -> new MainMenuState());
+    }
+
     Audio au = new Audio();
+
+    private static void startClick(Entity e, World w) {
+        w.ecs.acceptEvent(new StartGameEvent());
+    }
+
+    private static void quitClick(Entity e, World w) {
+        w.ecs.acceptEvent(new QuitGameEvent());
+    }
 
     @Override
     public void onStart(World world) {
         this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Start Game",
-                (Entity e, World w) -> world.ecs.acceptEvent(new StartGameEvent()))).build();
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Quit Game",
-                (Entity e, World w) -> world.ecs.acceptEvent(new QuitGameEvent()))).build();
 
-        //TODO: Create background here, custom texture
         world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
+
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Start Game",
+                MainMenuState::startClick)).build();
+
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Quit Game",
+                MainMenuState::quitClick)).build();
+
     }
 
     @Override

@@ -10,6 +10,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.map.Chest;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Tile;
 import scc210game.game.utils.MapHelper;
 
@@ -17,8 +18,7 @@ import java.util.Set;
 
 public class ChestSpawner implements Spawner {
 
-
-	private Tile chestTile;
+	private final Tile chestTile;
 	private Texture t;
 
 	public ChestSpawner(Tile ti) {
@@ -31,17 +31,22 @@ public class ChestSpawner implements Spawner {
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
-        .with(new Chest())
+        .with(new Chest(this.chestTile))
         .with(new FilledInventorySpawner())
         .with(new Position(this.chestTile.getXPos(), this.chestTile.getYPos()))
+				.with(new TextureStorage("textures/chest.png"))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						(Entity e, RenderWindow rw, World w) -> {
+						ChestSpawner::accept));
 
-                            Sprite c = new Sprite(this.t);
-                            c.setPosition(this.chestTile.getXPos() * 64, this.chestTile.getYPos() * 64);
-                            rw.draw(c);
+  }
 
-                        }));
 
-	}
+  private static void accept(Entity entity, RenderWindow window, World world) {
+        var t = world.fetchComponent(entity, TextureStorage.class);
+        var c = world.fetchComponent(entity, Chest.class);
+
+        Sprite s = new Sprite(t.getTexture());
+        s.setPosition(c.tile.getXPos() * 64, c.tile.getYPos() * 64);
+        window.draw(s);
+    }
 }

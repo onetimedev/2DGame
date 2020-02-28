@@ -18,6 +18,10 @@ import scc210game.game.states.events.TogglePauseEvent;
  * A base state for every state in our game, handles input and pausing etc
  */
 public class BaseInGameState extends InputHandlingState {
+    static {
+        register(BaseInGameState.class, (j) -> new BaseInGameState());
+    }
+
     Audio au = new Audio();
 
     @Override

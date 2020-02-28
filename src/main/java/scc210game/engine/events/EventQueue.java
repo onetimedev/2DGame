@@ -54,7 +54,7 @@ public class EventQueue {
      * @param on The type of {@link Event} to listen on
      */
     public void listen(EventQueueReader r, Class<? extends Event> on) {
-        for (var q: instances) {
+        for (final var q : instances) {
             q.queues.computeIfAbsent(r, k -> new ArrayDeque<>());
         }
         registered.computeIfAbsent(on, k -> Collections.newSetFromMap(new WeakHashMap<>())).add(r);
@@ -76,7 +76,7 @@ public class EventQueue {
         set.remove(r);
 
         if (set.isEmpty()) {
-            for (var q: instances) {
+            for (final var q : instances) {
                 q.queues.remove(r);
             }
             registered.remove(on);
@@ -121,18 +121,18 @@ public class EventQueue {
      * @param delay How long to wait before broadcasting the event
      */
     public void broadcastIn(@Nonnull Event evt, @Nonnull Duration delay) {
-        broadcastAt(evt, Instant.now().plus(delay));
+        this.broadcastAt(evt, Instant.now().plus(delay));
     }
 
     private void updateDelayedEvents() {
         DelayedEvent evt;
         while ((evt = this.delayedEvents.poll()) != null) {
-            broadcast(evt.e);
+            this.broadcast(evt.e);
         }
     }
 
     public void patchDelayDelta(Duration td) {
-        for (var evt: this.delayedEvents) {
+        for (final var evt : this.delayedEvents) {
             evt.end = evt.end.plus(td);
         }
     }
@@ -150,19 +150,19 @@ public class EventQueue {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                updateDelayedEvents();
+                EventQueue.this.updateDelayedEvents();
                 return !q.isEmpty();
             }
 
             @Override
             public Event next() {
-                updateDelayedEvents();
+                EventQueue.this.updateDelayedEvents();
                 return q.poll();
             }
         };
     }
 
-    private static class DelayedEvent implements Delayed {
+    public static class DelayedEvent implements Delayed {
         public final Event e;
         public Instant end;
 
@@ -182,5 +182,9 @@ public class EventQueue {
             var de = (DelayedEvent) o;
             return this.end.compareTo(de.end);
         }
+    }
+
+    public Iterator<DelayedEvent> fetchDelayedEvents() {
+        return this.delayedEvents.iterator();
     }
 }

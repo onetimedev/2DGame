@@ -11,7 +11,7 @@ public class UIHovered extends Component {
     }
 
     @Override
-    public String serialize() {
-        return "";
+    public boolean shouldKeep() {
+        return false;
     }
 }

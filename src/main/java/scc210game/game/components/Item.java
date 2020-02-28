@@ -1,13 +1,17 @@
 package scc210game.game.components;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.engine.ecs.SerDe;
 import scc210game.game.items.ItemData;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Item extends Component {
-    private static int lastEntID = 0;
-
     public final int itemID;
     public final String name;
     public int level;
@@ -19,10 +23,6 @@ public class Item extends Component {
         this.name = name;
         this.level = level;
         this.itemDatas = itemDatas;
-    }
-
-    public static Item makeWithLevel(String name, int level, List<ItemData> itemDatas) {
-        return new Item(lastEntID++, name, level, itemDatas);
     }
 
     public String tooltipString() {
@@ -39,9 +39,27 @@ public class Item extends Component {
         return s.toString();
     }
 
+    static {
+        register(Item.class, j -> {
+            var json = (JsonObject) j;
+            var itemID = (Integer) json.get("itemID");
+            var name = (String) json.get("name");
+            var level = (Integer) json.get("level");
+            var itemDatasS = (JsonArray) json.get("itemDatas");
+            var itemDatas = itemDatasS.stream().map(i -> SerDe.deserialize((Jsonable) i, ItemData.class)).collect(Collectors.toList());
+
+            return new Item(itemID, name, level, itemDatas);
+        });
+    }
+
     @Override
-    public String serialize(){
-        return null;
+    public Jsonable serialize(){
+        return new JsonObject(Map.of(
+                "itemID", this.itemID,
+                "name", this.name,
+                "level", this.level,
+                "itemDatas", this.itemDatas.stream().map(ItemData::serialize).collect(Collectors.toList())
+        ));
     }
 
     @Override

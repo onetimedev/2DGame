@@ -1,5 +1,6 @@
 package scc210game.game.systems;
 
+import scc210game.engine.animation.Animate;
 import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Position;
@@ -7,11 +8,11 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Steps;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
-import scc210game.game.map.PlayerTexture;
 import scc210game.game.map.Tile;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.utils.MapHelper;
@@ -39,7 +40,8 @@ public class PositionUpdateSystem implements System {
 		var playerEnt = playerEntO.get();
 		var position = world.fetchComponent(playerEnt, Position.class);
 		var velocity = world.fetchComponent(playerEnt, Velocity.class);
-		var pTexture = world.fetchComponent(playerEnt, PlayerTexture.class);
+		var pTexture = world.fetchComponent(playerEnt, TextureStorage.class);
+		var pAnimate = world.fetchComponent(playerEnt, Animate.class);
 
 		var mapEntO = world.applyQuery(Query.builder().require(Map.class).build()).findFirst();
 		if (!mapEntO.isPresent())
@@ -63,8 +65,8 @@ public class PositionUpdateSystem implements System {
 
 
 		if(velocity.dx == 0 && velocity.dy == 0) {
-			pTexture.texture = MapHelper.loadTexture("player_anim.png");
-			pTexture.speedMs = 400;
+			pTexture.reloadTexture("textures/player_anim.png");
+			pAnimate.updateDuration(Duration.ofMillis((400 * pTexture.getTexture().getSize().x) / 64));
 		}
 
 
@@ -75,50 +77,50 @@ public class PositionUpdateSystem implements System {
 		float bottom = position.yPos + 1;
 
 		int tileType = MapHelper.checkBiome(map.getTile((int)position.xPos, (int)position.yPos).getTextureName());
-		au.changeBiome(tileType);
+		this.au.changeBiome(tileType);
 
 		if(deltaX > 0) {  // right
-			if (checkCollisionX(velocity, map, deltaX, right, top, bottom))
+			if (this.checkCollisionX(velocity, map, deltaX, right, top, bottom))
 				deltaX = 0;
 			else {
-				pTexture.texture = MapHelper.loadTexture("player_right.png");
-				pTexture.speedMs = 100;
-				biomeSound(tileType, au);			}
+				pTexture.reloadTexture("textures/player_right.png");
+				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
+				this.biomeSound(tileType, au);			}
 		}
 		if(deltaX < 0) {  // left
-			if (checkCollisionX(velocity, map, deltaX, left, top, bottom))
+			if (this.checkCollisionX(velocity, map, deltaX, left, top, bottom))
 				deltaX = 0;
 			else {
-				pTexture.texture = MapHelper.loadTexture("player_left.png");
-				pTexture.speedMs = 100;
-				biomeSound(tileType, au);			}
+				pTexture.reloadTexture("textures/player_left.png");
+				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
+				this.biomeSound(tileType, au);			}
 		}
 
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
-			if (checkCollisionY(velocity, map, deltaY, left, right, top))
+			if (this.checkCollisionY(velocity, map, deltaY, left, right, top))
 				deltaY = 0;
 			else {
-				pTexture.texture = MapHelper.loadTexture("player_top.png");
-				pTexture.speedMs = 100;
-				biomeSound(tileType, au);
+				pTexture.reloadTexture("textures/player_top.png");
+				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
+				this.biomeSound(tileType, au);
 			}
 		}
 		if(deltaY > 0) {  // bottom
-			if (checkCollisionY(velocity, map, deltaY, left, right, bottom))
+			if (this.checkCollisionY(velocity, map, deltaY, left, right, bottom))
 				deltaY = 0;
 			else {
-				pTexture.texture = MapHelper.loadTexture("player_bottom.png");
-				pTexture.speedMs = 100;
-				biomeSound(tileType, au);
+				pTexture.reloadTexture("textures/player_bottom.png");
+				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
+				this.biomeSound(tileType, au);
 			}
 		}
 
 		if(deltaX == 0 && deltaY == 0) {
-			au.stopSound();
+			this.au.stopSound();
 		}
 
-		checkSurrounding(world, map, deltaX, deltaY, position.xPos, position.yPos);
+		this.checkSurrounding(world, map, deltaX, deltaY, position.xPos, position.yPos);
 
 		// Updating position of player with delta value
 		position.xPos += deltaX;
@@ -300,7 +302,11 @@ public class PositionUpdateSystem implements System {
 	}
 
 
-
+	/**
+	 * Method to play the appropriate sound for what the player is walking on
+	 * @param type of surface
+	 * @param au audio
+	 */
 	public void biomeSound(int type, Audio au) {
 		switch(type) {
 			case 0: { //grass
