@@ -38,6 +38,7 @@ public class BaseInGameState extends InputHandlingState {
             return new TransReplaceAll(new MainMenuState());
         }
 
+
         return super.handleEvent(evt, world);
     }
 }

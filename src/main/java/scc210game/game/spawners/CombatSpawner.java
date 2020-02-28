@@ -29,23 +29,49 @@ public class CombatSpawner implements Spawner {
     private float height = 0.3f;
     private SpriteType spriteInfo;
 
+    private Sprite image;
+
 
 
     public CombatSpawner(SpriteType spriteInfo)
     {
         this.spriteInfo = spriteInfo;
-
+        setY();
         if(!this.spriteInfo.getEnemyStatus())
         {
             xPosition = 0.0f;
-            yPosition = 0.32f;
+            yPosition = (0.64f - this.height);
         }
         else
         {
             xPosition = 0.75f;
-            yPosition = 0.05f;
+            yPosition = 0.2f;
+            System.out.println("Image scale: " + this.image.getTexture().getSize().y);
+            //yPosition = (1f - this.image.getScale().y);
         }
 
+    }
+
+    private void setY()
+    {
+        Texture t = new Texture();
+        try {
+            //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
+            t.loadFromFile(Paths.get(this.spriteInfo.getTextureLocation()));
+            this.image = new Sprite(t);
+
+            if(!this.spriteInfo.getEnemyStatus())
+            {
+                this.image.setScale(new Vector2f(5, 5));
+            }
+            else
+            {
+                this.image.setScale(new Vector2f(4,4));
+            }
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -57,37 +83,12 @@ public class CombatSpawner implements Spawner {
         return builder
                 .with((this.spriteInfo.getEnemyStatus() ? new CombatEnemy() : new CombatPlayer()))
                 .with(new UITransform(position.x, position.y, 1, size.x, size.y))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2,
+                .with(new Renderable(Set.of(ViewType.UI), 2,
                         (Entity e, RenderWindow rw, World w) -> {
-
                             var dimensions = w.fetchComponent(e, UITransform.class);
-                            Texture t = new Texture();
-                            try {
-                                //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
-                                t.loadFromFile(Paths.get(this.spriteInfo.getTextureLocation()));
-                                Sprite pl = new Sprite(t);
-                                if(!this.spriteInfo.getEnemyStatus()) pl.setTextureRect(new IntRect(0, 0, 64, 64));
-
-
-                                pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
-                                //pl.setTextureRect(new IntRect(0,0,200,200));
-
-                                if(!this.spriteInfo.getEnemyStatus())
-                                {
-                                    pl.setScale(new Vector2f(4, 4));
-                                }
-                                else
-                                {
-                                    pl.setScale(new Vector2f(3,3));
-                                }
-
-                                rw.draw(pl);
-
-                            }
-                            catch (IOException error) {
-                                System.out.println("error");
-                                throw new RuntimeException();
-                            }
+                            if(!this.spriteInfo.getEnemyStatus()) this.image.setTextureRect(new IntRect(0, 0, 64, 64));
+                            this.image.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
+                            rw.draw(this.image);
 
                 }));
     }

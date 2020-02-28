@@ -6,10 +6,16 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
+import scc210game.engine.state.InputHandlingState;
+import scc210game.engine.state.event.StateEvent;
+import scc210game.engine.state.trans.TransPush;
+import scc210game.engine.state.trans.Transition;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.PlayerTexture;
 import scc210game.game.map.Tile;
+import scc210game.game.states.CombatState;
+import scc210game.game.states.events.CombatStateEvent;
 import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.states.events.TriggerStoryEvent;
@@ -188,13 +194,13 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
-					world.ecs.acceptEvent(new TriggerChestEvent());
+					world.ecs.acceptEvent(new TriggerCombatEvent());
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
-					world.ecs.acceptEvent(new TriggerStoryEvent());
+					world.ecs.acceptEvent(new TriggerCombatEvent());
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -202,7 +208,6 @@ public class PositionUpdateSystem implements System {
 		}
 
 	}
-
 
 
 

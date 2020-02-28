@@ -12,13 +12,14 @@ import scc210game.game.spawners.CombatWeapon;
 import scc210game.game.spawners.ui.CombatBackground;
 import scc210game.game.spawners.ui.HealthBarSpawner;
 
-public class CombatState extends InputHandlingState {
+public class CombatState extends BaseInGameState {
 
     @Override
     public void onStart(World world) {
         world.activateCombat();
 
         world.entityBuilder().with(new CombatBackground()).build();
+
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();
 
@@ -28,7 +29,6 @@ public class CombatState extends InputHandlingState {
 
         world.entityBuilder().with(new Scoring(80,100,100)).build();
         world.entityBuilder().with(new CombatResources()).build();
-
 
         new EnemyController(world, CombatEnemy.class, CombatPlayerWeapon.class).start();
 

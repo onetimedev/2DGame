@@ -56,7 +56,7 @@ public class CombatWeapon implements Spawner {
         return builder
                 .with(new CombatPlayerWeapon())
                 .with(new UITransform(position.x, position.y, 2, size.x, size.y, rotation))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2,
+                .with(new Renderable(Set.of(ViewType.UI), 2,
                         (Entity e, RenderWindow rw, World w) -> {
 
                     var dimensions = w.fetchComponent(e, UITransform.class);

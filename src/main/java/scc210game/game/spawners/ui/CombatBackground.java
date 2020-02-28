@@ -35,7 +35,7 @@ public class CombatBackground implements Spawner {
         return builder
                 .with(new CombatBackgroundComponent())
                 .with(new UITransform(position.x, position.y, 0, size.x, size.y))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2,
+                .with(new Renderable(Set.of(ViewType.UI), 0,
                         (Entity e, RenderWindow rw, World w) -> {
 
                             var dimensions = w.fetchComponent(e, UITransform.class);
@@ -44,12 +44,13 @@ public class CombatBackground implements Spawner {
                                 String spriteImage = "./src/main/resources/textures/backgrounds/grassBackground.png";
                                 t.loadFromFile(Paths.get(spriteImage));
                                 Sprite bg = new Sprite(t);
+                                bg.setScale(new Vector2f(2,2));
                                 bg.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                                 rw.draw(bg);
 
                             }
                             catch (IOException error) {
-                                System.out.println("error");
+                                System.out.println("cant load images error");
                                 throw new RuntimeException();
                             }
 

@@ -3,10 +3,15 @@ package scc210game.game.states;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
+import scc210game.engine.state.event.StateEvent;
+import scc210game.engine.state.trans.TransPush;
+import scc210game.engine.state.trans.Transition;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
 import scc210game.game.spawners.*;
+import scc210game.game.states.events.CombatStateEvent;
+import scc210game.game.states.events.TriggerCombatEvent;
 
 public class MainGameState extends BaseInGameState {
 	@Override
@@ -45,5 +50,13 @@ public class MainGameState extends BaseInGameState {
 		world.eventQueue.broadcast(new DialogueCreateEvent("hello, press q to ignore, enter to accept",
 				(e, w) -> System.out.println("Accepted"),
 				(e, w) -> System.out.println("Ignored")));
+	}
+
+	@Override
+	public Transition handleEvent(StateEvent evt, World world) {
+		if(evt instanceof TriggerCombatEvent){
+			return new TransPush(new CombatState());
+		}
+		return super.handleEvent(evt, world);
 	}
 }
