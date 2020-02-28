@@ -9,7 +9,6 @@ import scc210game.game.components.Inventory;
 import scc210game.game.components.Steps;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
-import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.PlayerTexture;
@@ -18,6 +17,7 @@ import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.utils.MapHelper;
 import scc210game.engine.audio.Audio;
 import javax.annotation.Nonnull;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 
@@ -74,15 +74,16 @@ public class PositionUpdateSystem implements System {
 		float top = position.yPos;
 		float bottom = position.yPos + 1;
 
-		// X Delta collision checks
+		int tileType = MapHelper.checkBiome(map.getTile((int)position.xPos, (int)position.yPos).getTextureName());
+		au.changeBiome(tileType);
+
 		if(deltaX > 0) {  // right
 			if (checkCollisionX(velocity, map, deltaX, right, top, bottom))
 				deltaX = 0;
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_right.png");
 				pTexture.speedMs = 100;
-				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
-			}
+				biomeSound(tileType, au);			}
 		}
 		if(deltaX < 0) {  // left
 			if (checkCollisionX(velocity, map, deltaX, left, top, bottom))
@@ -90,8 +91,7 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_left.png");
 				pTexture.speedMs = 100;
-				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
-			}
+				biomeSound(tileType, au);			}
 		}
 
 		// Y Delta collision checks
@@ -101,7 +101,7 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_top.png");
 				pTexture.speedMs = 100;
-				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
+				biomeSound(tileType, au);
 			}
 		}
 		if(deltaY > 0) {  // bottom
@@ -110,8 +110,7 @@ public class PositionUpdateSystem implements System {
 			else {
 				pTexture.texture = MapHelper.loadTexture("player_bottom.png");
 				pTexture.speedMs = 100;
-				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
-
+				biomeSound(tileType, au);
 			}
 		}
 
@@ -211,21 +210,21 @@ public class PositionUpdateSystem implements System {
 				if (t.getHasEnemy()) {  // Enemy checks
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, checkBiome(t.getTextureName())),
+						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt, null),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
-						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, checkBiome(t.getTextureName())),
+						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt, null),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
-						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, checkBiome(t.getTextureName())),
+						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt, null),
 								(e, w) -> refuse(world, playerEnt)));
 					}
@@ -235,8 +234,8 @@ public class PositionUpdateSystem implements System {
 				else if (t.canHaveChest()) {  // Chest check
 					java.lang.System.out.println("Chest nearby");
 					var chestEnt = getEntityAtPos(world, t, Chest.class);
-					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, checkBiome(t.getTextureName())),
+					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> accept(world, 1, playerEnt, chestEnt),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
@@ -244,8 +243,8 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveStory()) {  // NPC check
 					java.lang.System.out.println("NPC nearby");
-					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, checkBiome(t.getTextureName())),
+					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> accept(world, 2, playerEnt, null),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
@@ -301,20 +300,30 @@ public class PositionUpdateSystem implements System {
 	}
 
 
-	/**
-	 * Method to check the biome given a texture name as string
-	 * @param t name of texture / string to be checked
-	 * @return the biome number (Grass = 0, Water = 1, Fire = 2, Ice = 3))
-	 */
-	private int checkBiome(String t) {
-		if(t.contains("grass"))
-			return 0;
-		else if(t.contains("sand"))
-			return 1;
-		else if(t.contains("snow") || t.contains("ice"))
-			return 3;
-		else
-			return 2;
+
+	public void biomeSound(int type, Audio au) {
+		switch(type) {
+			case 0: { //grass
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_medium.wav"), false);
+				break;
+			}
+			case 1: { //sand
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_sand.wav"), false);
+				break;
+			}
+			case 2: { //basalt
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_gravel.wav"), false);
+				break;
+			}
+			case 3: { //snow
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_snow.wav"), false);
+				break;
+			}
+			case 5: { //path
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_path.wav"), false);
+				break;
+			}
+		}
 	}
 
 

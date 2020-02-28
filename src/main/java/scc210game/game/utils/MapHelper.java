@@ -68,5 +68,19 @@ public class MapHelper {
 	}
 
 
+	public static int checkBiome(String t) {
+		if(t.contains("grass"))
+			return 0;
+		else if(t.contains("sand"))
+			return 1;
+		else if(t.contains("snow") || t.contains("ice"))
+			return 3;
+		else if(t.contains("basalt"))
+			return 2;
+		else {
+			return 5;
+		}
+	}
+
 
 }
