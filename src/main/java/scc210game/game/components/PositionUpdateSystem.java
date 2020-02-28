@@ -9,12 +9,14 @@ import scc210game.engine.render.MainViewResource;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.game.utils.MapHelper;
+import scc210game.engine.audio.Audio;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.ArrayList;
 
 public class PositionUpdateSystem implements System {
+	Audio au = new Audio();
 
 
 	@Override
@@ -42,7 +44,6 @@ public class PositionUpdateSystem implements System {
 		velocity.dx *= 0.8;
 		velocity.dy *= 0.8;
 
-
 		// Resetting velocity
 		if(velocity.dx > -0.1 && velocity.dx < 0.1)
 			velocity.dx = 0;
@@ -62,41 +63,38 @@ public class PositionUpdateSystem implements System {
 		float top = position.yPos;
 		float bottom = position.yPos + 1;
 
-		// X Delta collision checks
+		int tileType = checkBiome(map.getTile((int)position.xPos, (int)position.yPos).getTextureName());
+
 		if(deltaX > 0) {  // right
-			if (checkCollisionX(velocity, map, deltaX, right, top, bottom))
-				deltaX = 0;
-			else {
-				pTexture.texture = MapHelper.loadTexture("player_right.png");
-				pTexture.speedMs = 100;
-			}
+			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
+			pTexture.texture = MapHelper.loadTexture("player_right.png");
+			pTexture.speedMs = 100;
+			biomSound(tileType, au);
 		}
 		if(deltaX < 0) {  // left
-			if (checkCollisionX(velocity, map, deltaX, left, top, bottom))
-				deltaX = 0;
-			else {
-				pTexture.texture = MapHelper.loadTexture("player_left.png");
-				pTexture.speedMs = 100;
-			}
+			if (checkCollisionX(velocity, map, deltaX, left, top, bottom)) return;
+			pTexture.texture = MapHelper.loadTexture("player_left.png");
+			pTexture.speedMs = 100;
+			biomSound(tileType, au);
 		}
-
 		// Y Delta collision checks
 		if(deltaY < 0) {  // top
-			if (checkCollisionY(velocity, map, deltaY, left, right, top))
-				deltaY = 0;
-			else {
-				pTexture.texture = MapHelper.loadTexture("player_top.png");
-				pTexture.speedMs = 100;
-			}
+			if (checkCollisionY(velocity, map, deltaY, left, right, top)) return;
+			pTexture.texture = MapHelper.loadTexture("player_top.png");
+			pTexture.speedMs = 100;
+			biomSound(tileType, au);
 		}
 		if(deltaY > 0) {  // bottom
-			if (checkCollisionY(velocity, map, deltaY, left, right, bottom))
-				deltaY = 0;
-			else {
-				pTexture.texture = MapHelper.loadTexture("player_bottom.png");
-				pTexture.speedMs = 100;
-			}
+			if (checkCollisionY(velocity, map, deltaY, left, right, bottom)) return;
+			pTexture.texture = MapHelper.loadTexture("player_bottom.png");
+			pTexture.speedMs = 100;
+			biomSound(tileType, au);
 		}
+		if(deltaX == 0 && deltaY == 0) {
+			au.stopSound();
+		}
+
+
 
 		// Changing to floored ints to check specific tiles around position
 		//int xPosInt = (int) Math.floor(position.xPos + deltaX);
@@ -271,11 +269,38 @@ public class PositionUpdateSystem implements System {
 			return 1;
 		else if(t.contains("snow") || t.contains("ice"))
 			return 3;
-		else
+		else if(t.contains("basalt"))
 			return 2;
+		else {
+			return 5;
+		}
 	}
 
 
+	public void biomSound(int type, Audio au) {
+		switch(type) {
+			case 0: { //grass
+				au.playSound("./src/main/resources/sounds/walking_medium.wav", false);
+				break;
+			}
+			case 1: { //sand
+				au.playSound("./src/main/resources/sounds/walking_sand.wav", false);
+				break;
+			}
+			case 2: { //basalt
+				//au.playSound("./src/main/resources/sounds/", false);
+				break;
+			}
+			case 3: { //snow
+				au.playSound("./src/main/resources/sounds/walking_snow.wav", false);
+				break;
+			}
+			case 5: { //path
+				//au.playSound("./src/main/resources/sounds/", false);
+				break;
+			}
+		}
+	}
 
 	public String test(World world, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
