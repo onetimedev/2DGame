@@ -14,13 +14,13 @@ public class PausedState extends BaseInGameState {
 
     @Override
     public void onStart(World world) {
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.18f, 0.2f, 0.05f, "Resume Game",
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Resume Game",
                 (Entity e, World w) -> world.ecs.acceptEvent(new TogglePauseEvent()))).build();
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.26f, 0.2f, 0.05f, "Main Menu",
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Main Menu",
                 (Entity e, World w) -> world.ecs.acceptEvent(new ReturnToMainMenuEvent()))).build();
 
         //TODO: Create background here, custom texture
-        world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
+        world.entityBuilder().with(new BackgroundSpawner("pause.png")).build();
     }
 
     @Override
