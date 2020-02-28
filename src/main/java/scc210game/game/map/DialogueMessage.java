@@ -58,6 +58,7 @@ public class DialogueMessage {
 					break;
 				}
 			}
+			message += "\n\n----- Press Q to Ignore, ENTER to Fight -----";
 		}
 
 
@@ -114,6 +115,7 @@ public class DialogueMessage {
 					break;
 				}
 			}
+			message += "\n\n----- Press Q or ENTER to Continue -----";
 		}
 
 	private void iceNPCDialogue() {
@@ -164,6 +166,7 @@ public class DialogueMessage {
 		possDialogs.add("Such beautiful craftsmanship, hopefully whatever is inside shares this quality.");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
+		message += "\n\n----- Press Q to Ignore, ENTER to Open -----";
 
 	}
 
@@ -189,6 +192,7 @@ public class DialogueMessage {
 					break;
 				}
 			}
+			message += "\n\n----- Press Q to Ignore, ENTER to Fight -----";
 		}
 
 	private void iceBossDialogue() {
@@ -212,7 +216,7 @@ public class DialogueMessage {
 
 	private void finalBossDialogue() {
 		message = "The largest elemental yet, uh oh.";
-
+		message += "\n\n----- Press Q to Ignore, ENTER to Fight -----";
 	}
 
 
@@ -224,7 +228,6 @@ public class DialogueMessage {
 
 	public String getMessage() {
 		String fullMsg = message;
-		fullMsg += "\n\n----- Press Q to ignore, ENTER to accept -----";
 		return fullMsg;
 	}
 }

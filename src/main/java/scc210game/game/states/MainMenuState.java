@@ -20,9 +20,9 @@ public class MainMenuState extends InputHandlingState {
     @Override
     public void onStart(World world) {
         this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Start Game",
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.18f, 0.2f, 0.05f, "Start Game",
                 (Entity e, World w) -> world.ecs.acceptEvent(new StartGameEvent()))).build();
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Quit Game",
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.26f, 0.2f, 0.05f, "Quit Game",
                 (Entity e, World w) -> world.ecs.acceptEvent(new QuitGameEvent()))).build();
 
         //TODO: Create background here, custom texture

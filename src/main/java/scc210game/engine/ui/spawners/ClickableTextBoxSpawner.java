@@ -50,7 +50,7 @@ public class ClickableTextBoxSpawner implements Spawner {
                     var trans = w.fetchComponent(e, UITransform.class);
                     var textContent = w.fetchComponent(e, UIText.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.blue : Color.lightGray;
+                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.GRAY : Color.lightGray;
 
                   //TODO: Replace Rectangle with texture for boxes
 
@@ -62,7 +62,7 @@ public class ClickableTextBoxSpawner implements Spawner {
 
                     rw.draw(rect);
 
-                    var text = new Text(textContent.text, Font.freesans, 24) {{
+                    var text = new Text(textContent.text, Font.freesans, 36) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
                     }};
 
