@@ -32,13 +32,13 @@ public class Movement implements System {
     var playerEnt = playerEntO.get();
     var velocity = world.fetchComponent(playerEnt, Velocity.class);
 
-    if(Keyboard.isKeyPressed(Keyboard.Key.A))
+    if (Keyboard.isKeyPressed(Keyboard.Key.A))
       velocity.dx = -3;
-    if(Keyboard.isKeyPressed(Keyboard.Key.S))
+    if (Keyboard.isKeyPressed(Keyboard.Key.S))
       velocity.dy = 3;
-    if(Keyboard.isKeyPressed(Keyboard.Key.D))
+    if (Keyboard.isKeyPressed(Keyboard.Key.D))
       velocity.dx = 3;
-    if(Keyboard.isKeyPressed(Keyboard.Key.W))
+    if (Keyboard.isKeyPressed(Keyboard.Key.W))
       velocity.dy = -3;
   }
 

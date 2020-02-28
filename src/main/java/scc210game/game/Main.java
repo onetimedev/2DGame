@@ -26,6 +26,9 @@ import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.components.PositionUpdateSystem;
 import scc210game.game.states.MainMenuState;
 import scc210game.game.systems.DialogueHandlingSystem;
+import scc210game.game.systems.InventoryLeaveHandler;
+import scc210game.game.systems.ItemMoveHandler;
+import scc210game.game.systems.ToolTipHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +65,9 @@ public class Main {
                 Movement::new,
                 (ecs) -> new PositionUpdateSystem(),
                 DialogueHandlingSystem::new,
+                ItemMoveHandler::new,
+                ToolTipHandler::new,
+                InventoryLeaveHandler::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());

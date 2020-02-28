@@ -7,7 +7,7 @@ import scc210game.engine.ecs.Component;
 public class Player extends Component {
 
     static {
-        register(Player.class, s->new Player());
+        register(Player.class, s -> new Player());
     }
 
     @Override

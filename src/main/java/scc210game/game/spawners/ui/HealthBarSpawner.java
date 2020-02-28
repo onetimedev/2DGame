@@ -31,7 +31,7 @@ public class HealthBarSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
         var correctedSize = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
@@ -47,9 +47,9 @@ public class HealthBarSpawner implements Spawner {
 
                     rw.draw(outerRect);
 
-                    var health = w.fetchComponent(player, Health.class);
+                    var health = w.fetchComponent(this.player, Health.class);
 
-                    var innerTrans = trans.clone();
+                    var innerTrans = trans.copy();
                     innerTrans.height *= 0.90;
                     innerTrans.width *= (0.99375 * health.hpPercent());
                     innerTrans.updateOrigin(innerTrans.xPos + 0.003125f, innerTrans.yPos + 0.00125f);

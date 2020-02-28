@@ -45,7 +45,7 @@ public class DialogueHandlingSystem implements System {
             DialogueCreateEvent e1 = (DialogueCreateEvent) e;
 
             // mark all other dialogues as ignored
-            ignoreExistingDialogues(world);
+            this.ignoreExistingDialogues(world);
 
             // create the new dialogue
             world.entityBuilder().with(new DialogueSpawner(e1.message, e1.accept, e1.ignore)).build();
@@ -54,7 +54,7 @@ public class DialogueHandlingSystem implements System {
 
             switch (e1.key) {
                 case Q: {
-                    ignoreExistingDialogues(world);
+                    this.ignoreExistingDialogues(world);
                     break;
                 }
                 case RETURN: {
@@ -64,7 +64,7 @@ public class DialogueHandlingSystem implements System {
                         dialogue.accept.accept(ent, world);
                         entitiesToRemove.add(ent);
                     });
-                    for (var ent : entitiesToRemove) {
+                    for (final var ent : entitiesToRemove) {
                         world.removeEntity(ent);
                     }
                     break;
@@ -80,7 +80,7 @@ public class DialogueHandlingSystem implements System {
             dialogue.ignore.accept(ent, world);
             entitiesToRemove.add(ent);
         });
-        for (var ent : entitiesToRemove) {
+        for (final var ent : entitiesToRemove) {
             world.removeEntity(ent);
         }
     }
