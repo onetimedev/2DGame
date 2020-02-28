@@ -15,6 +15,10 @@ import scc210game.game.states.events.EnterInventoryEvent;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 
 public class MainGameState extends BaseInGameState {
+	static {
+		register(MainGameState.class, (j) -> new MainGameState());
+	}
+
 	@Override
 	public void onStart(World world) {
         world.entityBuilder().with(new MapSpawner()).build();

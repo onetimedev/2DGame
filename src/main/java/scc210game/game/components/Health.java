@@ -1,6 +1,10 @@
 package scc210game.game.components;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+
+import java.util.Map;
 
 public class Health extends Component {
     public final int maxHealth;
@@ -26,7 +30,9 @@ public class Health extends Component {
     }
 
     @Override
-    public String serialize() {
-        return null;
+    public Jsonable serialize() {
+        return new JsonObject(Map.of(
+                "maxHealth", this.maxHealth,
+                "health", this.health));
     }
 }

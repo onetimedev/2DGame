@@ -1,22 +1,48 @@
 package scc210game.game.components;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Component;
+import scc210game.engine.utils.ResourceLoader;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class TextureStorage extends Component {
-    public final Texture texture;
+    static {
+        register(TextureStorage.class, j -> {
+            var json = (JsonObject) j;
 
-    public TextureStorage(Texture texture) {
-        this.texture = texture;
+            var path = (String) json.get("path");
+
+            return new TextureStorage(path);
+        });
+    }
+
+    private String path;
+    private Texture texture;
+
+    public TextureStorage(String p) {
+        this.reloadTexture(p);
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void reloadTexture(String p) {
+        this.path = p;
+        this.texture = new Texture();
+        try {
+            this.texture.loadFromFile(ResourceLoader.resolve(this.path));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public String serialize() {
-        return null;
-    }
-
-    @Override
-    public Component copy() {
-        return this;
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("path", this.path));
     }
 }

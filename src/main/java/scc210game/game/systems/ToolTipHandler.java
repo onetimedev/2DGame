@@ -51,7 +51,7 @@ public class ToolTipHandler implements System {
                         // not hovered, start fading in
                         toolTip.hoverState = HasToolTip.HoverState.ENTERING;
                         world.addComponentToEntity(e1.entity, new Animate(Duration.ofMillis(300),
-                                ToolTipHandler::enterCompletionCallback));
+                                ToolTipHandler::enterCompletionCallback, false));
                         break;
                     }
                     case ENTERING:
@@ -64,7 +64,7 @@ public class ToolTipHandler implements System {
                         toolTip.hoverState = HasToolTip.HoverState.ENTERING;
                         world.removeComponentFromEntity(e1.entity, Animate.class);
                         world.addComponentToEntity(e1.entity, new Animate(Duration.ofMillis(300),
-                                1.0f - animation.pctComplete,
+                                1.0f - animation.pctComplete, false,
                                 ToolTipHandler::enterCompletionCallback));
                         break;
                     }
@@ -84,7 +84,7 @@ public class ToolTipHandler implements System {
                         toolTip.hoverState = HasToolTip.HoverState.LEAVING;
                         world.removeComponentFromEntity(e1.entity, Animate.class);
                         world.addComponentToEntity(e1.entity, new Animate(Duration.ofMillis(300),
-                                1.0f - animation.pctComplete,
+                                1.0f - animation.pctComplete, false,
                                 ToolTipHandler::leaveCompletionCallback));
                         break;
                     }
@@ -92,7 +92,7 @@ public class ToolTipHandler implements System {
                         // leaving once we've been hovered, just enter leave state and animate
                         toolTip.hoverState = HasToolTip.HoverState.LEAVING;
                         world.addComponentToEntity(e1.entity, new Animate(Duration.ofMillis(300),
-                                ToolTipHandler::leaveCompletionCallback));
+                                ToolTipHandler::leaveCompletionCallback, false));
                         break;
                     }
                     case NOTHOVERED:

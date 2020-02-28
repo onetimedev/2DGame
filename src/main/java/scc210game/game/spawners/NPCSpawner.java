@@ -2,7 +2,6 @@ package scc210game.game.spawners;
 
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
@@ -10,8 +9,8 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.map.NPC;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Tile;
-import scc210game.game.utils.MapHelper;
 
 import java.util.Set;
 
@@ -19,8 +18,6 @@ public class NPCSpawner implements Spawner {
     private final Tile npcTile;
     private final int xSpawn;
     private final int ySpawn;
-    private Texture npcTexture = new Texture();
-
 
     public NPCSpawner(Tile t) {
         this.npcTile = t;
@@ -35,7 +32,6 @@ public class NPCSpawner implements Spawner {
             case "story.png": {
                 this.npcTile.setHasCollision(true);
                 this.npcTile.setCanHaveStory(true);
-                this.npcTexture = MapHelper.loadTexture("story.png");
                 break;
             }
         }
@@ -47,14 +43,16 @@ public class NPCSpawner implements Spawner {
         return builder
                 .with(new NPC())
                 .with(new Position(this.xSpawn, this.ySpawn))
+                .with(new TextureStorage("textures/story.png"))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
-                        (Entity e, RenderWindow rw, World w) -> {
-
-                            Sprite npc = new Sprite(this.npcTexture);
-                            npc.setPosition(this.xSpawn * 64, this.ySpawn * 64);
-
-                            rw.draw(npc);
-                        }));
+                        NPCSpawner::accept));
     }
 
+    private static void accept(Entity entity, RenderWindow window, World world) {
+        var p = world.fetchComponent(entity, Position.class);
+        var t = world.fetchComponent(entity, TextureStorage.class);
+        Sprite en = new Sprite(t.getTexture());
+        en.setPosition(p.xPos * 64, p.yPos * 64);
+        window.draw(en);
     }
+}

@@ -1,9 +1,12 @@
 package scc210game.game.components;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents objects that have popup hover info
@@ -13,6 +16,10 @@ public class HasToolTip extends Component {
 
     public HasToolTip() {
         hoverState = HoverState.NOTHOVERED;
+    }
+
+    HasToolTip(@Nonnull HoverState hoverState) {
+        this.hoverState = hoverState;
     }
 
     private static final List<HoverState> visibleStates = List.of(
@@ -41,9 +48,34 @@ public class HasToolTip extends Component {
         return 0.0f;
     }
 
+    static {
+        register(HasToolTip.class, j -> {
+            var json = (JsonObject) j;
+            var stateS = (String) json.get("state");
+            HoverState state;
+            switch (stateS) {
+                case "NOTHOVERED":
+                    state = HoverState.NOTHOVERED;
+                    break;
+                case "ENTERING":
+                    state = HoverState.ENTERING;
+                    break;
+                case "HOVERED":
+                    state = HoverState.HOVERED;
+                    break;
+                case "LEAVING":
+                    state = HoverState.LEAVING;
+                    break;
+                default:
+                    throw new RuntimeException("Impossible");
+            }
+            return new HasToolTip(state);
+        });
+    }
+
     @Override
-    public String serialize() {
-        return null;
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("state", this.hoverState.toString()));
     }
 
      public enum HoverState {

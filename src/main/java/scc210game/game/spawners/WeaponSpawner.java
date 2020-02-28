@@ -5,11 +5,12 @@ import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.Item;
-import scc210game.game.components.TextureStorage;
 import scc210game.game.items.Element;
 import scc210game.game.items.Material;
 import scc210game.game.items.Type;
 import scc210game.game.items.Weapon;
+import scc210game.game.components.TextureStorage;
+import scc210game.game.resources.ItemIDCounterResource;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,8 +31,10 @@ public class WeaponSpawner implements Spawner {
         var lore = generateLore(this.level);
         var tex = generateTexture(this.level, element);
 
+        var itemID = world.ecs.fetchGlobalResource(ItemIDCounterResource.class).getItemID();
+
         return builder
-                .with(Item.makeWithLevel(name, this.level, List.of(new Weapon(dmg, lore, element))))
+                .with(new Item(itemID, name, this.level, List.of(new Weapon(dmg, lore, element))))
                 .with(new TextureStorage(tex));
     }
 
@@ -71,15 +74,8 @@ public class WeaponSpawner implements Spawner {
         }
     }
 
-    private static Texture generateTexture(int level, Element element) {
-        var tex = new Texture();
-        try {
-            tex.loadFromFile(ResourceLoader.resolve("textures/" + getSwordTextureName(element)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return tex;
+    private static String generateTexture(int level, Element element) {
+        return "textures/" + getSwordTextureName(element);
     }
 
     private static String generateWeaponName(int level, Element e){

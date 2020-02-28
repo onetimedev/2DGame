@@ -1,7 +1,10 @@
 package scc210game.engine.ecs;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * A class for allocating entities.
@@ -13,18 +16,12 @@ import javax.annotation.Nullable;
 class EntityAllocator {
     private long currentID;
 
-    @Nullable
-    private static EntityAllocator instance = null;
-
-    private EntityAllocator() {
+    EntityAllocator() {
         this.currentID = 0;
     }
 
-    @Nonnull
-    private Entity allocateInner() {
-        long id = this.currentID++;
-
-        return new Entity(id);
+    EntityAllocator(long initialID) {
+        this.currentID = initialID;
     }
 
     /**
@@ -33,15 +30,18 @@ class EntityAllocator {
      * @return The newly allocated entity
      */
     @Nonnull
-    static Entity allocate() {
-        return getInstance().allocateInner();
+    Entity allocate() {
+        long id = this.currentID++;
+
+        return new Entity(id);
     }
 
-    @Nonnull
-    static EntityAllocator getInstance() {
-        if (EntityAllocator.instance == null)
-            EntityAllocator.instance = new EntityAllocator();
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("currentID", this.currentID));
+    }
 
-        return EntityAllocator.instance;
+    public static EntityAllocator deserialize(Jsonable j) {
+        var json = (JsonObject) j;
+        return new EntityAllocator((Long) json.get("currentID"));
     }
 }
