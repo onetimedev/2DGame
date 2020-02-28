@@ -10,4 +10,9 @@ public class MainWindowResource extends Resource {
 	public MainWindowResource(RenderWindow rw) {
         this.mainWindow = rw;
 	}
+
+	@Override
+	public boolean shouldKeep() {
+	    return false;
+	}
 }

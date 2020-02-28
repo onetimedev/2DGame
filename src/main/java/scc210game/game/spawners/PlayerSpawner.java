@@ -18,7 +18,7 @@ import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.OldPosition;
 import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
-import scc210game.game.map.TextureStorage;
+import scc210game.game.components.TextureStorage;
 
 import java.time.Duration;
 import java.util.Set;
@@ -37,7 +37,7 @@ public class PlayerSpawner implements Spawner {
 	}
 
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Player())
 				.with(new Position(15, 106))

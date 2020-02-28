@@ -12,7 +12,7 @@ import scc210game.engine.render.ViewType;
 import scc210game.game.map.Boss;
 import scc210game.game.map.Enemy;
 import scc210game.game.map.Map;
-import scc210game.game.map.TextureStorage;
+import scc210game.game.components.TextureStorage;
 
 import java.util.Set;
 
@@ -54,7 +54,7 @@ public class BossSpawner implements Spawner {
 	}
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new Enemy(false))
                 .with(new Boss())

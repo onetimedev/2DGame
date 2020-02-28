@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class MapSpawner implements Spawner {
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new Map())
                 .with(new Renderable(Set.of(ViewType.MAIN), 0,

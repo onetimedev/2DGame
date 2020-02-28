@@ -131,17 +131,31 @@ public class ECS {
      * @return a string representing the serialized ECS
      */
     public Jsonable serialize() {
-        // we don't serialize global resources or future events,
-        // since they are created at the start of the game and don't need replacing
+        var resourcesS = new JsonObject() {{
+            globalResources.forEach((klass, resource) -> {
+                if (!resource.shouldKeep())
+                    return;
+                this.put(klass.getName(), resource.serialize());
+            });
+        }};
 
         return new JsonObject() {{
+            this.put("globalResources", resourcesS);
             this.put("states", ECS.this.stateMachine.serialize());
         }};
     }
 
-    private void deserializeAndReplaceInner(Jsonable json) {
-        var obj = (JsonObject) json;
-        this.stateMachine.deserializeAndReplace((JsonArray) obj.get("states"));
+    private void deserializeAndReplaceInner(Jsonable j) {
+        var json = (JsonObject) j;
+
+        var resourcesS = (JsonObject) json.get("resources");
+        //noinspection RedundantCast
+        resourcesS.forEach((resourceType, resourceS) -> {
+            var resource = SerDe.deserialize((Jsonable) resourceS, resourceType, Resource.class);
+            globalResources.put(resource.getClass(), resource);
+        });
+
+        this.stateMachine.deserializeAndReplace((JsonArray) json.get("states"));
     }
 
     public void deserializeAndReplace(Jsonable json) {

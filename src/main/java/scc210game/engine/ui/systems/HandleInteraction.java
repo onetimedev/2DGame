@@ -208,6 +208,11 @@ public class HandleInteraction implements System {
             register(InteractionState.class, s -> new InteractionState(false, null, null));
         }
 
+        @Override
+        public boolean shouldKeep() {
+            return false;
+        }
+
         boolean isMouseDown;
         @Nullable
         DraggingData draggingEntityData;

@@ -9,7 +9,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.map.Chest;
-import scc210game.game.map.TextureStorage;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Tile;
 
 import java.util.Set;
@@ -32,7 +32,7 @@ public class ChestSpawner implements Spawner {
     }
 
 	@Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new Chest(this.chestTile))
                 .with(new FilledInventorySpawner())

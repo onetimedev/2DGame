@@ -9,7 +9,6 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
-import scc210game.game.map.TextureStorage;
 import scc210game.game.map.Tile;
 import scc210game.game.states.events.TriggerChestEvent;
 import scc210game.game.states.events.TriggerCombatEvent;

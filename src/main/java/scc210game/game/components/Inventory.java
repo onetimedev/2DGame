@@ -1,13 +1,14 @@
 package scc210game.game.components;
 
+import com.github.cliftonlabs.json_simple.Jsonable;
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.utils.Tuple2;
 import scc210game.game.utils.BiMap;
 import scc210game.game.utils.NamedTypeParam;
 
-import java.util.Optional;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -130,9 +131,31 @@ public class Inventory extends Component {
         return this.itemsslots.items();
     }
 
+    static {
+        register(Inventory.class, j -> {
+            var json = (JsonObject) j;
+            var slotCount = (Integer) json.get("slotCount");
+            var itemsSlotsS = (JsonArray) json.get("itemsSlots");
+            var itemsSlots = itemsSlotsS.stream()
+                    .map(slotS -> {
+                        var slotA = (JsonArray) slotS;
+                        return new Tuple2<>((Integer) slotA.get(0), (Integer) slotA.get(1));
+                    })
+                    .collect(Collectors.toList());
+
+            var inv = new Inventory(slotCount);
+            itemsSlots.forEach(t ->
+                    inv.addItemToSlot(t.l, t.r));
+            return inv;
+        });
+    }
+
     @Override
-    public String serialize() {
-        return null;
+    public Jsonable serialize() {
+        return new JsonObject(Map.of(
+                "slotCount", this.slotCount,
+                "itemsSlots", this.itemsslots.items().map(t -> new JsonArray(List.of(t.l, t.r))).collect(Collectors.toList())
+        ));
     }
 
     @Override

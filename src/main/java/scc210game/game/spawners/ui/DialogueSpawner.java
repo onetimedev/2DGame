@@ -50,7 +50,7 @@ public class DialogueSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new Dialogue(this.message, this.accept, this.ignore))
                 .with(new UITransform(0, 0.8f, 0, 1.0f, 0.2f))

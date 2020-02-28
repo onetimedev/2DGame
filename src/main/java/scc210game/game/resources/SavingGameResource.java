@@ -49,4 +49,9 @@ public class SavingGameResource extends Resource {
             this.data = data;
         }
     }
+
+    @Override
+    public boolean shouldKeep() {
+        return false;
+    }
 }

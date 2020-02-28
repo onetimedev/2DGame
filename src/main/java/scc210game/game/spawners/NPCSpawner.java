@@ -9,7 +9,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.game.map.NPC;
-import scc210game.game.map.TextureStorage;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Tile;
 
 import java.util.Set;
@@ -39,7 +39,7 @@ public class NPCSpawner implements Spawner {
 
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new NPC())
                 .with(new Position(this.xSpawn, this.ySpawn))

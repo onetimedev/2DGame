@@ -1,4 +1,4 @@
-package scc210game.game.map;
+package scc210game.game.components;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;

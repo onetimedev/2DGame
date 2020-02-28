@@ -57,7 +57,7 @@ public class World {
     }
 
     public Stream<Component> componentsOfEntity(Entity e) {
-        return componentMaps.get(e).values().stream().map((meta) -> meta.component);
+        return componentMaps.get(e).values().stream();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
@@ -258,8 +258,11 @@ public class World {
         }};
 
         var resourcesS = new JsonObject() {{
-            World.this.resourceMap.forEach((klass, resource) ->
-                    this.put(klass.getName(), resource.serialize()));
+            World.this.resourceMap.forEach((klass, resource) -> {
+                if (!resource.shouldKeep())
+                    return;
+                this.put(klass.getName(), resource.serialize());
+            });
         }};
 
         var now = Instant.now();

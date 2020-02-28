@@ -27,7 +27,7 @@ public class Animate extends Component {
         this.pctComplete = 0.0f;
     }
 
-    Animate(Duration duration, float pctComplete, boolean looping, @Nonnull SerializableBiConsumer<Entity, World> completionCallback) {
+    public Animate(Duration duration, float pctComplete, boolean looping, @Nonnull SerializableBiConsumer<Entity, World> completionCallback) {
         this.duration = duration;
         this.pctComplete = pctComplete;
         this.looping = looping;

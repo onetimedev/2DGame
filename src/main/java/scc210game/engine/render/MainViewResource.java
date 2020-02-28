@@ -14,7 +14,7 @@ public class MainViewResource extends Resource {
 	}
 
 	@Override
-	public Jsonable serialize() {
-		return new JsonObject();
+	public boolean shouldKeep() {
+	    return false;
 	}
 }
