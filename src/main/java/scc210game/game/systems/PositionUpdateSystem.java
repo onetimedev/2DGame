@@ -7,6 +7,7 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.components.Inventory;
+import scc210game.game.components.PlayerLocked;
 import scc210game.game.components.Steps;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.events.DialogueCreateEvent;

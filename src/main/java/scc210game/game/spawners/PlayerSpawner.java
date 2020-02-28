@@ -17,7 +17,7 @@ import scc210game.engine.render.ViewType;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
-import scc210game.game.map.PlayerLocked;
+import scc210game.game.components.PlayerLocked;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.OldPosition;
 import scc210game.game.components.TextureStorage;

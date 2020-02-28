@@ -71,7 +71,7 @@ public class ClickableTextBoxSpawner implements Spawner {
 
     rw.draw(rect);
 
-    var text = new Text(textContent.text, Font.freesans, 24) {{
+    var text = new Text(textContent.text, Font.CaladeaRegular, 50) {{
       this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
     }};
 
