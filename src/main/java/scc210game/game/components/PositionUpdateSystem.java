@@ -63,7 +63,8 @@ public class PositionUpdateSystem implements System {
 		float top = position.yPos;
 		float bottom = position.yPos + 1;
 
-		int tileType = checkBiome(map.getTile((int)position.xPos, (int)position.yPos).getTextureName());
+		int tileType = MapHelper.checkBiome(map.getTile((int)position.xPos, (int)position.yPos).getTextureName());
+		au.changeBiome(tileType);
 
 		if(deltaX > 0) {  // right
 			if (checkCollisionX(velocity, map, deltaX, right, top, bottom)) return;
@@ -187,21 +188,21 @@ public class PositionUpdateSystem implements System {
 				if (t.getHasEnemy()) {
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 4, checkBiome(t.getTextureName())),
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 4, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world),
 								(e, w) -> refuse(world)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
-						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 3, checkBiome(t.getTextureName())),
+						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 3, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world),
 								(e, w) -> refuse(world)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby");
-						java.lang.System.out.println(checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 0, checkBiome(t.getTextureName())),
+						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+						world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 0, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world),
 								(e, w) -> refuse(world)));
 					}
@@ -210,8 +211,8 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveChest()) {
 					java.lang.System.out.println("Chest nearby");
-					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 2, checkBiome(t.getTextureName())),
+					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 2, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> accept(world),
 							(e, w) -> refuse(world)));
 					steps.oldCount = steps.count;
@@ -219,8 +220,8 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveStory()) {
 					java.lang.System.out.println("NPC nearby");
-					java.lang.System.out.println(checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 1, checkBiome(t.getTextureName())),
+					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
+					world.eventQueue.broadcast(new DialogueCreateEvent(test(world, 1, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> accept(world),
 							(e, w) -> refuse(world)));
 					steps.oldCount = steps.count;
@@ -262,21 +263,6 @@ public class PositionUpdateSystem implements System {
 	}
 
 
-	private int checkBiome(String t) {
-		if(t.contains("grass"))
-			return 0;
-		else if(t.contains("sand"))
-			return 1;
-		else if(t.contains("snow") || t.contains("ice"))
-			return 3;
-		else if(t.contains("basalt"))
-			return 2;
-		else {
-			return 5;
-		}
-	}
-
-
 	public void biomSound(int type, Audio au) {
 		switch(type) {
 			case 0: { //grass
@@ -288,7 +274,7 @@ public class PositionUpdateSystem implements System {
 				break;
 			}
 			case 2: { //basalt
-				//au.playSound("./src/main/resources/sounds/", false);
+				au.playSound("./src/main/resources/sounds/walking_gravel.wav", false);
 				break;
 			}
 			case 3: { //snow
@@ -296,7 +282,7 @@ public class PositionUpdateSystem implements System {
 				break;
 			}
 			case 5: { //path
-				//au.playSound("./src/main/resources/sounds/", false);
+				au.playSound("./src/main/resources/sounds/walking_path.wav", false);
 				break;
 			}
 		}
