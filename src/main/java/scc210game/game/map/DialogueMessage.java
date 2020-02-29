@@ -74,6 +74,7 @@ public class DialogueMessage {
 			ArrayList<String> possDialogs = new ArrayList<>();
 			possDialogs.add("The creature resembled the water that surrounded it, luckily it could be seen on the sand!");
 			possDialogs.add("While water has been known to kill, this creature looks like it will make it as painful as possible.");
+			possDialogs.add("Bright red eyes warned any travellers away, there was no mistaking a sign to leave!");
 
 			message += possDialogs.get(randomMessage(possDialogs.size()));
 		}
@@ -93,6 +94,45 @@ public class DialogueMessage {
 
 			message += possDialogs.get(randomMessage(possDialogs.size()));
 		}
+
+		public String getIceBossDefeatDialogue() {
+			String s = "The ice where the elemental had once stood groaned and shimmered, it was as if an entire area had just relaxed.\n" +
+					"No longer being stressed by an elemental presence that had made such a beautiful place inhospitable.\n" +
+					"Now communities will be able to return and live as they once did, it is much closer to being home again.";
+
+			return s;
+		}
+
+	public String getFireBossDefeatDialogue() {
+		String s = "Feeling comfortable in such an environment doesn’t seem possible, but at least now the elemental terror has been removed.\n" +
+				"Leaving only the natural dangers plaguing a travellers path.\n" +
+				"Another step towards reclaiming your home from these elementals that have driven so many away and decimated what once were thriving villages.";
+
+		return s;
+	}
+
+	public String getGrassBossDefeatDialogue() {
+		String s = "Once again the forests erupted with noise, it almost seemed as though the many creatures were sending their thanks.\n" +
+				"Even the grass seemingly started to move with the wind, no longer being stopped by such a monster.\n" +
+				"Removing such a terror and drain on the earth element can only help to restore your home to what it once was.";
+		return s;
+	}
+
+	public String getWaterBossDefeatDialogue() {
+		String s = "Hearing the small waves lap onto the sand provided much needed peace after the terror imposed by the elemental.\n" +
+				"Now perhaps these idyllic sands will be inhabitable again by those who choose to return to their lives here.\n" +
+				"Restoring the populations trust that these elementals are truly gone will be challenging however.";
+
+		return s;
+	}
+
+	public String getFinalBossDefeatDialogue() {
+		String s = "The gigantic elemental crashed to the ground. Immediately a change could be felt, this was nothing like the previous elementals.\n" +
+				"Controlling the elements and taking the land and homes of generations was no more. No longer would your home be threatening or dangerous.\n" +
+				"Now the communities and lives can be restored, with the trust that such elementals are gone. Time will tell how impactful the reign of these creatures has been.";
+
+		return s;
+	}
 
 
 		//Grass = 0, Water = 1, Fire = 2, Ice = 3
@@ -144,7 +184,8 @@ public class DialogueMessage {
 		possDialogs.add("Before all these monsters plagued our home, I had everything, my own shop, house, family, but now I have nothing.");
 		possDialogs.add("This place used to be so beautiful, now look at it. Its changed so much since you've been away.");
 		possDialogs.add("I'd never go in the water, not now.");
-		possDialogs.add("I used to love swimming.");
+		possDialogs.add("I used to love swimming, i'm glad you're back to stop them!");
+		possDialogs.add("Spending time on the beach now seems a perilous endeavour!");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
@@ -154,6 +195,7 @@ public class DialogueMessage {
 		possDialogs.add("I lost my wife and son to these hideous monsters. Please avenge them.");
 		possDialogs.add("I really hope our kings saves us soon! Have they sent you!");
 		possDialogs.add("I have a theory that someone is controlling all these monsters, there’s no way they can all be this coordinated without a leader.");
+		possDialogs.add("You can be the one to save us, we've needed you ever since you left!");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
@@ -165,6 +207,7 @@ public class DialogueMessage {
 		possDialogs.add("It doesn't appear to be locked, i'm sure no one will notice the contents missing.");
 		possDialogs.add("It might take some force to keep such a chest open.");
 		possDialogs.add("Such beautiful craftsmanship, hopefully whatever is inside shares this quality.");
+		possDialogs.add("Untouched, although these creatures don't have much dexterity.");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
 		message += "\n\n----- Press Q to Ignore, ENTER to Open -----";
@@ -204,19 +247,28 @@ public class DialogueMessage {
 
 	private void fireBossDialogue() {
 		message = "Now confronted in the depths of the lava fields the towering elemental appeared more dangerous than any amount of lava!";
+		message += "\nWhile this area has never been thriving this elemental has made it impossible to even travel through!";
+		message += "\nTo restore safe routes between the areas is vital to help the people who also used to live here to return.";
 	}
 
 	private void waterBossDialogue() {
-		message = "Spending time on the beach now seems a perilous endeavour, the elemental would make sure of it!";
+		message = "Claiming the island as its own the elemental stood surrounded by sand, the homes that previously stood here no doubt beneath it.";
+		message += "\nThe fish could no longer be seen in the water, nothing lived here now, nothing was misguided enough to believe it stood a chance.";
+		message += "\nAll of the beautiful scenery was drowned out by the elemental, its presence had removed any allure from the water and sands.";
 	}
 
 	private void grassBossDialogue() {
 		message = "Trying to enter the clearing presented an imposing sight, the forests quietened and now only the elemental ahead could be heard!";
+		message += "\nThese beautiful fields and forests now lay empty, devoid of the community and happiness which they had once held.";
+		message += "\n Nothing has been done by the Kings that govern this land, leaving such an elemental to be faced by the only guardian!";
 	}
 
-
 	private void finalBossDialogue() {
-		message = "The largest elemental yet, uh oh.";
+		message = "The largest elemental yet, it dwarfed the previous elementals fought and looked as if it was about to make sure their defeats would be avenged.";
+		message += "\nThe hard rock surrounding it was surely a sign of what was to come for all areas if it is allowed to continue its terror.";
+		message += "\nThis was the creature that had brought on such fear, and that had taken over the homes of so many.";
+		message += "\nIts many skulls could be a sign of your fate, but who else has the ability to defeat such an elemental!";
+
 		message += "\n\n----- Press Q to Ignore, ENTER to Fight -----";
 	}
 
