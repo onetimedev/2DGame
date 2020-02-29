@@ -47,7 +47,7 @@ public class DroppableBoxSpawner implements Spawner {
                 .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;
+                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.GRAY : Color.LIGHT_GRAY;
 
 
                     //TODO: Replace Rectangle with texture for boxes

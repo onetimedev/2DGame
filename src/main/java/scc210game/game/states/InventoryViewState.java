@@ -29,7 +29,7 @@ public class InventoryViewState extends InventoryViewStateMethods {
     public void onStart(World world) {
         this.inventory = this.cloneContentInto(world, this.sourceInventory);
 
-        this.spawnInventory(world, this.inventory, 0.0f);
+        this.spawnInventory(world, this.inventory, 0.1f);
 
         //TODO: Create background here, custom texture
         world.entityBuilder().with(new BackgroundSpawner("inventory.png")).build();

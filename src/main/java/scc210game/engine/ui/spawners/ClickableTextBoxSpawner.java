@@ -61,7 +61,7 @@ public class ClickableTextBoxSpawner implements Spawner {
     var trans = w.fetchComponent(e, UITransform.class);
     var textContent = w.fetchComponent(e, UIText.class);
 
-    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.GRAY : Color.lightGray;
+    var fillColour = w.hasComponent(e, UIHovered.class) ? new Color(155,66,64) : new Color(145,36,34);
 
     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
       this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
