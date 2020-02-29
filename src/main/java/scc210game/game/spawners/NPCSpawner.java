@@ -8,6 +8,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.game.map.Map;
 import scc210game.game.map.NPC;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Tile;
@@ -19,6 +20,7 @@ public class NPCSpawner implements Spawner {
     private final Tile npcTile;
     private final int xSpawn;
     private final int ySpawn;
+    private String textureName;
 
     public NPCSpawner(Tile t) {
         npcTile = t;
@@ -27,17 +29,27 @@ public class NPCSpawner implements Spawner {
         npcTile.setCanHaveStory(true);
         npcTile.setHasCollision(true);
         MapHelper.setTileToBiome(this.npcTile);
-        //this.setTexture(t.getTextureName());
+        textureName = setTexture(MapHelper.checkBiome(npcTile.getTextureName()));
     }
 
 
     //TODO: Texture dependent on biome, waiting for different NPC textures
-    public void setTexture(String type) {
-      switch (type) {
-        case "story.png": {
-          break;
+    public String setTexture(int type) {
+        switch (type) {
+            case 0: {
+                return "storyGrass.png";
+            }
+            case 1: {
+                return "storyWater.png";
+            }
+            case 2: {
+                return "storySnow.png";
+            }
+            case 3: {
+                return "storyFire.png";
+            }
         }
-        }
+        return "story.png";
     }
 
 
@@ -46,7 +58,7 @@ public class NPCSpawner implements Spawner {
         return builder
                 .with(new NPC())
                 .with(new Position(this.xSpawn, this.ySpawn))
-                .with(new TextureStorage("textures/story.png"))
+                .with(new TextureStorage("textures/map/" + textureName))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
                         NPCSpawner::accept));
     }

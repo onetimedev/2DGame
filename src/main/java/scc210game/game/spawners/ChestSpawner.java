@@ -23,7 +23,7 @@ public class ChestSpawner implements Spawner {
 
 	public ChestSpawner(Tile ti) {
 		chestTile = ti;
-		t = MapHelper.loadTexture("chest.png");
+		t = MapHelper.loadTexture("map/chest.png");
 		MapHelper.setTileToBiome(chestTile);
 	}
 
@@ -34,7 +34,7 @@ public class ChestSpawner implements Spawner {
         .with(new Chest(this.chestTile))
         .with(new FilledInventorySpawner())
         .with(new Position(this.chestTile.getXPos(), this.chestTile.getYPos()))
-				.with(new TextureStorage("textures/chest.png"))
+				.with(new TextureStorage("textures/map/chest.png"))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
 						ChestSpawner::accept));
 

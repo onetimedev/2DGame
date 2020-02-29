@@ -31,6 +31,10 @@ public class TextureStorage extends Component {
         return texture;
     }
 
+    public String getPath() {
+        return path;
+    }
+
     public void reloadTexture(String p) {
         this.path = p;
         this.texture = new Texture();

@@ -51,19 +51,19 @@ public class MapHelper {
 	 */
 	public static void setTileToBiome(Tile t) {
 		if(t.getYPos() < 60 && t.getXPos() < 60) {
-			t.setTexture("sand.png");
+			t.setTexture("map/sand.png");
 		}
 		else if(t.getYPos() < 60 && t.getXPos() > 60) {
-			t.setTexture("light_basalt.png");
+			t.setTexture("map/light_basalt.png");
 		}
 		else if(t.getYPos() > 60 && t.getXPos() < 55) {
-			t.setTexture("grass.png");
+			t.setTexture("map/grass.png");
 		}
 		else if(t.getYPos() > 60 && t.getXPos() > 40) {
-			t.setTexture("snow.png");
+			t.setTexture("map/snow.png");
 		}
-		if((t.getYPos() == 49 && t.getXPos() == 112) || (t.getYPos() == 61 && t.getXPos() == 113)) {
-			t.setTexture("grass.png");
+		if((t.getYPos() == 49 && t.getXPos() == 112) || (t.getYPos() == 61 && t.getXPos() == 113) || (t.getYPos() == 48 && t.getXPos() == 93)) {
+			t.setTexture("map/grass.png");
 		}
 	}
 

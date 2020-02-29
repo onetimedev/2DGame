@@ -25,7 +25,7 @@ public class Tile {
 
     public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
         this.fileName = fn;
-        String assetsPath = "./src/main/resources/textures/";
+        String assetsPath = "src/main/resources/textures/map/";
         this.xPos = x;
         this.yPos = y;
         this.hasCollision = collision;

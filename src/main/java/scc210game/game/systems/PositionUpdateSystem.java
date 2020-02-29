@@ -66,7 +66,7 @@ public class PositionUpdateSystem implements System {
 
 
 		if(velocity.dx == 0 && velocity.dy == 0) {
-			pTexture.reloadTexture("textures/player_anim.png");
+			pTexture.reloadTexture("textures/player/player_anim.png");
 			pAnimate.updateDuration(Duration.ofMillis((400 * pTexture.getTexture().getSize().x) / 64));
 		}
 
@@ -84,7 +84,7 @@ public class PositionUpdateSystem implements System {
 			if (this.checkCollisionX(velocity, map, deltaX, right, top, bottom))
 				deltaX = 0;
 			else {
-				pTexture.reloadTexture("textures/player_right.png");
+				pTexture.reloadTexture("textures/player/player_right.png");
 				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
 				this.biomeSound(tileType, au);			}
 		}
@@ -92,7 +92,7 @@ public class PositionUpdateSystem implements System {
 			if (this.checkCollisionX(velocity, map, deltaX, left, top, bottom))
 				deltaX = 0;
 			else {
-				pTexture.reloadTexture("textures/player_left.png");
+				pTexture.reloadTexture("textures/player/player_left.png");
 				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
 				this.biomeSound(tileType, au);			}
 		}
@@ -102,7 +102,7 @@ public class PositionUpdateSystem implements System {
 			if (this.checkCollisionY(velocity, map, deltaY, left, right, top))
 				deltaY = 0;
 			else {
-				pTexture.reloadTexture("textures/player_top.png");
+				pTexture.reloadTexture("textures/player/player_top.png");
 				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
 				this.biomeSound(tileType, au);
 			}
@@ -111,7 +111,7 @@ public class PositionUpdateSystem implements System {
 			if (this.checkCollisionY(velocity, map, deltaY, left, right, bottom))
 				deltaY = 0;
 			else {
-				pTexture.reloadTexture("textures/player_bottom.png");
+				pTexture.reloadTexture("textures/player/player_bottom.png");
 				pAnimate.updateDuration(Duration.ofMillis((100 * pTexture.getTexture().getSize().x) / 64));
 				this.biomeSound(tileType, au);
 			}
@@ -225,7 +225,7 @@ public class PositionUpdateSystem implements System {
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else {
-						java.lang.System.out.println("Enemy nearby");
+						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> accept(world, 0, playerEnt, null),
