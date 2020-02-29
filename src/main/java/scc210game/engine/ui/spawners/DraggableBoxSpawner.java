@@ -30,14 +30,14 @@ public class DraggableBoxSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
         var correctedSize = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
         return builder
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
                 .with(new UIDraggable())
-                .with(new Renderable(Set.of(ViewType.MAIN), 3, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
                     var fillColour = w.hasComponent(e, UIHovered.class) ? Color.GREEN : new Color(0.0f, 0.2f, 0.1f, 0.5f);

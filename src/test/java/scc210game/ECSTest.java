@@ -2,14 +2,12 @@ package scc210game;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
-import com.github.cliftonlabs.json_simple.Jsoner;
 import org.junit.Test;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
 import scc210game.engine.state.State;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
@@ -26,17 +24,22 @@ class BasicState extends State {
                 .with(new Velocity(1, 0))
                 .build();
     }
+
+    @Override
+    public Jsonable serialize() {
+        return null;
+    }
 }
 
 class Velocity extends Component {
     static {
-        register(Velocity.class, s -> {
-            final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+        register(Velocity.class, j -> {
+            var json = (JsonObject) j;
 
-            BigDecimal dx = (BigDecimal) json.get("dx");
-            BigDecimal dy = (BigDecimal) json.get("dy");
+            var dx = (Integer) json.get("dx");
+            var dy = (Integer) json.get("dy");
 
-            return new Velocity(dx.intValue(), dy.intValue());
+            return new Velocity(dx, dy);
         });
     }
 
@@ -49,25 +52,25 @@ class Velocity extends Component {
     }
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         final Jsonable json = new JsonObject() {{
             this.put("dx", Velocity.this.dx);
             this.put("dy", Velocity.this.dy);
         }};
 
-        return json.toJson();
+        return json;
     }
 }
 
 class Position extends Component {
     static {
-        register(Position.class, s -> {
-            final JsonObject json = Jsoner.deserialize(s, new JsonObject());
+        register(Position.class, j -> {
+            var json = (JsonObject) j;
 
-            BigDecimal x = (BigDecimal) json.get("x");
-            BigDecimal y = (BigDecimal) json.get("y");
+            var x = (Integer) json.get("x");
+            var y = (Integer) json.get("y");
 
-            return new Position(x.intValue(), y.intValue());
+            return new Position(x, y);
         });
     }
 
@@ -97,13 +100,13 @@ class Position extends Component {
     }
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         final Jsonable json = new JsonObject() {{
             this.put("x", Position.this.x);
             this.put("y", Position.this.y);
         }};
 
-        return json.toJson();
+        return json;
     }
 }
 
@@ -121,7 +124,6 @@ public class ECSTest {
                 final Stream<Entity> entities = world.applyQuery(this.q);
 
                 entities.forEach(e -> {
-                    world.resetModifiedState(e);
                     this.actOnEntity(e, world, timeDelta);
                 });
             }
@@ -132,14 +134,12 @@ public class ECSTest {
 
                 pos.x += vel.dx;
                 pos.y += vel.dy;
-
-                world.setModified(e, Position.class);
             }
         }
 
         var s = new BasicState();
 
-        ECS ecs = new ECS(List.of(new System0()), s);
+        ECS ecs = new ECS(List.of((ecs_) -> new System0()), s);
 
         ecs.start();
 
@@ -152,5 +152,8 @@ public class ECSTest {
         Position testPos = new Position(100, -100);
 
         assertEquals(testPos, Component.deserialize(testPos.serialize(), Position.class));
+
+        ecs.getCurrentWorld().removeEntity(s.e);
+        s.e = null;
     }
 }

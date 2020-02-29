@@ -30,7 +30,7 @@ public class DroppableBoxSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var correctedPos = UiUtils.correctAspectRatio(new Vector2f(this.x, this.y));
         var correctedSize = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
@@ -44,7 +44,7 @@ public class DroppableBoxSpawner implements Spawner {
 
                     droppedTrans.updateOrigin(centerdPosition.x, centerdPosition.y);
                 }))
-                .with(new Renderable(Set.of(ViewType.MAIN), 2, (Entity e, RenderWindow rw, World w) -> {
+                .with(new Renderable(Set.of(ViewType.UI), 100, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
                     var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;

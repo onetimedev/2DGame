@@ -1,8 +1,12 @@
 package scc210game.engine.ui.systems;
 
+import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
-import scc210game.engine.events.*;
+import scc210game.engine.events.EntityHoverStartEvent;
+import scc210game.engine.events.EntityHoverStopEvent;
+import scc210game.engine.events.Event;
+import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.ui.components.UIHovered;
 
 import javax.annotation.Nonnull;
@@ -15,15 +19,15 @@ import java.util.Iterator;
 public class HandleHovered implements System {
     private final EventQueueReader eventReader;
 
-    public HandleHovered() {
-        this.eventReader = EventQueue.makeReader();
-        EventQueue.listen(this.eventReader, EntityHoverStartEvent.class);
-        EventQueue.listen(this.eventReader, EntityHoverStopEvent.class);
+    public HandleHovered(ECS ecs) {
+        this.eventReader = ecs.eventQueue.makeReader();
+        ecs.eventQueue.listen(this.eventReader, EntityHoverStartEvent.class);
+        ecs.eventQueue.listen(this.eventReader, EntityHoverStopEvent.class);
     }
 
     @Override
     public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-        for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+        for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
             Event e = it.next();
 
             if (e instanceof EntityHoverStartEvent) {

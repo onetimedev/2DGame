@@ -1,23 +1,75 @@
 package scc210game.game.states;
 
-import scc210game.engine.ecs.Entity;
+import org.jsfml.system.Vector2i;
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
-import scc210game.engine.ui.components.UITransform;
-import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
-import scc210game.engine.ui.spawners.DialogueSpawner;
-import scc210game.engine.ui.spawners.DraggableBoxSpawner;
-import scc210game.engine.ui.spawners.DroppableBoxSpawner;
+import scc210game.engine.state.event.StateEvent;
+import scc210game.engine.state.trans.TransPush;
+import scc210game.engine.state.trans.Transition;
+import scc210game.game.events.DialogueCreateEvent;
+import scc210game.game.map.Map;
+import scc210game.game.map.Tile;
+import scc210game.game.spawners.*;
+import scc210game.game.spawners.ui.EnterInventoryButtonSpawner;
+import scc210game.game.states.events.EnterInventoryEvent;
+import scc210game.game.states.events.EnterTwoInventoryEvent;
 
 public class MainGameState extends BaseInGameState {
+	static {
+		register(MainGameState.class, (j) -> new MainGameState());
+	}
+
 	@Override
 	public void onStart(World world) {
-		world.entityBuilder().with(new DialogueSpawner("Test")).build();
-		world.entityBuilder().with(new DraggableBoxSpawner(0, 0, 0.1f, 0.1f)).build();
-		world.entityBuilder().with(new DroppableBoxSpawner(0.5f, 0.1f, 0.15f, 0.15f)).build();
-		world.entityBuilder().with(new DroppableBoxSpawner(0.5f, 0.27f, 0.15f, 0.15f)).build();
-		world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.07f, 0.07f, "click me", (Entity e, World w) -> {
-			var trans = w.fetchComponent(e, UITransform.class);
-			trans.xPos += 0.01;
-		})).build();
+        world.entityBuilder().with(new MapSpawner()).build();
+        world.entityBuilder().with(new PlayerSpawner()).build();
+        world.entityBuilder().with(
+                new EnterInventoryButtonSpawner(0, 0, 0.05f, 0.05f))
+                .build();
+
+
+        var mapEnt = world.applyQuery(Query.builder().require(Map.class).build()).findFirst().orElseThrow();
+        var map = world.fetchComponent(mapEnt, Map.class);
+
+        // Spawning of all Chests
+        for (final Tile t : map.getChestTiles()) {
+            world.entityBuilder().with(new ChestSpawner(t)).build();
+        }
+
+        // Spawning of all Enemies
+        for (final Tile tile : map.getEnemyTiles()) {
+            world.entityBuilder().with(new EnemySpawner(tile)).build();
+        }
+
+        for (final Tile tile : map.getNPCTiles()) {
+            world.entityBuilder().with(new NPCSpawner(tile)).build();
+        }
+
+        int count = 0;
+        for (final Vector2i[] v : map.getBossCoords()) {
+            world.entityBuilder().with(new BossSpawner(v, count, map)).build();
+            count++;
+        }
+
+        world.entityBuilder().with(new FinalBossSpawner()).build();
+
+        world.eventQueue.broadcast(new DialogueCreateEvent("hello, press q to ignore, enter to accept",
+                (e, w) -> System.out.println("Accepted"),
+                (e, w) -> System.out.println("Ignored")));
+    }
+
+	@Override
+	public Transition handleEvent(StateEvent evt, World world) {
+		if (evt instanceof EnterInventoryEvent) {
+			EnterInventoryEvent evt1 = (EnterInventoryEvent) evt;
+			return new TransPush(new InventoryViewState(world, evt1.invEnt, evt1.inv));
+		}
+
+		if (evt instanceof EnterTwoInventoryEvent) {
+			EnterTwoInventoryEvent evt1 = (EnterTwoInventoryEvent) evt;
+			return new TransPush(new TwoInventoryViewState(world, evt1.inv0Ent, evt1.inv0, evt1.inv1Ent, evt1.inv1));
+		}
+
+		return super.handleEvent(evt, world);
 	}
 }

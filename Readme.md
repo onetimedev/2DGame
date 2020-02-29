@@ -52,7 +52,7 @@ Look at the existing test cases for examples.
 - Component (`scc210game.engine.ecs.Component`) :: A piece of data that is associated
   with an Entity, such as: Position, `scc210game.engine.render.Renderable`. Empty
   Components may also be used to add flags to entities, such as:
-  `scc210game.engine.ui.components.UIInteractive`. Flag components may be added at game startup, or
+  `scc210game.engine.ui.components.UIHovered`. Flag components may be added at game startup, or
   may be added/removed dynamically by other systems.
 - Resource (`scc210game.engine.ecs.Resource`) :: Similar to a component, but has no
   associated Entity.
@@ -65,7 +65,7 @@ Look at the existing test cases for examples.
   entity by adding all the required components as one, for example an entity
   used in the UI will be created using a spawner that attaches the required
   components for being a UI entity, such as `UIText`, `UITransform`, and
-  `Renderable`. Examples are: `scc210game.engine.ui.spawners.DialogueSpawner` and
+  `Renderable`. Examples are: `scc210game.game.ui.spawners.DialogueSpawner` and
   `scc210game.game.spawners.MapSpawner`.
   
 ## Common components
@@ -81,18 +81,18 @@ It takes three parameters:
      render above those with lower.
 3.	renderFn :: The function to call to render this entity
 
-An example construction is located at: `scc210game.engine.ui.spawners.DialogueSpawner`
+An example construction is located at: `scc210game.game.ui.spawners.DialogueSpawner`
 
 ## Common spawners
 
-### scc210game.engine.ui.spawners.DialogueSpawner
+### scc210game.game.ui.spawners.DialogueSpawner
 
 This spawner creates a dialogue box with a given piece of text.
 
 ## Creating components
 
 A component is any class extending `scc210game.engine.ecs.Component`, there is one
-method that needs implementing which is `String serialize()`, but for now this
+method that needs implementing which is `Jsonable serialize()`, but for now this
 can be left as just returning null, eventually this will be used to allow the
 entire game state to be stored in a database for later restoration.
 
@@ -108,7 +108,7 @@ class Position extends Component {
    }
 
    @Override
-   public String serialize() {
+   public Jsonable serialize() {
       return null;
    }
 }
@@ -260,11 +260,15 @@ It receives user input events from JSFML and turns them into events that target
 specific entities, such as clicking an entity, dragging an entity, and hovering
 over an entity.
 
-First it creates a listener on the event queue:
+In the game engine, there are several event queue instances.
+The global event queue (`ecs.eventQueue`),
+and an event queue that is local to each world (`world.eventQueue`)
+
+First it creates a listener on an instance of event queue:
 
 ```java
-this.eventReader = EventQueue.makeReader();
-EventQueue.listen(this.eventReader, StateEvent.class);
+this.eventReader = world.ecs.eventQueue.makeReader();
+world.ecs.eventQueue.listen(this.eventReader, StateEvent.class);
 ```
 
 This creates an Event Queue Reader object, and then using `EventQueue.listen`
@@ -274,7 +278,7 @@ instances of the `StateEvent` class.
 To then loop over all the `StateEvent`s the following code is used:
 
 ```java
-for (Iterator<Event> it = EventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
     Event e = it.next();
     this.handleEvent(world, e);
 }

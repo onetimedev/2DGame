@@ -1,6 +1,10 @@
 package scc210game.engine.state;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.ECS;
+import scc210game.engine.ecs.SerDe;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.*;
@@ -25,22 +29,22 @@ public class StateMachine {
     }
 
     public State currentState() {
-        return currentSD().state;
+        return this.currentSD().state;
     }
 
     public Instant lastRunInstant() {
-        return currentSD().tLastRun;
+        return this.currentSD().tLastRun;
     }
 
     public Instant lastRunInstant(Instant now) {
-        var c = currentSD();
+        var c = this.currentSD();
         var lr = c.tLastRun;
         c.tLastRun = now;
         return lr;
     }
 
     public World currentWorld() {
-        return currentSD().world;
+        return this.currentSD().world;
     }
 
     private StateData currentSD() {
@@ -107,6 +111,46 @@ public class StateMachine {
         }
     }
 
+    public Jsonable serialize() {
+        return new JsonArray() {{
+            StateMachine.this.states.forEach(sd -> {
+                final Jsonable sdjson = new JsonObject() {{
+                    this.put("state", sd.state.serialize());
+                    this.put("stateClass", sd.state.getClass().getName());
+                    this.put("world", sd.world.serialize());
+                    this.put("tLastRun", sd.tLastRun.toString());
+                    this.put("tOnPause", sd.tOnPause == null ? null : sd.tOnPause.toString());
+                }};
+
+                this.add(sdjson);
+            });
+        }};
+    }
+
+    public void deserializeAndReplace(JsonArray states) {
+        while (!this.states.isEmpty()) {
+            var oldS = this.states.removeLast();
+            oldS.state.onStop(oldS.world);
+        }
+
+        states.forEach(stateR -> {
+            var stateO = (JsonObject) stateR;
+            var stateClassName = (String) stateO.get("stateClass");
+            State state = SerDe.deserialize((Jsonable) stateO.get("state"), stateClassName, State.class);
+
+            var world = World.deserialize((Jsonable) stateO.get("world"), this.ecs);
+
+            var tLastRun = Instant.parse((String) stateO.get("tLastRun"));
+            var tOnPause = stateO.get("tOnPause") != null ? Instant.parse((String) stateO.get("tOnPause")) : null;
+
+            var stateData = new StateData(state, world);
+            stateData.tLastRun = tLastRun;
+            stateData.tOnPause = tOnPause;
+
+            this.states.addLast(stateData);
+        });
+    }
+
     static class StateData {
         public final State state;
         public final World world;
@@ -120,6 +164,11 @@ public class StateMachine {
             this.world = new World(ecs);
         }
 
+        public StateData(State state, World world) {
+            this.state = state;
+            this.world = world;
+        }
+
         void pause() {
             this.tOnPause = Instant.now();
             this.state.onPause();
@@ -129,6 +178,8 @@ public class StateMachine {
             var now = Instant.now();
             assert this.tOnPause != null;
             var td = Duration.between(this.tOnPause, now);
+            this.tOnPause = null;
+            this.world.eventQueue.patchDelayDelta(td);
             this.tLastRun = this.tLastRun.plus(td);
             this.state.onResume();
         }

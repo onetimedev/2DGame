@@ -1,7 +1,16 @@
 package scc210game.engine.ecs;
 
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
+import scc210game.engine.events.Event;
+import scc210game.engine.events.EventQueue;
+import scc210game.engine.utils.Tuple2;
+
 import javax.annotation.Nonnull;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -16,32 +25,64 @@ public class World {
     @Nonnull
     private final Map<Entity, Set<Class<? extends Component>>> entityComponents;
     @Nonnull
-    private final Map<Entity, Map<Class<? extends Component>, ComponentMeta<Component>>> componentMaps;
+    private final Map<Entity, Map<Class<? extends Component>, Component>> componentMaps;
     @Nonnull
     private final Map<Class<? extends Resource>, Resource> resourceMap;
     @Nonnull
+    private final EntityAllocator entityAllocator;
+
+    @Nonnull
     public final ECS ecs;
+    @Nonnull
+    public final EventQueue eventQueue;
 
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;
         this.entities = new ArrayList<>();
-        this.entityComponents = new HashMap<>();
-        this.componentMaps = new HashMap<>();
-        this.resourceMap = new HashMap<>();
+        this.entityComponents = new WeakHashMap<>();
+        this.componentMaps = new WeakHashMap<>();
+        this.resourceMap = new WeakHashMap<>();
+        this.eventQueue = new EventQueue();
+        this.entityAllocator = new EntityAllocator();
+    }
+
+    private World(@Nonnull ECS ecs, @Nonnull EntityAllocator entityAllocator) {
+        this.ecs = ecs;
+        this.entities = new ArrayList<>();
+        this.entityComponents = new WeakHashMap<>();
+        this.componentMaps = new WeakHashMap<>();
+        this.resourceMap = new WeakHashMap<>();
+        this.eventQueue = new EventQueue();
+        this.entityAllocator = entityAllocator;
+    }
+
+    public Stream<Component> componentsOfEntity(Entity e) {
+        return componentMaps.get(e).values().stream();
     }
 
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.entities.add(e);
 
-        HashSet<Class<? extends Component>> componentTypes = components.stream()
+        Set<Class<? extends Component>> componentTypes = components.stream()
                 .map(Component::getClass)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(() -> Collections.newSetFromMap(new WeakHashMap<>())));
 
         this.entityComponents.put(e, componentTypes);
 
         for (final Component component : components) {
             this.addComponentToEntity(e, component);
         }
+    }
+
+    /**
+     * Remove an entity from the World
+     * @param e the Entity to remove
+     */
+    public void removeEntity(Entity e) {
+        this.entities.remove(e);
+        // NOTE(ben): we don't need to remove anything from entityComponents, etc
+        // because they are weak key maps and so the entry is removed as soon as
+        // the Entity to be removed is deallocated
     }
 
     /**
@@ -56,9 +97,9 @@ public class World {
         Set<Class<? extends Component>> componentSet = this.entityComponents.computeIfAbsent(e, k -> new HashSet<>());
         componentSet.add(component.getClass());
 
-        Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
+        Map<Class<? extends Component>, Component> componentStorage =
                 this.componentMaps.computeIfAbsent(e, k -> new HashMap<>());
-        componentStorage.put(component.getClass(), new ComponentMeta<>(component));
+        componentStorage.put(component.getClass(), component);
     }
 
     /**
@@ -74,7 +115,7 @@ public class World {
         assert componentSet != null;
         componentSet.remove(componentType);
 
-        Map<Class<? extends Component>, ComponentMeta<Component>> componentStorage =
+        Map<Class<? extends Component>, Component> componentStorage =
                 this.componentMaps.get(e);
         assert componentStorage != null;
         componentStorage.remove(componentType);
@@ -148,7 +189,7 @@ public class World {
      * @param r the {@link Resource} to add
      */
     public void addGlobalResource(@Nonnull Resource r) {
-        ecs.addGlobalResource(r);
+        this.ecs.addGlobalResource(r);
     }
 
     /**
@@ -159,7 +200,7 @@ public class World {
      */
     @Nonnull
     public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
-        return ecs.fetchGlobalResource(resourceType);
+        return this.ecs.fetchGlobalResource(resourceType);
     }
 
     /**
@@ -174,38 +215,7 @@ public class World {
     @Nonnull
     @SuppressWarnings("unchecked")
     public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
-        return (T) this.componentMaps.get(e).get(componentType).component;
-    }
-
-    /**
-     * Reset the modification state of all components for the given {@link Entity} to unmodified
-     *
-     * @param e the {@link Entity} to modify
-     */
-    public void resetModifiedState(Entity e) {
-        this.componentMaps.get(e).values().forEach(m -> m.isModified = false);
-    }
-
-    /**
-     * Flag an entity's component as modified
-     *
-     * @param e             the {@link Entity} for which the component to be flagged as modified belongs to
-     * @param componentType the type of {@link Component} to flag as modified
-     */
-    public void setModified(Entity e, Class<? extends Component> componentType) {
-        this.setModifiedState(e, componentType, true);
-    }
-
-    /**
-     * Set the modified state of an entity's component
-     *
-     * @param e             the {@link Entity} for which the component to set the modified flag belongs to
-     * @param componentType the type of {@link Component} to set the modified flag on
-     * @param state         the state to set the modified flag to
-     */
-    @SuppressWarnings("BooleanParameter")
-    public void setModifiedState(Entity e, Class<? extends Component> componentType, boolean state) {
-        this.componentMaps.get(e).get(componentType).isModified = state;
+        return (T) this.componentMaps.get(e).get(componentType);
     }
 
     /**
@@ -219,9 +229,7 @@ public class World {
 
         return this.entities.parallelStream().filter(e -> {
             Set<Class<? extends Component>> componentSet = this.entityComponents.get(e);
-            Map<Class<? extends Component>, ComponentMeta<Component>> componentMap = this.componentMaps.get(e);
-
-            return q.testEntity(componentSet, componentMap);
+            return q.testEntity(componentSet);
         }).sequential();
     }
 
@@ -235,6 +243,98 @@ public class World {
         return new EntityBuilder();
     }
 
+    public Jsonable serialize() {
+        var entitesS = new JsonObject() {{
+            World.this.entities.forEach(e -> {
+                var json = new JsonObject() {{
+                    World.this.componentMaps.get(e).forEach((klass, component) -> {
+                        if (!component.shouldKeep())
+                            return;
+                        this.put(klass.getName(), component.serialize());
+                    });
+                }};
+                this.put(String.valueOf(e.unsafeGetID()), json);
+            });
+        }};
+
+        var resourcesS = new JsonObject() {{
+            World.this.resourceMap.forEach((klass, resource) -> {
+                if (!resource.shouldKeep())
+                    return;
+                this.put(klass.getName(), resource.serialize());
+            });
+        }};
+
+        var now = Instant.now();
+
+        var futureEvents = new JsonArray() {{
+            World.this.eventQueue.fetchDelayedEvents().forEachRemaining((devt) -> {
+                final Jsonable evt = new JsonObject() {{
+                    this.put("deltaAtSave", Duration.between(now, devt.end).toString());
+                    this.put("eClass", devt.e.getClass().getName());
+                    this.put("e", devt.e.serialize());
+                }};
+                this.add(evt);
+            });
+        }};
+
+        return new JsonObject(Map.of(
+                "entities", entitesS,
+                "resources", resourcesS,
+                "futureEvents", futureEvents,
+                "entityAllocator", this.entityAllocator.serialize()));
+    }
+
+    public static World deserialize(Jsonable j, ECS ecs) {
+        var json = (JsonObject) j;
+
+        var entities = new HashMap<Entity, List<Component>>();
+        var resources = new ArrayList<Resource>();
+        var futureEvents = new ArrayList<Tuple2<Instant, Event>>();
+
+        var entitiesS = (JsonObject) json.get("entities");
+        entitiesS.forEach((id, componentsS) -> {
+            var entity = Entity.unsafeMakeEntity(Long.parseLong(id));
+
+            var components = new ArrayList<Component>();
+            //noinspection RedundantCast
+            ((JsonObject) componentsS).forEach((compType, componentS) ->
+                    components.add(SerDe.deserialize((Jsonable) componentS, compType, Component.class)));
+
+            entities.put(entity, components);
+        });
+
+        var resourcesS = (JsonObject) json.get("resources");
+        //noinspection RedundantCast
+        resourcesS.forEach((resourceType, resourceS) ->
+                resources.add(SerDe.deserialize((Jsonable) resourceS, resourceType, Resource.class)));
+
+        var now = Instant.now();
+        var futureEventsS = (JsonArray) json.get("futureEvents");
+        futureEventsS.forEach(ej -> {
+            var ejson = (JsonObject) ej;
+
+            var eClass = (String) ejson.get("eClass");
+            var e = SerDe.deserialize((Jsonable) ejson.get("e"), eClass, Event.class);
+
+            var delta = Duration.parse((String) ejson.get("deltaAtSave"));
+            var end = now.plus(delta);
+
+            futureEvents.add(new Tuple2<>(end, e));
+        });
+
+        var entityAllocator = EntityAllocator.deserialize((Jsonable) json.get("entityAllocator"));
+
+        var world = new World(ecs, entityAllocator);
+
+        entities.forEach(world::addEntity);
+        resources.forEach(world::addResource);
+
+        futureEvents.forEach((t) -> world.eventQueue.broadcastAt(t.r, t.l));
+
+        return world;
+    }
+
     /**
      * A helper class for constructing entities
      */
@@ -246,7 +346,7 @@ public class World {
         private boolean built;
 
         public EntityBuilder() {
-            this.entity = Entity.make();
+            this.entity = World.this.entityAllocator.allocate();
             this.components = new ArrayList<>();
             this.built = false;
         }
@@ -254,14 +354,14 @@ public class World {
         /**
          * Add a {@link Component} to the initial components of the entity
          *
-         * @param component the {@link Component} to add
+         * @param components the {@link Component}s to add
          * @return the current {@link EntityBuilder} instance (to allow chaining)
          */
         @Nonnull
-        public EntityBuilder with(Component component) {
+        public EntityBuilder with(Component... components) {
             assert !this.built : "EntityBuilder already built";
 
-            this.components.add(component);
+            this.components.addAll(Arrays.asList(components));
 
             return this;
         }
@@ -276,7 +376,7 @@ public class World {
         public EntityBuilder with(Spawner spawner) {
             assert !this.built : "EntityBuilder already built";
 
-            return spawner.inject(this);
+            return spawner.inject(this, World.this);
         }
 
         /**
