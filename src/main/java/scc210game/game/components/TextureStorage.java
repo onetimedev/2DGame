@@ -45,4 +45,9 @@ public class TextureStorage extends Component {
     public Jsonable serialize() {
         return new JsonObject(Map.of("path", this.path));
     }
+
+    @Override
+    public Component copy() {
+        return new TextureStorage(this.path);
+    }
 }
