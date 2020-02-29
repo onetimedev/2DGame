@@ -33,14 +33,13 @@ public class MainMenuState extends InputHandlingState {
     public void onStart(World world) {
         this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
 
-        world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
-
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Start Game",
                 MainMenuState::startClick)).build();
 
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Quit Game",
                 MainMenuState::quitClick)).build();
 
+        world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
     }
 
     @Override

@@ -25,13 +25,13 @@ public class PausedState extends BaseInGameState {
 
     @Override
     public void onStart(World world) {
-        world.entityBuilder().with(new BackgroundSpawner("pause.png")).build();
-
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Resume Game",
                 PausedState::resumeButton)).build();
 
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Main Menu",
                 PausedState::mainMenuButton)).build();
+        
+        world.entityBuilder().with(new BackgroundSpawner("pause.png")).build();
     }
 
     @Override

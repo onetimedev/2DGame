@@ -62,13 +62,13 @@ public class EnemySpawner implements Spawner {
                 .with(new Position(this.xSpawn, this.ySpawn))
                 .with(new TextureStorage(this.enemyTexturePath))
                 .with(new Renderable(Set.of(ViewType.MAIN), 5,
-                        //TODO: Get if specific enemy has been defeated
-                        //if(defeated == false) {
-                        //}
                         EnemySpawner::accept));
     }
 
     private static void accept(Entity entity, RenderWindow window, World world) {
+      //TODO: Get if specific enemy has been defeated
+      //if(defeated == false) {
+      //}
         var p = world.fetchComponent(entity, Position.class);
         var t = world.fetchComponent(entity, TextureStorage.class);
         Sprite en = new Sprite(t.getTexture());
