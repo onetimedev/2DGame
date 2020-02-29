@@ -16,7 +16,7 @@ public class Tile {
     private final int xPos;
     private final int yPos;
     private Boolean hasCollision;
-    private final String fileName;
+    private String fileName;
     private final Boolean canHaveChest;
     private Boolean canHaveEnemy;
     private Boolean hasEnemy;
@@ -123,8 +123,8 @@ public class Tile {
   }
 
   public void setTexture(String fn) {
-	  String assetsPath = "./src/main/resources/textures/";
 		this.tileTexture = MapHelper.loadTexture(fn);
+		this.fileName = fn;
 		this.textureSize = this.tileTexture.getSize();
   }
 

@@ -21,10 +21,13 @@ public class NPCSpawner implements Spawner {
     private final int ySpawn;
 
     public NPCSpawner(Tile t) {
-        this.npcTile = t;
-        this.xSpawn = this.npcTile.getXPos();
-        this.ySpawn = this.npcTile.getYPos();
-        this.setTexture(t.getTextureName());
+        npcTile = t;
+        xSpawn = this.npcTile.getXPos();
+        ySpawn = this.npcTile.getYPos();
+        npcTile.setCanHaveStory(true);
+        npcTile.setHasCollision(true);
+        MapHelper.setTileToBiome(this.npcTile);
+        //this.setTexture(t.getTextureName());
     }
 
 
@@ -32,9 +35,6 @@ public class NPCSpawner implements Spawner {
     public void setTexture(String type) {
       switch (type) {
         case "story.png": {
-          this.npcTile.setHasCollision(true);
-          this.npcTile.setCanHaveStory(true);
-          MapHelper.setTileToBiome(npcTile);
           break;
         }
         }

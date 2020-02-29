@@ -47,7 +47,7 @@ public class Main {
 
     private Main() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
+        this.mainWindow.create(new VideoMode(1920, 1080), "Elemental Guardian - A Return Home");
         this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{

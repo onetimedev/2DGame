@@ -30,7 +30,7 @@ public class PausedState extends BaseInGameState {
 
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Main Menu",
                 PausedState::mainMenuButton)).build();
-        
+
         world.entityBuilder().with(new BackgroundSpawner("pause.png")).build();
     }
 

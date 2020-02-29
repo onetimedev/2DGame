@@ -350,6 +350,8 @@ public class PositionUpdateSystem implements System {
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = true;
 
+		java.lang.System.out.println("Type: " + type + ", Biome: " + biome);
+
 		return new DialogueMessage(type, biome).getMessage();
 	}
 

@@ -120,9 +120,10 @@ public class DialogueMessage {
 
 	private void iceNPCDialogue() {
 		ArrayList<String> possDialogs = new ArrayList<>();
-		possDialogs.add("Most people lost everything when the monsters came, but me, I wasn’t good at anything, but now I get paid a kings fee to hunt monsters.");
+		possDialogs.add("Most people lost everything when the monsters came, but me, I wasn’t good at anything, but now I get paid a kings fee to hunt monsters." +
+				"\n You look like you're back to take my job!");
 		possDialogs.add("Have you seen my friend Joseph, he went to hunt some food but never came back, I hope he’s alright.");
-		possDialogs.add("Its gotten colder since they arrived, now we've known it like this for generations.");
+		possDialogs.add("Its gotten colder since they arrived, we've known it like this since you left.");
 		possDialogs.add("I don't dare go far, have you heard those creatures hissing?");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
@@ -133,15 +134,15 @@ public class DialogueMessage {
 		possDialogs.add("I can’t believe our beloved king, sits in his high castle eating like a pig, while we are all starving and getting slaughtered by the monsters.");
 		possDialogs.add("I’ve heard that these monsters are from hell and the devil has come up from the underworld to punish us all.");
 		possDialogs.add("It's a dangerous place sure, still be better of without these monsters!");
-		possDialogs.add("They've made it hotter than ever, I don't know how much more I can take.");
+		possDialogs.add("They've made it hotter than ever, I don't know how much more I can take. But at least you're back.");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
 	}
 
 	private void waterNPCDialogue() {
 		ArrayList<String> possDialogs = new ArrayList<>();
-		possDialogs.add("Before all these monsters plagued this land, I had everything, my own shop, house, family, but now I have nothing.");
-		possDialogs.add("This place used to be so beautiful, now look at it.");
+		possDialogs.add("Before all these monsters plagued our home, I had everything, my own shop, house, family, but now I have nothing.");
+		possDialogs.add("This place used to be so beautiful, now look at it. Its changed so much since you've been away.");
 		possDialogs.add("I'd never go in the water, not now.");
 		possDialogs.add("I used to love swimming.");
 
@@ -150,8 +151,8 @@ public class DialogueMessage {
 
 	private void grassNPCDialogue() {
 		ArrayList<String> possDialogs = new ArrayList<>();
-		possDialogs.add("I lost my wife and son to these hideous monsters.");
-		possDialogs.add("I really hope our kings saves us soon!");
+		possDialogs.add("I lost my wife and son to these hideous monsters. Please avenge them.");
+		possDialogs.add("I really hope our kings saves us soon! Have they sent you!");
 		possDialogs.add("I have a theory that someone is controlling all these monsters, there’s no way they can all be this coordinated without a leader.");
 
 		message += possDialogs.get(randomMessage(possDialogs.size()));
