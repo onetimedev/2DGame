@@ -1,6 +1,7 @@
 package scc210game.game.spawners;
 
 import org.jsfml.graphics.*;
+import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2f;
 import scc210game.engine.combat.SpriteType;
 import scc210game.engine.ecs.*;
@@ -14,6 +15,7 @@ import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.map.Player;
+import scc210game.game.map.PlayerTexture;
 
 import java.awt.*;
 import java.io.IOException;
@@ -28,8 +30,10 @@ public class CombatSpawner implements Spawner {
     private float width = 0.2f;
     private float height = 0.3f;
     private SpriteType spriteInfo;
-
+    private Clock animClock = new Clock();
+    private int frame = 0;
     private Sprite image;
+    Texture t = new Texture();
 
 
 
@@ -46,8 +50,6 @@ public class CombatSpawner implements Spawner {
         {
             xPosition = 0.75f;
             yPosition = 0.2f;
-            System.out.println("Image scale: " + this.image.getTexture().getSize().y);
-            //yPosition = (1f - this.image.getScale().y);
         }
 
     }
@@ -69,7 +71,9 @@ public class CombatSpawner implements Spawner {
                 this.image.setScale(new Vector2f(4,4));
             }
 
-        }catch (IOException e){
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -79,14 +83,34 @@ public class CombatSpawner implements Spawner {
 
         var position = UiUtils.correctAspectRatio(new Vector2f(this.xPosition, this.yPosition));
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
-
         return builder
                 .with((this.spriteInfo.getEnemyStatus() ? new CombatEnemy() : new CombatPlayer()))
                 .with(new UITransform(position.x, position.y, 1, size.x, size.y))
+                .with(new PlayerTexture(t, 400))
                 .with(new Renderable(Set.of(ViewType.UI), 2,
                         (Entity e, RenderWindow rw, World w) -> {
+                            var playerEnt = w.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().orElseThrow();
+                            var pTexture = w.fetchComponent(playerEnt, PlayerTexture.class);
+
                             var dimensions = w.fetchComponent(e, UITransform.class);
-                            if(!this.spriteInfo.getEnemyStatus()) this.image.setTextureRect(new IntRect(0, 0, 64, 64));
+                            if(!this.spriteInfo.getEnemyStatus()) {
+                                this.image.setPosition(position.x*64, position.y*64);
+                                //this.image.setTextureRect(new IntRect(0, 0, 64, 64));
+
+                                if(animClock.getElapsedTime().asMilliseconds() >= pTexture.speedMs) {
+                                    animClock.restart();
+                                    frame++;
+                                    if(frame > (pTexture.texture.getSize().x/64)-1)
+                                        frame = 0;
+                                    int frameRow = frame / 8;
+                                    int frameCol = frame % 8;
+                                    this.image.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
+                                }
+                            }
+
+
+
+
                             this.image.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                             rw.draw(this.image);
 
