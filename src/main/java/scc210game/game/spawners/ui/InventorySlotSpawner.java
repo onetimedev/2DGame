@@ -63,7 +63,7 @@ public class InventorySlotSpawner implements Spawner {
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? Color.RED : Color.LIGHT_GRAY;
+                    var fillColour = w.hasComponent(e, UIHovered.class) ? new Color(130, 90, 50) : new Color(120, 90, 55);  //138,88,53
 
                     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
