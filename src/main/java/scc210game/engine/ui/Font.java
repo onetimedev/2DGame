@@ -20,4 +20,12 @@ public class Font {
             throw new RuntimeException(e);
         }
     }};
+
+    public static final org.jsfml.graphics.Font CaladeaRegular = new org.jsfml.graphics.Font() {{
+        try {
+            this.loadFromFile(ResourceLoader.resolve("font/Caladea-Regular.ttf"));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }};
 }

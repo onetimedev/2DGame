@@ -56,7 +56,7 @@ public class SavingGameState extends BaseInGameState {
 
         rw.draw(rect);
 
-        var text = new Text(content, Font.freesans, 32) {{
+        var text = new Text(content, Font.CaladeaRegular, 32) {{
             this.setPosition(UiUtils.convertUiPosition(rw, pos));
         }};
 

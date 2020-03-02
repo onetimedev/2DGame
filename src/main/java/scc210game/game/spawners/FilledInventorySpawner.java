@@ -8,9 +8,9 @@ import scc210game.game.components.Item;
 public class FilledInventorySpawner implements Spawner {
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
-        var inv = new Inventory(14);
+        var inv = new Inventory(1);
 
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 1; i++) {
             var itemEnt = world.entityBuilder()
                     .with(new WeaponSpawner(i * 10))
                     .build();

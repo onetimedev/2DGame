@@ -53,9 +53,6 @@ public class MainGameState extends BaseInGameState {
 
         world.entityBuilder().with(new FinalBossSpawner()).build();
 
-        world.eventQueue.broadcast(new DialogueCreateEvent("hello, press q to ignore, enter to accept",
-                (e, w) -> System.out.println("Accepted"),
-                (e, w) -> System.out.println("Ignored")));
     }
 
 	@Override
@@ -71,5 +68,6 @@ public class MainGameState extends BaseInGameState {
 		}
 
 		return super.handleEvent(evt, world);
+
 	}
 }

@@ -28,8 +28,8 @@ import java.util.Set;
 public class InventoryViewStateMethods extends BaseInGameState {
     private static final int SLOTS_PER_ROW = 7;
     private static final float SLOT_SIZE = 0.13f;
-    private static final float SLOT_H_OFFSET = 0.0275f;
-    private static final float SLOT_SPACING = 0.005f;
+    private static final float SLOT_H_OFFSET = 0.1f;
+    private static final float SLOT_SPACING = 0.010f;
     protected final World sourceWorld;
     private final Query itemQuery = Query.builder()
             .require(Item.class)
@@ -91,7 +91,7 @@ public class InventoryViewStateMethods extends BaseInGameState {
 
             var textBounds = text.getGlobalBounds();
             var rect = new RectangleShape(new Vector2f(textBounds.width, textBounds.height)) {{
-                var colour = new Color(0.4f, 0.4f, 0.4f, opacity);
+                var colour = new Color(0.89f, 0.57f, 0.33f, opacity);
                 this.setPosition(new Vector2f(textBounds.left, textBounds.top));
                 this.setFillColor(UiUtils.transformColor(colour));
                 this.setOutlineColor(UiUtils.transformColor(colour));

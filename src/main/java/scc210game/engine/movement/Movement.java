@@ -10,7 +10,7 @@ import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.state.event.KeyDepressedEvent;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.game.map.Player;
-
+import scc210game.game.components.PlayerLocked;
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.HashSet;
@@ -48,18 +48,19 @@ public class Movement implements System {
     }
 
     var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
-    if (!playerEntO.isPresent())
+    if (playerEntO.isEmpty())
       return;
     var playerEnt = playerEntO.get();
     var velocity = world.fetchComponent(playerEnt, Velocity.class);
+    var positionLocked = world.fetchComponent(playerEnt, PlayerLocked.class);
 
-    if (this.pressedKeys.contains(Keyboard.Key.A))
+    if (this.pressedKeys.contains(Keyboard.Key.A) && !positionLocked.locked)
       velocity.dx = -3;
-    if (this.pressedKeys.contains(Keyboard.Key.S))
+    if (this.pressedKeys.contains(Keyboard.Key.S) && !positionLocked.locked)
       velocity.dy = 3;
-    if (this.pressedKeys.contains(Keyboard.Key.D))
+    if (this.pressedKeys.contains(Keyboard.Key.D) && !positionLocked.locked)
       velocity.dx = 3;
-    if (this.pressedKeys.contains(Keyboard.Key.W))
+    if (this.pressedKeys.contains(Keyboard.Key.W) && !positionLocked.locked)
       velocity.dy = -3;
   }
 

@@ -10,6 +10,7 @@ import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.utils.Tuple2;
 import scc210game.game.components.Inventory;
+import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.events.InventoryUpdateEvent;
 import scc210game.game.states.events.LeaveInventoryEvent;
 
@@ -28,7 +29,10 @@ public class InventoryViewState extends InventoryViewStateMethods {
     public void onStart(World world) {
         this.inventory = this.cloneContentInto(world, this.sourceInventory);
 
-        this.spawnInventory(world, this.inventory, 0.0f);
+        this.spawnInventory(world, this.inventory, 0.1f);
+
+        //TODO: Create background here, custom texture
+        world.entityBuilder().with(new BackgroundSpawner("inventory.png")).build();
     }
 
     @Override
