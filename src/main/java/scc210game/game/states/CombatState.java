@@ -35,19 +35,19 @@ public class CombatState extends BaseInGameState {
         world.activateCombat();
 
 
-        world.entityBuilder().with(new CombatBackground("")).build();
+        world.entityBuilder().with(new CombatBackground(background)).build();
         //TODO:
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();
 
-        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", "./src/main/resources/textures/Combat/Enlarged/Water-boss-Combat-Animation-LARGE.png", true, 1))).build();
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", "./src/main/resources/textures/Combat/Enlarged/" + textureName, true, 1))).build();
 
         world.entityBuilder().with(new CombatSpawner(new SpriteType("player", "./src/main/resources/textures/Combat/Player-in-combat.png", false, 0))).build();
         world.entityBuilder().with(new CombatWeapon(false, world, 5, "./src/main/resources/textures/Weapons/Basic-Sword.png")).build();
 
 
         world.entityBuilder().with(new CombatSprite("./src/main/resources/Combat/Enlarged/Water-boss-Combat-Animation-LARGE.png")).build();
-        world.entityBuilder().with(new Scoring(0,0,0)).build();
+        world.entityBuilder().with(new Scoring(scores.getPlayerExperience(), scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth())).build();
         world.entityBuilder().with(new CombatResources()).build();
 
         new EnemyController(world, CombatEnemy.class, CombatPlayerWeapon.class, 3).start();

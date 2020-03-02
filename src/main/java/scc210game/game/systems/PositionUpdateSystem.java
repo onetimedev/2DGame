@@ -18,6 +18,7 @@ import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.utils.MapHelper;
 import scc210game.engine.audio.Audio;
 import javax.annotation.Nonnull;
+import javax.swing.*;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -386,24 +387,40 @@ public class PositionUpdateSystem implements System {
 		var enemyDamage = world.fetchComponent(player, Enemy.class);
 
 		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
-		String textureName = enemyTexture.getPath();
 
+		String textureName = "";
 		String background = "";
 		switch(biomeType) {
 				case 0: {
 					background = "textures/Combat/combat-bground-grass.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = "Earth-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = "Earth-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 1: {
 					background = "textures/Combat/combat-background-water.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = "Water-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = "Water-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 2: {
 					background = "textures/Combat/combat-background-lava.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = "Fire-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = "Fire-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 3: {
 					background = "textures/Combat/combat-background-ice.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = "Ice-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = "Ice-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 			}
