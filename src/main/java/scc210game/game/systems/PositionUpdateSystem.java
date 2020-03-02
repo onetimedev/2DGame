@@ -214,21 +214,21 @@ public class PositionUpdateSystem implements System {
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> accept(world, 0, playerEnt, null),
+								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, Enemy.class)),  //hardcoded biometype
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> accept(world, 0, playerEnt, null),
+								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class)),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> accept(world, 0, playerEnt, null),
+								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class)),
 								(e, w) -> refuse(world, playerEnt)));
 					}
 					steps.oldCount = steps.count;
@@ -239,7 +239,7 @@ public class PositionUpdateSystem implements System {
 					var chestEnt = getEntityAtPos(world, t, Chest.class);
 					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> accept(world, 1, playerEnt, chestEnt),
+							(e, w) -> acceptChest(world, playerEnt, chestEnt),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
@@ -248,7 +248,7 @@ public class PositionUpdateSystem implements System {
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> accept(world, 2, playerEnt, null),
+							(e, w) -> refuse(world, playerEnt),
 							(e, w) -> refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
@@ -359,29 +359,32 @@ public class PositionUpdateSystem implements System {
 	/**
 	 * Method triggered upon player acceptance of an entities dialogue option.
 	 * @param world the world for this state
-	 * @param eventType the type of entity event that should be triggered
 	 * @param player the player entity
 	 */
-	public void accept(World world, int eventType, Entity player, Entity target) {
+	public void acceptChest(World world, Entity player, Entity target) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
 
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 
-		switch(eventType) {  // Checking which event should be sent to the queue
-			case 0: {
-				java.lang.System.out.println("Combat State Initiated");
-				//world.ecs.acceptEvent(new CombatStateEvent());  TODO: Need to know params that should be passed to combat
-			}
-			case 1: {
-				java.lang.System.out.println("Chest State Initiated");
-				var playerInv = world.fetchComponent(player, Inventory.class);
-				var targetInv = world.fetchComponent(target, Inventory.class);
-				world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, targetInv, player, target));
-			}
+		java.lang.System.out.println("Chest State Initiated");
+		var playerInv = world.fetchComponent(player, Inventory.class);
+		var targetInv = world.fetchComponent(target, Inventory.class);
+		world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, targetInv, player, target));
+	}
 
-		}
+
+	/**
+	 *
+	 * @param world the world for this state
+	 * @param player the player entity
+	 * @param biomeType the type of biome  0=Grass, 1=Sand, 2=Fire, 3=Snow
+	 * @param enemy the enemy entity
+	 */
+	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
+		java.lang.System.out.println("Combat State Initiated");
+		//world.ecs.acceptEvent(new TriggerCombatEvent());  //TODO: Need to know params that should be passed to combat
 
 	}
 

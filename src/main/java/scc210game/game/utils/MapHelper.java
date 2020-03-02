@@ -68,6 +68,11 @@ public class MapHelper {
 	}
 
 
+	/**
+	 * Method to translate the biome of a given string to an integer
+	 * @param t
+	 * @return 0=Grass, 1=Sand, 2=Fire, 3=Snow, 5=None
+	 */
 	public static int checkBiome(String t) {
 		if(t.contains("grass"))
 			return 0;
