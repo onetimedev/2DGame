@@ -1,5 +1,7 @@
 package scc210game.engine.combat;
 
+import org.jsfml.graphics.Sprite;
+import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
@@ -7,6 +9,8 @@ import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatEnemyWeapon;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,12 +31,15 @@ public class EnemyController {
 
     private int collisionCount = 0;
 
+    private int damage;
 
-    public EnemyController(World w, Class<? extends Component> spriteClass, Class<? extends Component> weaponClass){
+
+    public EnemyController(World w, Class<? extends Component> spriteClass, Class<? extends Component> weaponClass, int damage){
         this.w = w;
         this.spriteClass = spriteClass;
         this.weaponClass = weaponClass;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        this.damage = damage;
     }
 
     public void start()
@@ -57,55 +64,87 @@ public class EnemyController {
 
     }
 
+    private int getHealth()
+    {
+        return new CombatUtils().getAbsHealth(w, true);
+
+    }
+
+    private void animateSprite()
+    {
+        //scheduledExecutorService.schedule(this::animate, 200, TimeUnit.MILLISECONDS);
+        getSprite().nextChange = System.currentTimeMillis() + 60;
+        if(getSprite().state < 3) {
+            getSprite().state++;
+        }
+        getSprite().signal = true;
+    }
+
+
+
+
+    private CombatSprite getSprite()
+    {
+        var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
+        return w.fetchComponent(spriteState, CombatSprite.class);
+    }
+
 
     private void initMove()
     {
         if(w.getActiveAnimation())
         {
-            if (collisionCount >= 1)
-            {
-                new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
-                collisionCount = 0;
-            }
-            else
-            {
-                if (getMove() != 3)
-                {
-                    //forward move
-                    System.out.println("enemy moving forward");
-                    UITransform attributes = new CombatUtils().getOpponent(w, true);
-                    float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
-                    UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
+            if(getHealth() > 0) {
 
-                    if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false)))
-                    {
-                        System.out.println("collided so moving backward");
-                        collisionCount++;
-                        new CombatUtils().damagePlayer(w);
-                        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
-                    }
-                    else
-                    {
-                        System.out.println("moving forward");
-                        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
-                    }
-                }
-                else if (getMove() != 4)
-                {
-                    //backwards move
-                    System.out.println("enemy moving backward");
+                if (collisionCount >= 3) {
                     new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
+                    collisionCount = 0;
+                    getSprite().state = 0;
+                    getSprite().signal = false;
+                } else {
+                    if (getMove() != 3) {
+                        //forward move
+                        //System.out.println("enemy moving forward");
+                        UITransform attributes = new CombatUtils().getOpponent(w, true);
+                        float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
+                        UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
+
+                        if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false))) {
+                            //System.out.println("collided so moving backward");
+                            collisionCount++;
+                            new CombatUtils().damagePlayer(w, damage);
+                            new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                            this.animateSprite();
+                        } else {
+                            //System.out.println("moving forward");
+                            new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                        }
+                    } else if (getMove() != 4) {
+                        //backwards move
+                        //System.out.println("enemy moving backward");
+                        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
+                    } else {
+                        //System.out.println("no move");
+                    }
                 }
-                else
-                    {
-                    System.out.println("no move");
-                }
+
+            }else
+            {
+                animateDeath();
+                scheduledExecutorService.shutdown();
             }
+
+
         }else{
             scheduledExecutorService.shutdown();
         }
     }
 
+
+    public void animateDeath()
+    {
+        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 150, CombatUtils.DOWN, true).animateYAxis();
+    }
 
     private int getMove()
     {

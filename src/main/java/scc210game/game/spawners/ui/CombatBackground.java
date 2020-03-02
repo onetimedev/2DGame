@@ -26,6 +26,12 @@ public class CombatBackground implements Spawner {
     private float width = 1f;
     private float height = 1f;
 
+    private String bg;
+
+    public CombatBackground(String background)
+    {
+        this.bg = background;
+    }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder) {
@@ -41,10 +47,9 @@ public class CombatBackground implements Spawner {
                             var dimensions = w.fetchComponent(e, UITransform.class);
                             Texture t = new Texture();
                             try {
-                                String spriteImage = "./src/main/resources/textures/backgrounds/grassBackground.png";
-                                t.loadFromFile(Paths.get(spriteImage));
+                                t.loadFromFile(Paths.get(bg));
                                 Sprite bg = new Sprite(t);
-                                bg.setScale(new Vector2f(2,2));
+                                bg.setScale(new Vector2f(1,1));
                                 bg.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
                                 rw.draw(bg);
 

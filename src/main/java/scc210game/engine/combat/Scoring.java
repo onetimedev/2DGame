@@ -43,15 +43,15 @@ public class Scoring extends Component {
 
 
 
-    public void damageEnemy()
+    public void damageEnemy(int damage)
     {
-        this.enemyHealth--;
+        this.enemyHealth -= damage;
         System.out.println("damaged enemy");
     }
 
-    public void damagePlayer()
+    public void damagePlayer(int damage)
     {
-        this.playerHealth--;
+        this.playerHealth -= damage;
         System.out.println("damaged player");
     }
 

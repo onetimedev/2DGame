@@ -64,7 +64,7 @@ public class CombatMovement implements System {
                 switch (type.key) {
                     case A: {
 
-                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD, false).animateXAxis();
+                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.BACKWARD, false).animateXAxis();
 
 
                         break;
@@ -72,7 +72,7 @@ public class CombatMovement implements System {
                     case D: {
                         //right move
 
-                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.FORWARD, false).animateXAxis();
+                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.FORWARD, false).animateXAxis();
 
 
                         break;

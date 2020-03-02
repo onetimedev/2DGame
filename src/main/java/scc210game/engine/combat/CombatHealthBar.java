@@ -30,24 +30,21 @@ public class CombatHealthBar implements Spawner
     public CombatHealthBar(int user)
     {
 
+        this.width = 0.3f;
+        this.height = 0.005f;
+        this.y = 0f;
         if(user == CombatUtils.PLAYER)
         {
             //player
             enemy = false;
             this.x = 0f;
-            this.y = 0f;
-            this.width = 0.3f;
-            this.height = 0.005f;
 
         }
         else if(user == CombatUtils.BOSS)
         {
             //boss
             enemy = true;
-            this.x = 0.7f;
-            this.y = 0f;
-            this.width = 0.3f;
-            this.height = 0.005f;
+            this.x = 0.65f;
         }
 
     }
@@ -69,8 +66,6 @@ public class CombatHealthBar implements Spawner
 
                     rw.draw(outerRect);
 
-                    //var health = w.fetchComponent(pl, Health.class);
-
                     var innerTrans = trans.clone();
                     innerTrans.height *= 0.90;
                     innerTrans.width *= (0.99375 * new CombatUtils().getHealth(w, enemy));
@@ -88,8 +83,7 @@ public class CombatHealthBar implements Spawner
 
     private Color getBarColor(World w)
     {
-        float health = new CombatUtils().getAbsHealth(w);
-
+        int health = new CombatUtils().getAbsHealth(w, enemy);
         if(health >= 0 && health <= 10)
         {
             return Color.RED;

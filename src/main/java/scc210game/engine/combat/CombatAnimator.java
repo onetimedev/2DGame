@@ -4,6 +4,7 @@ import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.game.components.CombatPlayerWeapon;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,14 +43,15 @@ public class CombatAnimator {
         if(animationCounter < animationMax)
         {
             if(!enemy) {
-                scheduledExecutorService.schedule(this::moveXPlayerSprite, 10, TimeUnit.MILLISECONDS);
+                scheduledExecutorService.schedule(this::moveXPlayerSprite, 15, TimeUnit.MILLISECONDS);
             }else{
-                scheduledExecutorService.schedule(this::moveXEnemySprite, 10, TimeUnit.MILLISECONDS);
+                scheduledExecutorService.schedule(this::moveXEnemySprite, 15, TimeUnit.MILLISECONDS);
             }
         }else{
            exit();
         }
     }
+
 
 
     private void moveXPlayerSprite()
@@ -61,6 +63,7 @@ public class CombatAnimator {
 
         var weapon = world.applyQuery(Query.builder().require(weaponClass).build()).findFirst().get();
         var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
+        var damage = world.fetchComponent(weapon, CombatPlayerWeapon.class);
 
         switch (this.direction)
         {
@@ -69,13 +72,13 @@ public class CombatAnimator {
                 {
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
                     weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    continueAnimation();
+                    continueXAxisAnimation();
                 }
                 else
                 {
                     if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
                     {
-                        new CombatUtils().damageEnemy(world);
+                        new CombatUtils().damageEnemy(world, damage.damage);
                     }
                     exit();
                 }
@@ -88,7 +91,7 @@ public class CombatAnimator {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
                     weaponAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
 
-                    continueAnimation();
+                    continueXAxisAnimation();
                 }
                 else
                 {
@@ -103,6 +106,32 @@ public class CombatAnimator {
 
     }
 
+
+    public void animateYAxis()
+    {
+        if(animationCounter < animationMax) {
+            if (!enemy) {
+
+            } else {
+                scheduledExecutorService.schedule(this::moveYEnemySprite, 15, TimeUnit.MILLISECONDS);
+            }
+        }else{
+            exit();
+        }
+    }
+
+    private void moveYEnemySprite()
+    {
+        switch(this.direction){
+            case CombatUtils.DOWN:{
+                var sprite = world.applyQuery(Query.builder().require(spriteClass).build()).findFirst().get();
+                var spriteAttributes = world.fetchComponent(sprite, UITransform.class);
+
+                spriteAttributes.yPos += CombatUtils.Y_AXIS_MOVE_DISTANCE;
+                continueYAxisAnimation();
+            }
+        }
+    }
 
     private void moveXEnemySprite()
     {
@@ -118,7 +147,7 @@ public class CombatAnimator {
                 {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
 
-                    continueAnimation();
+                    continueXAxisAnimation();
                 }
                 else
                 {
@@ -134,7 +163,7 @@ public class CombatAnimator {
 
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
 
-                    continueAnimation();
+                    continueXAxisAnimation();
                 }
                 else
                 {
@@ -157,15 +186,24 @@ public class CombatAnimator {
         scheduledExecutorService.shutdown();
     }
 
-    private void continueAnimation()
+    private void continueXAxisAnimation()
     {
         animationCounter++;
         animateXAxis();
     }
 
+    private void continueYAxisAnimation()
+    {
+        animationCounter++;
+        animateYAxis();
+    }
+
+
+
+
     private float getEnd()
     {
-        return enemy ? 0.85f : 0.0f;
+        return enemy ? 0.65f : 0.0f;
     }
 
 
