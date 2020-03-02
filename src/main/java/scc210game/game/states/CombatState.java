@@ -2,6 +2,8 @@ package scc210game.game.states;
 
 import scc210game.engine.combat.*;
 import scc210game.engine.ecs.World;
+import scc210game.engine.events.ExitCombatState;
+import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.Transition;
@@ -19,15 +21,15 @@ public class CombatState extends BaseInGameState {
     public void onStart(World world) {
         world.activateCombat();
 
-        world.entityBuilder().with(new CombatBackground("./src/main/resources/Combat/combat-bground-grass.png")).build();
+        world.entityBuilder().with(new CombatBackground("./src/main/resources/textures/Combat/combat-bground-grass.png")).build();
 
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();
 
-        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", "./src/main/resources/Combat/Enlarged/Water-boss-Combat-Animation-LARGE.png", true, 1))).build();
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", "./src/main/resources/textures/Combat/Enlarged/Water-boss-Combat-Animation-LARGE.png", true, 1))).build();
 
-        world.entityBuilder().with(new CombatSpawner(new SpriteType("player", "./src/main/resources/textures/player.png", false, 0))).build();
-        world.entityBuilder().with(new CombatWeapon(false, world, 5, "./src/main/resources/textures/player_sword.png")).build();
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("player", "./src/main/resources/textures/Combat/Player-in-combat.png", false, 0))).build();
+        world.entityBuilder().with(new CombatWeapon(false, world, 5, "./src/main/resources/textures/Weapons/Basic-Sword.png")).build();
 
 
         world.entityBuilder().with(new CombatSprite("./src/main/resources/Combat/Enlarged/Water-boss-Combat-Animation-LARGE.png")).build();
@@ -41,6 +43,10 @@ public class CombatState extends BaseInGameState {
 
     @Override
     public Transition handleEvent(StateEvent evt, World world) {
+        if(evt instanceof ExitCombatState)
+        {
+            world.ecs.eventQueue.broadcast(new LeaveCombatEvent());
+        }
         return super.handleEvent(evt, world);
     }
 }

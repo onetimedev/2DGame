@@ -116,7 +116,7 @@ public class CombatAnimator {
                 scheduledExecutorService.schedule(this::moveYEnemySprite, 15, TimeUnit.MILLISECONDS);
             }
         }else{
-            exit();
+            exitCombat();
 
         }
     }
@@ -187,6 +187,15 @@ public class CombatAnimator {
         scheduledExecutorService.shutdown();
     }
 
+
+    private void exitCombat()
+    {
+        animationCounter = 0;
+        animationMax = 0;
+        scheduledExecutorService.shutdown();
+
+
+    }
     private void continueXAxisAnimation()
     {
         animationCounter++;

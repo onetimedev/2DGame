@@ -73,6 +73,8 @@ public class MainGameState extends BaseInGameState {
 			return new TransPush(new CombatState());
 		}
 
+		//if(evt instanceof )
+
 
 		return super.handleEvent(evt, world);
 
