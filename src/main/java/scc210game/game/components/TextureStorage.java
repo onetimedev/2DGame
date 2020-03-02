@@ -51,7 +51,7 @@ public class TextureStorage extends Component {
     }
 
     @Override
-    public Component copy() {
+    public TextureStorage copy() {
         return new TextureStorage(this.path);
     }
 }

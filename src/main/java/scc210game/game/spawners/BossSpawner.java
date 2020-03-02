@@ -26,14 +26,16 @@ public class BossSpawner implements Spawner {
     private final int bossNum;
     private final Vector2i[] bossCoords;
     private Texture t;
+    private int damage;
 
     /*
         Create the boss texture based on coordinates and boss number.
         Grass = 0, Water = 1, Fire = 2, Ice = 3
     */
-    public BossSpawner(Vector2i[] bc, int bn, Map map) {
+    public BossSpawner(Vector2i[] bc, int bn, Map map, int dmg) {
         this.bossCoords = bc;
         this.bossNum = bn;
+        this.damage = dmg;
 
         for (final Vector2i v : this.bossCoords) {
             map.getTile(v.x, v.y).setHasEnemy(true);
@@ -59,6 +61,7 @@ public class BossSpawner implements Spawner {
 			      }
 		    }
 
+
         try {
             this.t = new Texture();
             this.t.loadFromFile(ResourceLoader.resolve(bossTexturePath));
@@ -72,7 +75,7 @@ public class BossSpawner implements Spawner {
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
-                .with(new Enemy(false))
+                .with(new Enemy(false, this.damage))
                 .with(new Boss())
                 .with(new Position(this.bossCoords[0].x, this.bossCoords[0].y))
                 .with(new TextureStorage(this.bossTexturePath))

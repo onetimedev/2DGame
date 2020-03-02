@@ -14,13 +14,10 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.game.components.Inventory;
-import scc210game.game.components.Steps;
+import scc210game.game.components.*;
 import scc210game.game.map.Player;
-import scc210game.game.components.PlayerLocked;
 import scc210game.engine.utils.ResourceLoader;
-import scc210game.game.components.OldPosition;
-import scc210game.game.components.TextureStorage;
+
 import java.time.Duration;
 import java.util.Set;
 
@@ -48,6 +45,7 @@ public class PlayerSpawner implements Spawner {
 				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
 				.with(new TextureStorage("textures/player/player_anim.png"))
+				.with(new CombatData(null, 0, 0, null, null, 0))
 				.with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {
 				}), true))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,

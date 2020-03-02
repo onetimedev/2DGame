@@ -1,13 +1,16 @@
 package scc210game.game.states;
 
 import org.jsfml.system.Vector2i;
+import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.Transition;
+import scc210game.game.components.CombatData;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.Map;
+import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
 import scc210game.game.spawners.*;
 import scc210game.game.states.events.CombatStateEvent;
@@ -40,7 +43,7 @@ public class MainGameState extends BaseInGameState {
 
         // Spawning of all Enemies
         for (final Tile tile : map.getEnemyTiles()) {
-            world.entityBuilder().with(new EnemySpawner(tile)).build();
+            world.entityBuilder().with(new EnemySpawner(tile, 5)).build();
         }
 
         for (final Tile tile : map.getNPCTiles()) {
@@ -49,11 +52,11 @@ public class MainGameState extends BaseInGameState {
 
         int count = 0;
         for (final Vector2i[] v : map.getBossCoords()) {
-            world.entityBuilder().with(new BossSpawner(v, count, map)).build();
+            world.entityBuilder().with(new BossSpawner(v, count, map, 10)).build();
             count++;
         }
 
-        world.entityBuilder().with(new FinalBossSpawner()).build();
+        world.entityBuilder().with(new FinalBossSpawner(15)).build();
 
     }
 
@@ -70,7 +73,10 @@ public class MainGameState extends BaseInGameState {
 		}
 
 		if(evt instanceof TriggerCombatEvent){
-			return new TransPush(new CombatState());
+			var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+			var combatData = world.fetchComponent(playerEnt, CombatData.class);
+
+			return new TransPush(new CombatState(combatData));
 		}
 
 

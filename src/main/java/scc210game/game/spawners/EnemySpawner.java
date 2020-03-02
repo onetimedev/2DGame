@@ -24,10 +24,11 @@ public class EnemySpawner implements Spawner {
     private final int xSpawn;
     private final int ySpawn;
     private String enemyTexturePath;
+    private int damage;
 
 
 
-    public EnemySpawner(Tile tile) {
+    public EnemySpawner(Tile tile, int dmg) {
       this.setTexture(tile.getTextureName());  // Update enemyTexturePath
       try {
         this.t = new Texture();
@@ -37,6 +38,7 @@ public class EnemySpawner implements Spawner {
         throw new RuntimeException();
       }
 
+      this.damage = dmg;
       tile.setHasEnemy(true);
       tile.setHasCollision(true);
       this.xSpawn = tile.getXPos();
@@ -70,7 +72,7 @@ public class EnemySpawner implements Spawner {
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
       return builder
-        .with(new Enemy(false))
+        .with(new Enemy(false, this.damage))
         .with(new Position(this.xSpawn, this.ySpawn))
         .with(new TextureStorage(this.enemyTexturePath))
         .with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {

@@ -1,15 +1,13 @@
 package scc210game.game.systems;
 
 import scc210game.engine.animation.Animate;
+import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
-import scc210game.game.components.Inventory;
-import scc210game.game.components.PlayerLocked;
-import scc210game.game.components.Steps;
-import scc210game.game.components.TextureStorage;
+import scc210game.game.components.*;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.game.map.Map;
@@ -384,8 +382,26 @@ public class PositionUpdateSystem implements System {
 	 * @param enemy the enemy entity
 	 */
 	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
-		java.lang.System.out.println("Combat State Initiated");
-		world.ecs.acceptEvent(new TriggerCombatEvent());  //TODO: Need to know params that should be passed to combat
+			java.lang.System.out.println("Combat State Initiated");
+
+			var combatData = world.fetchComponent(player, CombatData.class);
+
+			var enemyDamage = world.fetchComponent(player, Enemy.class);
+
+			//TODO: Combine bosstype and biome number here, and then pass the string for that texture
+
+			//combatData.background =  //
+			//combatData.bossType = ;
+			combatData.biomeNum = biomeType;
+
+
+			combatData.scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
+			combatData.enemyDamage = 	enemyDamage.damage;  //
+
+			//combatData.weapon = ;
+
+
+			world.ecs.acceptEvent(new TriggerCombatEvent());  //TODO: Need to know params that should be passed to combat
 
 	}
 
