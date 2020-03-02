@@ -384,24 +384,19 @@ public class PositionUpdateSystem implements System {
 	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
 			java.lang.System.out.println("Combat State Initiated");
 
-			var combatData = world.fetchComponent(player, CombatData.class);
-
 			var enemyDamage = world.fetchComponent(player, Enemy.class);
 
-			//TODO: Combine bosstype and biome number here, and then pass the string for that texture
-
-			//combatData.background =  //
-			//combatData.bossType = ;
-			combatData.biomeNum = biomeType;
 
 
-			combatData.scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
-			combatData.enemyDamage = 	enemyDamage.damage;  //
-
-			//combatData.weapon = ;
+			String textureName = "";  //TODO: Combine bosstype and biome number here, and then pass the string for that texture
+			String background = "";   //TODO: Get background texture from biomeType
 
 
-			world.ecs.acceptEvent(new TriggerCombatEvent());  //TODO: Need to know params that should be passed to combat
+
+			// TextureStorage weapon = ;  //TODO: waiting for player currently selected item
+			Scoring scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
+
+			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, null, background, enemyDamage.damage));
 
 	}
 

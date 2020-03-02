@@ -45,7 +45,6 @@ public class PlayerSpawner implements Spawner {
 				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
 				.with(new TextureStorage("textures/player/player_anim.png"))
-				.with(new CombatData(null, 0, 0, null, null, 0))
 				.with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {
 				}), true))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,

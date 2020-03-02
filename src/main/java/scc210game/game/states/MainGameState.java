@@ -1,19 +1,15 @@
 package scc210game.game.states;
 
 import org.jsfml.system.Vector2i;
-import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.Transition;
-import scc210game.game.components.CombatData;
-import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
 import scc210game.game.spawners.*;
-import scc210game.game.states.events.CombatStateEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.spawners.ui.EnterInventoryButtonSpawner;
 import scc210game.game.states.events.EnterInventoryEvent;
@@ -73,14 +69,9 @@ public class MainGameState extends BaseInGameState {
 		}
 
 		if(evt instanceof TriggerCombatEvent){
-			var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
-			var combatData = world.fetchComponent(playerEnt, CombatData.class);
-
-			return new TransPush(new CombatState(combatData));
+			TriggerCombatEvent evt1 = (TriggerCombatEvent) evt;
+			return new TransPush(new CombatState(evt1.scores, evt1.textureName, evt1.weapon, evt1.background, evt1.enemyDamage));
 		}
-
-		//if(evt instanceof )
-
 
 		return super.handleEvent(evt, world);
 
