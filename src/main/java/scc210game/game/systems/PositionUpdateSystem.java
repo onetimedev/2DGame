@@ -382,15 +382,31 @@ public class PositionUpdateSystem implements System {
 	 * @param enemy the enemy entity
 	 */
 	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
-			java.lang.System.out.println("Combat State Initiated");
+		java.lang.System.out.println("Combat State Initiated");
+		var enemyDamage = world.fetchComponent(player, Enemy.class);
 
-			var enemyDamage = world.fetchComponent(player, Enemy.class);
+		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
+		String textureName = enemyTexture.getPath();
 
-
-
-			String textureName = "";  //TODO: Combine bosstype and biome number here, and then pass the string for that texture
-			String background = "";   //TODO: Get background texture from biomeType
-
+		String background = "";
+		switch(biomeType) {
+				case 0: {
+					background = "textures/Combat/combat-bground-grass.png";
+					break;
+				}
+				case 1: {
+					background = "textures/Combat/combat-background-water.png";
+					break;
+				}
+				case 2: {
+					background = "textures/Combat/combat-background-lava.png";
+					break;
+				}
+				case 3: {
+					background = "textures/Combat/combat-background-ice.png";
+					break;
+				}
+			}
 
 
 			// TextureStorage weapon = ;  //TODO: waiting for player currently selected item

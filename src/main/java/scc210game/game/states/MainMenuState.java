@@ -56,10 +56,6 @@ public class MainMenuState extends InputHandlingState {
             return TransQuit.getInstance();
         }
 
-        if(evt instanceof CombatStateEvent){
-            return new TransPush(new CombatState());
-        }
-
         return super.handleEvent(evt, world);
     }
 }
