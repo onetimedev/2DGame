@@ -5,9 +5,18 @@ import scc210game.engine.utils.ResourceLoader;
 import java.io.IOException;
 
 public class Font {
-    public static final org.jsfml.graphics.Font freesans = new org.jsfml.graphics.Font() {{
+
+    public static final org.jsfml.graphics.Font fantasqueSansMono = new org.jsfml.graphics.Font() {{
         try {
-            this.loadFromFile(ResourceLoader.resolve("font/FreeSans.ttf"));
+            this.loadFromFile(ResourceLoader.resolve("font/FantasqueSansMono-Regular.ttf"));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }};
+
+    public static final org.jsfml.graphics.Font CaladeaRegular = new org.jsfml.graphics.Font() {{
+        try {
+            this.loadFromFile(ResourceLoader.resolve("font/Caladea-Regular.ttf"));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

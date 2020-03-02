@@ -1,17 +1,29 @@
 package scc210game.engine.ui.components;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
+import scc210game.engine.utils.SerDeBase64;
+import scc210game.engine.utils.SerializableBiConsumer;
 
-import java.util.function.BiConsumer;
+import java.util.Map;
 
 /**
  * Component that flags entities that can be clicked
  */
 public class UIClickable extends Component {
     static {
-        register(UIClickable.class, s -> new UIInteractive());
+        register(UIClickable.class, j -> {
+            var json = (JsonObject) j;
+
+            @SuppressWarnings("unchecked")
+            var acceptor = SerDeBase64.deserializeFromBase64((String) json.get("acceptor"),
+                    (Class<SerializableBiConsumer<Entity, World>>)(Class<?>)SerializableBiConsumer.class);
+
+            return new UIClickable(acceptor);
+        });
     }
 
     /**
@@ -29,15 +41,15 @@ public class UIClickable extends Component {
      *     }
      * </pre>
      */
-    public final BiConsumer<Entity, World> acceptor;
+    public final SerializableBiConsumer<Entity, World> acceptor;
 
-    public UIClickable(BiConsumer<Entity, World> acceptor) {
+    public UIClickable(SerializableBiConsumer<Entity, World> acceptor) {
         this.acceptor = acceptor;
     }
 
 
     @Override
-    public String serialize() {
-        return "";
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("acceptor", SerDeBase64.serializeToBase64(this.acceptor)));
     }
 }

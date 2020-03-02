@@ -1,34 +1,30 @@
 package scc210game.game.map;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
-import com.github.cliftonlabs.json_simple.Jsoner;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+
+import java.util.Map;
 
 public class Enemy extends Component {
 
     public boolean defeated = false;
 
     static {
-        register(Enemy.class, s-> {
-          final JsonObject json = Jsoner.deserialize(s, new JsonObject());
-          boolean defeat;
-          if(s.equals("true"))
-            defeat = true;
-          else
-            defeat = false;
-
-          return new Enemy(defeat);
+        register(Enemy.class, j -> {
+            var json = (JsonObject) j;
+            return new Enemy((Boolean) json.get("defeated"));
         });
     }
 
 
     @Override
-    public String serialize() {
-        return Boolean.toString(defeated);
+    public Jsonable serialize() {
+        return new JsonObject(Map.of("defeated", this.defeated));
     }
 
 
     public Enemy(boolean defeat) {
-        defeated = defeat;
+        this.defeated = defeat;
     }
 }

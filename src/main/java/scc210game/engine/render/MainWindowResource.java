@@ -8,12 +8,11 @@ public class MainWindowResource extends Resource {
 	public RenderWindow mainWindow;
 
 	public MainWindowResource(RenderWindow rw) {
-		mainWindow = rw;
+        this.mainWindow = rw;
 	}
 
-
 	@Override
-	public String serialize() {
-		return null;
+	public boolean shouldKeep() {
+	    return false;
 	}
 }

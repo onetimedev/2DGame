@@ -1,7 +1,7 @@
 package scc210game.game.components;
 
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
-import scc210game.game.spawners.CombatWeapon;
 
 public class CombatPlayerWeapon extends Component {
 
@@ -15,7 +15,7 @@ public class CombatPlayerWeapon extends Component {
 
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         return null;
     }
 }

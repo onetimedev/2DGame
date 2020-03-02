@@ -1,5 +1,6 @@
 package scc210game.engine.combat;
 
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 
 public class CombatSprite extends Component
@@ -18,7 +19,7 @@ public class CombatSprite extends Component
 
 
     @Override
-    public String serialize() {
+    public Jsonable serialize() {
         return null;
     }
 }

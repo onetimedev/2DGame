@@ -4,8 +4,7 @@ import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
-import org.jsfml.system.Clock;
-import org.jsfml.system.Vector2i;
+import scc210game.engine.animation.Animate;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
@@ -15,73 +14,76 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.game.components.Inventory;
 import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
-import scc210game.game.map.PlayerTexture;
-
-import java.nio.file.Paths;
+import scc210game.game.components.PlayerLocked;
+import scc210game.engine.utils.ResourceLoader;
+import scc210game.game.components.OldPosition;
+import scc210game.game.components.TextureStorage;
+import java.time.Duration;
 import java.util.Set;
 
 
 public class PlayerSpawner implements Spawner {
-
-	private Texture t = new Texture();
-	private Vector2i oldCoords = new Vector2i(15, 106);
-	private Sprite pl;
-	private int frame = 0;
-	private Clock animClock = new Clock();
+	private final Texture t;
 
 	public PlayerSpawner() {
 		try {
-			t.loadFromFile(Paths.get("./src/main/resources/textures/player_anim.png"));
-			pl = new Sprite(t);
-			pl.setTextureRect(new IntRect(0, 0, 64, 64));
-		}
-		catch(Exception e) {
+			this.t = new Texture();
+			this.t.loadFromFile(ResourceLoader.resolve("textures/player/player_anim.png"));
+		} catch (final Exception e) {
 			throw new RuntimeException();
 		}
-
 	}
 
-
 	@Override
-	public World.EntityBuilder inject(World.EntityBuilder builder) {
+	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
 				.with(new Player())
+				.with(new Inventory(5))
 				.with(new Position(15, 106))
+				.with(new OldPosition(15, 106))
 				.with(new Velocity(0, 0))
+				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
-				.with(new PlayerTexture(t, 400))
+				.with(new TextureStorage("textures/player/player_anim.png"))
+				.with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {
+				}), true))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-				(Entity entity, RenderWindow window, World world) -> {
-					var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
-					var position = world.fetchComponent(playerEnt, Position.class);
-					var steps = world.fetchComponent(playerEnt, Steps.class);
-					var pTexture = world.fetchComponent(playerEnt, PlayerTexture.class);
+						PlayerSpawner::accept));
+	}
 
-					pl.setTexture(pTexture.texture);
-					pl.setPosition(position.xPos*64, position.yPos*64);
+	private static void accept(Entity entity, RenderWindow window, World world) {
+		var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+		var position = world.fetchComponent(playerEnt, Position.class);
+		var steps = world.fetchComponent(playerEnt, Steps.class);
+		var playerTexture = world.fetchComponent(playerEnt, TextureStorage.class);
+		var oldPosition = world.fetchComponent(playerEnt, OldPosition.class);
+		var animation = world.fetchComponent(playerEnt, Animate.class);
 
-					//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
-					if(oldCoords.x != Math.floor(position.xPos) || oldCoords.y != Math.floor(position.yPos))
-						steps.count++;
+		var sprite = new Sprite(playerTexture.getTexture());
 
-					var view = world.fetchGlobalResource(MainViewResource.class);
-					view.mainView.setCenter(position.xPos*64, position.yPos*64);
+		sprite.setPosition(position.xPos * 64, position.yPos * 64);
 
-					if(animClock.getElapsedTime().asMilliseconds() >= pTexture.speedMs) {
-						animClock.restart();
-						frame++;
-						if(frame > (pTexture.texture.getSize().x/64)-1)
-							frame = 0;
-						int frameRow = frame / 8;
-						int frameCol = frame % 8;
-						pl.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
-					}
+		//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
+		if (oldPosition.xPos != Math.floor(position.xPos) || oldPosition.yPos != Math.floor(position.yPos))
+			steps.count++;
 
-					oldCoords = new Vector2i((int) Math.floor(position.xPos), (int) Math.floor(position.yPos));
-					window.draw(pl);
-				}));
+		var view = world.fetchGlobalResource(MainViewResource.class);
+		view.mainView.setCenter(position.xPos * 64, position.yPos * 64);
 
+		var numFrames = (playerTexture.getTexture().getSize().x / 64);
+
+		var frame = (int) Math.floor(animation.pctComplete * (float) numFrames);
+
+		int frameRow = frame / 8;
+		int frameCol = frame % 8;
+		sprite.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
+
+		oldPosition.xPos = (int) Math.floor(position.xPos);
+		oldPosition.yPos = (int) Math.floor(position.yPos);
+
+		window.draw(sprite);
 	}
 }

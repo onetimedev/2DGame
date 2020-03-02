@@ -53,7 +53,7 @@ public class CombatWeapon implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 
         var position = UiUtils.correctAspectRatio(new Vector2f(this.xPosition, this.yPosition));
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));

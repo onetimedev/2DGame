@@ -35,7 +35,7 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_10
+    sourceCompatibility = JavaVersion.VERSION_11
 }
 
 jar {
@@ -54,4 +54,8 @@ application {
     if (OperatingSystem.current().isMacOsX()) {
         applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
     }
+}
+
+run {
+  enableAssertions = true
 }

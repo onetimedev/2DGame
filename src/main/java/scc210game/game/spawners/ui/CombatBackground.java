@@ -34,12 +34,12 @@ public class CombatBackground implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         var position = UiUtils.correctAspectRatio(new Vector2f(this.xPosition, this.yPosition));
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
 
         return builder
-                .with(new CombatBackgroundComponent())
+                .with(new CombatBackgroundComponent(this.bg))
                 .with(new UITransform(position.x, position.y, 0, size.x, size.y))
                 .with(new Renderable(Set.of(ViewType.UI), 0,
                         (Entity e, RenderWindow rw, World w) -> {

@@ -1,6 +1,9 @@
 package scc210game.engine.ecs;
 
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.events.EventQueue;
 import scc210game.engine.state.State;
 import scc210game.engine.state.StateMachine;
@@ -29,6 +32,8 @@ public class ECS {
     @Nonnull
     public final EventQueue eventQueue;
 
+    public Jsonable toReload = null;
+
     /**
      * Construct the ECS wrapper from a list of systems to run
      *
@@ -38,7 +43,7 @@ public class ECS {
     public ECS(@Nonnull List<Function<ECS, ? extends System>> systems, @Nonnull State initialState) {
         this.stateMachine = new StateMachine(initialState, this);
         this.globalResources = new HashMap<>();
-        eventQueue = new EventQueue();
+        this.eventQueue = new EventQueue();
         this.systems = systems.stream().map((f) -> f.apply(this)).collect(Collectors.toList());
     }
 
@@ -70,6 +75,11 @@ public class ECS {
 
         for (final System s : this.systems) {
             s.run(this.stateMachine.currentWorld(), delta);
+        }
+
+        if (this.toReload != null) {
+            this.deserializeAndReplaceInner(this.toReload);
+            this.toReload = null;
         }
     }
 
@@ -113,5 +123,42 @@ public class ECS {
     @Nonnull
     public <T extends Resource> T fetchGlobalResource(Class<T> resourceType) {
         return (T) this.globalResources.get(resourceType);
+    }
+
+    /**
+     * Serialize the ecs to a string
+     *
+     * @return a string representing the serialized ECS
+     */
+    public Jsonable serialize() {
+        var resourcesS = new JsonObject() {{
+            globalResources.forEach((klass, resource) -> {
+                if (!resource.shouldKeep())
+                    return;
+                this.put(klass.getName(), resource.serialize());
+            });
+        }};
+
+        return new JsonObject() {{
+            this.put("globalResources", resourcesS);
+            this.put("states", ECS.this.stateMachine.serialize());
+        }};
+    }
+
+    private void deserializeAndReplaceInner(Jsonable j) {
+        var json = (JsonObject) j;
+
+        var resourcesS = (JsonObject) json.get("resources");
+        //noinspection RedundantCast
+        resourcesS.forEach((resourceType, resourceS) -> {
+            var resource = SerDe.deserialize((Jsonable) resourceS, resourceType, Resource.class);
+            globalResources.put(resource.getClass(), resource);
+        });
+
+        this.stateMachine.deserializeAndReplace((JsonArray) json.get("states"));
+    }
+
+    public void deserializeAndReplace(Jsonable json) {
+        this.toReload = json;
     }
 }

@@ -12,7 +12,6 @@ import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
-import scc210game.game.map.PlayerTexture;
 
 import java.io.IOException;
 import java.lang.System;
@@ -50,7 +49,7 @@ public class CombatSpawner implements Spawner {
     }
 
     @Override
-    public World.EntityBuilder inject(World.EntityBuilder builder) {
+    public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 
         var position = UiUtils.correctAspectRatio(new Vector2f(this.xPosition, this.yPosition));
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
@@ -114,4 +113,5 @@ public class CombatSpawner implements Spawner {
 
                 }));
     }
+
 }

@@ -6,12 +6,11 @@ import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
-import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
 import org.jsfml.window.event.MouseEvent;
-import scc210game.engine.combat.AnimationUpdater;
+import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
 import scc210game.engine.movement.CombatMovement;
@@ -25,9 +24,13 @@ import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
-import scc210game.game.components.PositionUpdateSystem;
+import scc210game.game.systems.PositionUpdateSystem;
+import scc210game.game.resources.ItemIDCounterResource;
 import scc210game.game.states.MainMenuState;
 import scc210game.game.systems.DialogueHandlingSystem;
+import scc210game.game.systems.InventoryLeaveHandler;
+import scc210game.game.systems.ItemMoveHandler;
+import scc210game.game.systems.ToolTipHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +48,7 @@ public class Main {
 
     private Main() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
+        this.mainWindow.create(new VideoMode(1920, 1080), "Elemental Guardian - A Return Home");
         this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
@@ -65,11 +68,15 @@ public class Main {
                 CombatMovement::new,
                 (ecs) -> new PositionUpdateSystem(),
                 DialogueHandlingSystem::new,
+                ItemMoveHandler::new,
+                ToolTipHandler::new,
+                InventoryLeaveHandler::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
         this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
         this.ecs.addGlobalResource(new MainWindowResource(this.mainWindow));
+        this.ecs.addGlobalResource(new ItemIDCounterResource());
         this.ecs.start();
     }
 
