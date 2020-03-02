@@ -2,6 +2,7 @@ package scc210game.engine.movement;
 
 import org.jsfml.window.Keyboard;
 import scc210game.engine.combat.CombatAnimator;
+import scc210game.engine.combat.CombatImage;
 import scc210game.engine.combat.CombatUtils;
 import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.*;
@@ -56,6 +57,7 @@ public class CombatMovement implements System {
             var combatPlayerWeapon = world.applyQuery(Query.builder().require(CombatPlayerWeapon.class).build()).findFirst().get();
             var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
             var cplayerWeaponPosition = world.fetchComponent(combatPlayerWeapon, UITransform.class);
+            var combatPlayerImage = world.fetchComponent(combatPlayerSprite, CombatImage.class);
 
 
             if (event instanceof KeyPressedEvent) {
@@ -71,7 +73,7 @@ public class CombatMovement implements System {
                     }
                     case D: {
                         //right move
-
+                        combatPlayerImage.setPath("./src/resources/Combat/Player-in-combat.png");
                         new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.FORWARD, false).animateXAxis();
 
 

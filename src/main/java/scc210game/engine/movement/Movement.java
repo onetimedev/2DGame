@@ -26,39 +26,8 @@ public class Movement implements System {
   }
 
 
-  @Override
-  public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-    for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
-      Event e = it.next();
-      this.handleMovement(world, e);
-    }
-  }
 
 
-  private void handleMovement(World world, Event e) {
-    var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
-    if (!playerEntO.isPresent())
-      return;
-
-    var playerEnt = playerEntO.get();
-    var velocity = world.fetchComponent(playerEnt, Velocity.class);
-
-    if (e instanceof KeyPressedEvent) {
-      KeyPressedEvent type = (KeyPressedEvent) e;
-
-      if(type.key.equals(Keyboard.Key.A))
-        velocity.dx = -3;
-      if(type.key.equals(Keyboard.Key.S))
-        velocity.dy = 3;
-      if(type.key.equals(Keyboard.Key.D))
-        velocity.dx = 3;
-      if(type.key.equals(Keyboard.Key.W))
-        velocity.dy = -3;
-
-    }
-  }
-
-  /*
   @Override
   public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
     var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
@@ -78,7 +47,7 @@ public class Movement implements System {
   }
 
 
-*/
+
 
 
 }

@@ -117,6 +117,7 @@ public class CombatAnimator {
             }
         }else{
             exit();
+
         }
     }
 

@@ -71,7 +71,7 @@ public class CombatSpawner implements Spawner {
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
                                     this.image = new Sprite(t);
-                                    this.image.setScale(new Vector2f(5, 5));
+                                    this.image.setScale(new Vector2f(5.61f, 5.61f));
                                 }
                                 else
                                 {
