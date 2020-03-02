@@ -26,10 +26,10 @@ import java.awt.*;
 import java.util.Set;
 
 public class InventoryViewStateMethods extends BaseInGameState {
-    private static final int SLOTS_PER_ROW = 7;
-    private static final float SLOT_SIZE = 0.13f;
-    private static final float SLOT_H_OFFSET = 0.1f;
-    private static final float SLOT_SPACING = 0.010f;
+    protected static final int SLOTS_PER_ROW = 7;
+    protected static final float SLOT_SIZE = 0.13f;
+    protected static final float SLOT_H_OFFSET = 0.1f;
+    protected static final float SLOT_SPACING = 0.010f;
     protected final World sourceWorld;
     private final Query itemQuery = Query.builder()
             .require(Item.class)
@@ -104,12 +104,16 @@ public class InventoryViewStateMethods extends BaseInGameState {
         world.addComponentToEntity(itemEnt, new UIDraggable());
     }
 
-    protected void spawnInventory(World world, Inventory inventory, float vOffs) {
+    protected void spawnInventory(World world, Inventory inventory, float vOffs, float hOffs) {
+        spawnInventory(world, inventory, vOffs, hOffs, new Color(120, 90, 55));
+    }
+
+    protected void spawnInventory(World world, Inventory inventory, float vOffs, float hOffs, Color slotColour) {
         for (int i = 0; i < inventory.slotCount; i++) {
-            var x = (i % SLOTS_PER_ROW) * (SLOT_SIZE + SLOT_SPACING) + SLOT_H_OFFSET;
+            var x = (i % SLOTS_PER_ROW) * (SLOT_SIZE + SLOT_SPACING) + SLOT_H_OFFSET + hOffs;
             var y = (i / SLOTS_PER_ROW) * (SLOT_SIZE + SLOT_SPACING) + vOffs;
             var slot = world.entityBuilder()
-                    .with(new InventorySlotSpawner(x, y, SLOT_SIZE, SLOT_SIZE, inventory, i))
+                    .with(new InventorySlotSpawner(x, y, SLOT_SIZE, SLOT_SIZE, inventory, i, slotColour))
                     .build();
 
             var slotTransform = world.fetchComponent(slot, UITransform.class);
@@ -126,7 +130,7 @@ public class InventoryViewStateMethods extends BaseInGameState {
      * @param sourceInventory the inventory to clone
      */
     protected Inventory cloneContentInto(World destWorld, Inventory sourceInventory) {
-        var inventory = new Inventory(sourceInventory.slotCount);
+        var inventory = sourceInventory.copy();
         destWorld.entityBuilder()
                 .with(inventory)
                 .build();
@@ -140,8 +144,6 @@ public class InventoryViewStateMethods extends BaseInGameState {
             destWorld.entityBuilder()
                     .with(srcItemComponents)
                     .build();
-
-            inventory.addItemToSlot(v.l, v.r);
         });
 
         return inventory;

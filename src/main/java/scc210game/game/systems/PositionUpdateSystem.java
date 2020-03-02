@@ -6,10 +6,7 @@ import scc210game.engine.ecs.System;
 import scc210game.engine.movement.Position;
 import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
-import scc210game.game.components.Inventory;
-import scc210game.game.components.PlayerLocked;
-import scc210game.game.components.Steps;
-import scc210game.game.components.TextureStorage;
+import scc210game.game.components.*;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.game.map.Map;
@@ -370,8 +367,13 @@ public class PositionUpdateSystem implements System {
 
 		java.lang.System.out.println("Chest State Initiated");
 		var playerInv = world.fetchComponent(player, Inventory.class);
+
+
+		var selectedWeapon = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst().orElseThrow();
+		var sw = world.fetchComponent(selectedWeapon, Inventory.class);
+
 		var targetInv = world.fetchComponent(target, Inventory.class);
-		world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, targetInv, player, target));
+		world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, targetInv, player, selectedWeapon, target));
 	}
 
 

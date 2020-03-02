@@ -1,15 +1,12 @@
-package scc210game.engine.ui.components;
+package scc210game.game.components;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 
-/**
- * Component that flags entities that can be dragged using the mouse
- */
-public class UIDraggable extends Component {
+public class SelectedWeaponInventory extends Component {
     static {
-        register(UIDraggable.class, s -> new UIDraggable());
+        register(SelectedWeaponInventory.class, s -> new SelectedWeaponInventory());
     }
 
     @Override

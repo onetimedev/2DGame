@@ -14,13 +14,10 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.game.components.Inventory;
-import scc210game.game.components.Steps;
+import scc210game.game.components.*;
 import scc210game.game.map.Player;
-import scc210game.game.components.PlayerLocked;
 import scc210game.engine.utils.ResourceLoader;
-import scc210game.game.components.OldPosition;
-import scc210game.game.components.TextureStorage;
+
 import java.time.Duration;
 import java.util.Set;
 
@@ -39,6 +36,11 @@ public class PlayerSpawner implements Spawner {
 
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
+		world.entityBuilder()
+				.with(new Inventory(1))
+				.with(new SelectedWeaponInventory())
+				.build();
+
 		return builder
 				.with(new Player())
 				.with(new Inventory(5))
