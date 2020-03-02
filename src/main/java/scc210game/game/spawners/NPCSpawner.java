@@ -8,7 +8,6 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.game.map.Map;
 import scc210game.game.map.NPC;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Tile;
@@ -33,7 +32,6 @@ public class NPCSpawner implements Spawner {
     }
 
 
-    //TODO: Texture dependent on biome, waiting for different NPC textures
     public String setTexture(int type) {
         switch (type) {
             case 0: {
@@ -42,10 +40,10 @@ public class NPCSpawner implements Spawner {
             case 1: {
                 return "storyWater.png";
             }
-            case 2: {
+            case 3: {
                 return "storySnow.png";
             }
-            case 3: {
+            case 2: {
                 return "storyFire.png";
             }
         }
