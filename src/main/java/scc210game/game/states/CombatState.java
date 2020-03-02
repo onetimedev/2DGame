@@ -55,7 +55,7 @@ public class CombatState extends BaseInGameState {
     public Transition handleEvent(StateEvent evt, World world) {
         if(evt instanceof ExitCombatState)
         {
-            world.ecs.eventQueue.broadcast(new LeaveCombatEvent());
+            world.ecs.eventQueue.broadcast(new LeaveCombatEvent(new Scoring(0,0,0), 0));  //TODO:
         }
         return super.handleEvent(evt, world);
     }
