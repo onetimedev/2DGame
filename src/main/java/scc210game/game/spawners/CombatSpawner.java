@@ -66,6 +66,7 @@ public class CombatSpawner implements Spawner {
                             Texture t = new Texture();
                             try {
                                 //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
+                                System.out.println();
                                 t.loadFromFile(Paths.get(image.getPath()));
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {

@@ -24,13 +24,9 @@ import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
-import scc210game.game.systems.PositionUpdateSystem;
+import scc210game.game.systems.*;
 import scc210game.game.resources.ItemIDCounterResource;
 import scc210game.game.states.MainMenuState;
-import scc210game.game.systems.DialogueHandlingSystem;
-import scc210game.game.systems.InventoryLeaveHandler;
-import scc210game.game.systems.ItemMoveHandler;
-import scc210game.game.systems.ToolTipHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +67,7 @@ public class Main {
                 ItemMoveHandler::new,
                 ToolTipHandler::new,
                 InventoryLeaveHandler::new,
+                CombatLeaveHandler::new,
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
