@@ -39,21 +39,25 @@ public class FinalBossSpawner implements Spawner {
     }
 
     private static void accept(Entity entity, RenderWindow window, World world) {
-        var p = world.fetchComponent(entity, Position.class);
-        var textureStorage = world.fetchComponent(entity, TextureStorage.class);
-        var animation = world.fetchComponent(entity, Animate.class);
+        var enemy = world.fetchComponent(entity, Enemy.class);
+        if(!enemy.defeated) {
 
-        Sprite en = new Sprite(textureStorage.getTexture());
-        en.setPosition(p.xPos * 64, p.yPos * 64);
+            var p = world.fetchComponent(entity, Position.class);
+            var textureStorage = world.fetchComponent(entity, TextureStorage.class);
+            var animation = world.fetchComponent(entity, Animate.class);
 
-        var numFrames = (textureStorage.getTexture().getSize().x / 192);
+            Sprite en = new Sprite(textureStorage.getTexture());
+            en.setPosition(p.xPos * 64, p.yPos * 64);
 
-        var frame = (int) Math.floor(animation.pctComplete * (float) numFrames);
+            var numFrames = (textureStorage.getTexture().getSize().x / 192);
 
-        int frameRow = frame / 8;
-        int frameCol = frame % 8;
-        en.setTextureRect(new IntRect(frameCol * 192, frameRow * 64, 192, 192));
+            var frame = (int) Math.floor(animation.pctComplete * (float) numFrames);
 
-        window.draw(en);
+            int frameRow = frame / 8;
+            int frameCol = frame % 8;
+            en.setTextureRect(new IntRect(frameCol * 192, frameRow * 64, 192, 192));
+
+            window.draw(en);
+        }
     }
 }
