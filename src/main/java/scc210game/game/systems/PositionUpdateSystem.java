@@ -432,9 +432,6 @@ public class PositionUpdateSystem implements System {
 			}
 
 
-			var playerTexture = world.fetchComponent(enemy, TextureStorage.class);
-
-
 			// Getting inventory to get currently equipped item to pass into combat
 			var invEntO = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst();
 			if (!invEntO.isPresent())
@@ -450,7 +447,7 @@ public class PositionUpdateSystem implements System {
 
 			java.lang.System.out.println(enemyDamage.damage);
 
-			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, itemTextureStorage, background, enemyDamage.damage));
+			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, itemTextureStorage, background, enemyDamage.damage, enemy));
 
 	}
 

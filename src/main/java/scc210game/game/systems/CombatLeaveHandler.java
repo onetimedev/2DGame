@@ -14,6 +14,7 @@ import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.game.components.Dialogue;
 import scc210game.game.components.PlayerLocked;
 import scc210game.game.events.DialogueCreateEvent;
+import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 
 import javax.annotation.Nonnull;
@@ -56,10 +57,35 @@ public class CombatLeaveHandler implements System {
 
 		var scoring = world.fetchComponent(player, Scoring.class);
 
-	
 		LeaveCombatEvent evt = (LeaveCombatEvent) e;
+
+		java.lang.System.out.println("Scoring: " + scoring);
+		java.lang.System.out.println("Event: " + evt);
+		java.lang.System.out.println("Evt Score: " + evt.score);
 		scoring.playerExperience = evt.score.playerExperience;
 
 
 	}
+
+	private String combatEndDialoo(int id) {
+		return "";
+	}
+
+
+	private void enemyDefeated(int id, World world) {
+		var mapEnt0 = world.applyQuery(Query.builder().require(Map.class).build()).findFirst();
+		if (!mapEnt0.isPresent())
+			return;
+		var map = mapEnt0.get();
+		var mapComp = world.fetchComponent(map, Map.class);
+
+
+
+
+
+	}
+
+
+
+
 }
