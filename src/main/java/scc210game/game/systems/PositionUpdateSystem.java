@@ -426,10 +426,10 @@ public class PositionUpdateSystem implements System {
 			}
 
 
-			// TextureStorage weapon = ;  //TODO: waiting for player currently selected item
+			//TextureStorage weapon =  world.fetchComponent(player, SelectedWeaponInventory.class);;  //TODO: waiting for player currently selected item
 			Scoring scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
 
-			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, null, background, enemyDamage.damage));
+			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, new TextureStorage("src/main/resources/textures/Basic-Sword.png"), background, enemyDamage.damage));
 
 	}
 

@@ -3,6 +3,7 @@ package scc210game.game.states;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
+import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.Transition;
@@ -71,6 +72,10 @@ public class MainGameState extends BaseInGameState {
 		if(evt instanceof TriggerCombatEvent){
 			TriggerCombatEvent evt1 = (TriggerCombatEvent) evt;
 			return new TransPush(new CombatState(evt1.scores, evt1.textureName, evt1.weapon, evt1.background, evt1.enemyDamage));
+		}
+
+		if(evt instanceof LeaveCombatEvent){
+			System.out.println("Left combat in map");
 		}
 
 		return super.handleEvent(evt, world);
