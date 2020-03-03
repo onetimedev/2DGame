@@ -41,7 +41,7 @@ public class MainGameState extends BaseInGameState {
         // Spawning of all Enemies
         int id = 0;
         for (final Tile tile : map.getEnemyTiles()) {
-            world.entityBuilder().with(new EnemySpawner(tile, 5, id)).build();
+            world.entityBuilder().with(new EnemySpawner(tile, 10, id)).build();
             id++;
         }
 
@@ -51,12 +51,19 @@ public class MainGameState extends BaseInGameState {
 
         int count = 0;
         for (final Vector2i[] v : map.getBossCoords()) {
-            world.entityBuilder().with(new BossSpawner(v, count, map, 10, id)).build();
+            world.entityBuilder().with(new BossSpawner(v, count, map, 15, id)).build();
             count++;
             id++;
         }
 
-        world.entityBuilder().with(new FinalBossSpawner(15, id)).build();
+
+				Vector2i[] fBossTiles = {new Vector2i(59,59), new Vector2i(60,59), new Vector2i(61,59),
+				new Vector2i(59,60), new Vector2i(60,60), new Vector2i(61,60),
+				new Vector2i(59, 61), new Vector2i(60, 61), new Vector2i(61, 61)};
+				for (Vector2i v: fBossTiles) {
+					map.getTile(v.x,v.y).setHasEnemy(true);
+				}
+        world.entityBuilder().with(new FinalBossSpawner(20, id)).build();
 
     }
 

@@ -19,7 +19,6 @@ import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
 import scc210game.engine.audio.Audio;
 import javax.annotation.Nonnull;
-import javax.swing.*;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -213,10 +212,11 @@ public class PositionUpdateSystem implements System {
 				if(t == null)
 					continue;
 				if (t.getHasEnemy()) {  // Enemy checks
-					if(t.getTextureName().contains("final")) {
+
+					if(t.getTextureName().contains("basalt")) {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, Enemy.class, 5)),  //hardcoded biometype
+								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, FinalBoss.class, 9)),  //hardcoded biometype
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
@@ -363,8 +363,6 @@ public class PositionUpdateSystem implements System {
 		java.lang.System.out.println("Zoomed in");
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = true;
-
-		java.lang.System.out.println("Type: " + type + ", Biome: " + biome);
 
 		return new DialogueMessage(type, biome).getMessage();
 	}

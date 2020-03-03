@@ -104,6 +104,7 @@ public class DialogueMessage {
 					"No longer being stressed by an elemental presence that had made such a beautiful place inhospitable.\n" +
 					"Now communities will be able to return and live as they once did, it is much closer to being home again.";
 
+			s += "\n\n----- Press Q or ENTER to Continue -----";
 			return s;
 		}
 
@@ -112,6 +113,7 @@ public class DialogueMessage {
 				"Leaving only the natural dangers plaguing a travellers path.\n" +
 				"Another step towards reclaiming your home from these elementals that have driven so many away and decimated what once were thriving villages.";
 
+		s += "\n\n----- Press Q or ENTER to Continue -----";
 		return s;
 	}
 
@@ -119,6 +121,8 @@ public class DialogueMessage {
 		String s = "Once again the forests erupted with noise, it almost seemed as though the many creatures were sending their thanks.\n" +
 				"Even the grass seemingly started to move with the wind, no longer being stopped by such a monster.\n" +
 				"Removing such a terror and drain on the earth element can only help to restore your home to what it once was.";
+
+		s += "\n\n----- Press Q or ENTER to Continue -----";
 		return s;
 	}
 
@@ -127,6 +131,7 @@ public class DialogueMessage {
 				"Now perhaps these idyllic sands will be inhabitable again by those who choose to return to their lives here.\n" +
 				"Restoring the populations trust that these elementals are truly gone will be challenging however.";
 
+		s += "\n\n----- Press Q or ENTER to Continue -----";
 		return s;
 	}
 
@@ -135,6 +140,7 @@ public class DialogueMessage {
 				"Controlling the elements and taking the land and homes of generations was no more. No longer would your home be threatening or dangerous.\n" +
 				"Now the communities and lives can be restored, with the trust that such elementals are gone. Time will tell how impactful the reign of these creatures has been.";
 
+		s += "\n\n----- Press Q or ENTER to Continue -----";
 		return s;
 	}
 

@@ -43,7 +43,6 @@ public class MapHelper {
 			map.getTile(v.x, v.y).setHasCollision(collision);
 			map.getTile(v.x, v.y).setHasEnemy(enemy);
 		}
-		System.out.println("DONE CHANGING TILES");
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package scc210game.game.systems;
 
-import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.*;
@@ -14,10 +13,8 @@ import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
-
 import javax.annotation.Nonnull;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -143,7 +140,6 @@ public class CombatLeaveHandler implements System {
 						msg = dm.getGrassBossDefeatDialogue();
 						Vector2i[] fBossTiles = {new Vector2i(8,65), new Vector2i(9,65), new Vector2i(8,66), new Vector2i(9,66)};
 						MapHelper.changeTiles(mapComp, fBossTiles, "grass.png", false, false);
-						java.lang.System.out.println("TILES CHANGED" + mapComp.getTile(fBossTiles[0].x, fBossTiles[0].y));
 					}
 					else if (textureName.contains("water")) {
 						msg = dm.getWaterBossDefeatDialogue();
@@ -178,10 +174,42 @@ public class CombatLeaveHandler implements System {
 			}
 		});
 
+
+		unlockFinalBoss(world, mapComp);
+
 		return msg;  // Return dialogue message for defeated enemy
 	}
 
 
+	/**
+	 * Method to change the barrier tiles to path tiles to access the final boss area
+	 * @param world the world for thos state
+	 * @param map the map component
+	 */
+	private void unlockFinalBoss(World world, Map map) {
+		Query q = Query.builder()  // To get all entities that are enemies
+				.require(Boss.class)
+				.build();
+
+		Stream<Entity> bossEntities = world.applyQuery(q);
+		Entity[] bossEntArr = bossEntities.toArray(Entity[]::new);
+		int defeatedCount = 0;
+
+		for (Entity boss: bossEntArr) {
+			var bossEnemyComp = world.fetchComponent(boss, Enemy.class);
+			if(bossEnemyComp.defeated)
+				defeatedCount++;
+		}
+
+		if(defeatedCount == 4) {
+			Vector2i[] tiles = {new Vector2i(54,63), new Vector2i(55,64), new Vector2i(56,65),
+			new Vector2i(64,65), new Vector2i(65,64), new Vector2i(66,63)};
+			MapHelper.changeTiles(map, tiles, "path.png", false, false);
+
+		}
+
+
+	}
 
 
 
