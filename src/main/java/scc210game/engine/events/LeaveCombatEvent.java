@@ -9,6 +9,6 @@ public class LeaveCombatEvent extends Event {
 
     public LeaveCombatEvent(Scoring score, int winner)
     {
-        
+
     }
 }

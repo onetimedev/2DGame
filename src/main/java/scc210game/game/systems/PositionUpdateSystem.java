@@ -387,40 +387,40 @@ public class PositionUpdateSystem implements System {
 		var enemyDamage = world.fetchComponent(player, Enemy.class);
 
 		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
-
+		String root = "src/main/resources/";
 		String textureName = "";
 		String background = "";
 		switch(biomeType) {
 				case 0: {
 					background = "textures/Combat/combat-bground-grass.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = "Earth-Boss-Combat-Animation-LARGE.png";
+						textureName = root + "Earth-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = "Earth-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + "Earth-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 1: {
 					background = "textures/Combat/combat-background-water.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = "Water-Boss-Combat-Animation-LARGE.png";
+						textureName = root + "Water-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = "Water-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + "Water-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 2: {
 					background = "textures/Combat/combat-background-lava.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = "Fire-Boss-Combat-Animation-LARGE.png";
+						textureName = root + "Fire-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = "Fire-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + "Fire-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 3: {
 					background = "textures/Combat/combat-background-ice.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = "Ice-Boss-Combat-Animation-LARGE.png";
+						textureName = root + "Ice-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = "Ice-Enemy-Combat-Animation-LARGE.png";
+						textureName = root +"Ice-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 			}

@@ -3,6 +3,8 @@ package scc210game.engine.combat;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
+import scc210game.engine.events.ExitCombatState;
+import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatPlayerWeapon;
 
@@ -193,7 +195,7 @@ public class CombatAnimator {
         animationCounter = 0;
         animationMax = 0;
         scheduledExecutorService.shutdown();
-
+        world.ecs.acceptEvent(new ExitCombatState());
 
     }
     private void continueXAxisAnimation()

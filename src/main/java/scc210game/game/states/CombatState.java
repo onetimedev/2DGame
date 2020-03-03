@@ -5,6 +5,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.events.ExitCombatState;
 import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.state.event.StateEvent;
+import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayerWeapon;
@@ -60,6 +61,7 @@ public class CombatState extends BaseInGameState {
         if(evt instanceof ExitCombatState)
         {
             world.ecs.eventQueue.broadcast(new LeaveCombatEvent(new Scoring(0,0,0), 0));  //TODO:
+            return TransPop.getInstance();
         }
         return super.handleEvent(evt, world);
     }
