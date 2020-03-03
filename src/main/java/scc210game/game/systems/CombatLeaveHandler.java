@@ -2,10 +2,8 @@ package scc210game.game.systems;
 
 
 import scc210game.engine.combat.Scoring;
-import scc210game.engine.ecs.ECS;
-import scc210game.engine.ecs.Query;
+import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.System;
-import scc210game.engine.ecs.World;
 import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.events.LeaveCombatEvent;
@@ -18,6 +16,7 @@ import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 
 import javax.annotation.Nonnull;
+
 import java.time.Duration;
 import java.util.Iterator;
 
@@ -64,15 +63,28 @@ public class CombatLeaveHandler implements System {
 		java.lang.System.out.println("Evt Score: " + evt.score);
 		scoring.playerExperience = evt.score.playerExperience;
 
+		//evt.enemy
+		if(evt.playerWins) {
+			enemyDefeated(evt.enemy, world);
+			combatEndDialog(true);
+		}
+		else
+			combatEndDialog(false);
+
+
+
 
 	}
 
-	private String combatEndDialoo(int id) {
+	private String combatEndDialog(boolean playerWin) {
+		if(playerWin)
+			java.lang.System.out.println("yup");
+
 		return "";
 	}
 
 
-	private void enemyDefeated(int id, World world) {
+	private void enemyDefeated(Entity enemy, World world) {
 		var mapEnt0 = world.applyQuery(Query.builder().require(Map.class).build()).findFirst();
 		if (!mapEnt0.isPresent())
 			return;
