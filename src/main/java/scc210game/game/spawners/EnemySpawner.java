@@ -85,25 +85,26 @@ public class EnemySpawner implements Spawner {
     }
 
     private static void accept(Entity entity, RenderWindow window, World world) {
-      //if(defeated == false) {  //TODO: Get if specific enemy has been defeated
+      var enemy = world.fetchComponent(entity, Enemy.class);
+      if(!enemy.defeated) {  //TODO: Get if specific enemy has been defeated
 
-      var position = world.fetchComponent(entity, Position.class);
-      var textureStorage = world.fetchComponent(entity, TextureStorage.class);
-      var animation = world.fetchComponent(entity, Animate.class);
+        var position = world.fetchComponent(entity, Position.class);
+        var textureStorage = world.fetchComponent(entity, TextureStorage.class);
+        var animation = world.fetchComponent(entity, Animate.class);
 
-      Sprite en = new Sprite(textureStorage.getTexture());
-      en.setPosition(position.xPos * 64, position.yPos * 64);
+        Sprite en = new Sprite(textureStorage.getTexture());
+        en.setPosition(position.xPos * 64, position.yPos * 64);
 
-      var numFrames = (textureStorage.getTexture().getSize().x / 64);
+        var numFrames = (textureStorage.getTexture().getSize().x / 64);
 
-      var frame = (int) Math.floor(animation.pctComplete * (float) numFrames);
+        var frame = (int) Math.floor(animation.pctComplete * (float) numFrames);
 
-      int frameRow = frame / 8;
-      int frameCol = frame % 8;
-      en.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
+        int frameRow = frame / 8;
+        int frameCol = frame % 8;
+        en.setTextureRect(new IntRect(frameCol * 64, frameRow * 64, 64, 64));
 
-      window.draw(en);
+        window.draw(en);
 
-      //}
+      }
     }
 }

@@ -64,11 +64,12 @@ public class CombatLeaveHandler implements System {
 		java.lang.System.out.println("Evt Score: " + evt.score);
 		scoring.playerExperience = evt.score.playerExperience;
 
+		world.deactivateCombat();
+
 		DialogueMessage dl = new DialogueMessage();
 
-		//evt.enemy
 		if(evt.playerWins) {
-			//enemyDefeated(evt.enemy, world);
+			enemyDefeated(evt.enemy, world);
 			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getVictoryDialogue(),
 					(en, w) -> DialogueHelper.refuse(world, player),
 					(en, w) -> DialogueHelper.refuse(world, player)));
@@ -97,6 +98,7 @@ public class CombatLeaveHandler implements System {
 			return;
 		var map = mapEnt0.get();
 		var mapComp = world.fetchComponent(map, Map.class);
+
 
 
 
