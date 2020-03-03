@@ -6,10 +6,11 @@ import scc210game.engine.state.event.StateEvent;
 public class LeaveCombatEvent extends StateEvent {
 
     public Scoring score;
-    public int winner;
+    public int enemyId;
 
-    public LeaveCombatEvent(Scoring score, int winner)
+    public LeaveCombatEvent(Scoring score, int enemyId)
     {
-
+        this.score = score;
+        this.enemyId = enemyId;
     }
 }
