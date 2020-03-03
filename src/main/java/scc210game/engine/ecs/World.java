@@ -215,7 +215,9 @@ public class World {
     @Nonnull
     @SuppressWarnings("unchecked")
     public <T extends Component> T fetchComponent(Entity e, Class<T> componentType) {
-        return (T) this.componentMaps.get(e).get(componentType);
+        var classComponentMap = this.componentMaps.get(e);
+        assert classComponentMap != null : String.format("Entity: %s does not have component: %s", e, componentType.getName());
+        return (T) classComponentMap.get(componentType);
     }
 
     /**

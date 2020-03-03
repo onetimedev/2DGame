@@ -166,6 +166,14 @@ public class Inventory extends Component {
                 ", freeSlots=" + freeSlots +
                 '}';
     }
+
+    @Override
+    public Inventory copy() {
+        var inv = new Inventory(slotCount);
+        this.items().forEach(t ->
+                inv.addItemToSlot(t.l, t.r));
+        return inv;
+    }
 }
 
 
