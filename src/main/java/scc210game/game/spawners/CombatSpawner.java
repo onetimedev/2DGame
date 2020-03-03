@@ -70,7 +70,7 @@ public class CombatSpawner implements Spawner {
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
                                     this.image = new Sprite(t);
-                                    this.image.setScale(new Vector2f(5.61f, 5.61f));
+                                    //this.image.setScale(new Vector2f(5.61f, 5.61f));
                                 }
                                 else
                                 {
@@ -78,6 +78,7 @@ public class CombatSpawner implements Spawner {
                                     var state = w.fetchComponent(spriteState, CombatSprite.class);
                                     if(System.currentTimeMillis() >= state.nextChange && state.signal){
                                         this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
+                                        System.out.println(t.getSize().x);
                                         if(state.state < 3) {
                                             state.nextChange = System.currentTimeMillis() + 60;
                                             state.state++;
