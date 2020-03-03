@@ -432,14 +432,25 @@ public class PositionUpdateSystem implements System {
 			}
 
 
-		var playerTexture = world.fetchComponent(enemy, TextureStorage.class);
+			var playerTexture = world.fetchComponent(enemy, TextureStorage.class);
 
-		//TextureStorage weapon =  world.fetchComponent(player, SelectedWeaponInventory.class);;  //TODO: waiting for player currently selected item
+
+			// Getting inventory to get currently equipped item to pass into combat
+			var invEntO = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst();
+			if (!invEntO.isPresent())
+				return;
+			var invEnt = invEntO.get();
+			var invComp = world.fetchComponent(invEnt, Inventory.class);
+
+			var item = findItem(invComp.items().findFirst().orElseThrow().l, world);  // Isolate item entity from stream of items
+
+			var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
+
 			Scoring scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
 
 			java.lang.System.out.println(enemyDamage.damage);
 
-			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, playerTexture, background, enemyDamage.damage));
+			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, itemTextureStorage, background, enemyDamage.damage));
 
 	}
 
@@ -454,6 +465,25 @@ public class PositionUpdateSystem implements System {
 		view.mainView.zoom(1f/0.6f);
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
+	}
+
+
+	/**
+	 * Method taken from InventoryViewStateMethods, needed here for SelectedWeaponInventory
+	 * @param itemID
+	 * @param world
+	 * @return
+	 */
+	protected Entity findItem(int itemID, World world) {
+		Query itemQuery = Query.builder()
+				.require(Item.class)
+				.build();
+
+		return world.applyQuery(itemQuery)
+				.filter(e -> world.hasComponent(e, Item.class))
+				.filter(e -> world.fetchComponent(e, Item.class).itemID == itemID)
+				.findFirst()
+				.orElseThrow();
 	}
 
 }
