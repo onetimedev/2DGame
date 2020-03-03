@@ -10,23 +10,24 @@ public class Enemy extends Component {
 
     public boolean defeated = false;
     public int damage = 1;
-
+    public int id;
     static {
         register(Enemy.class, j -> {
             var json = (JsonObject) j;
-            return new Enemy((Boolean) json.get("defeated"), (int) json.get("damage"));
+            return new Enemy((Boolean) json.get("defeated"), (int) json.get("damage"), (int) json.get("id"));
         });
     }
 
 
     @Override
     public Jsonable serialize() {
-        return new JsonObject(Map.of("defeated", this.defeated, "damage", this.damage));
+        return new JsonObject(Map.of("defeated", this.defeated, "damage", this.damage, "id", this.id));
     }
 
 
-    public Enemy(boolean defeat, int damage) {
+    public Enemy(boolean defeat, int damage, int id) {
         this.defeated = defeat;
+        this.id = id;
         this.damage = damage;
     }
 }

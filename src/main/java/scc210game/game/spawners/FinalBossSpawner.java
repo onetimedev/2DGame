@@ -20,15 +20,16 @@ import java.util.Set;
 public class FinalBossSpawner implements Spawner {
 
     private int damage;
-
-    public FinalBossSpawner(int dmg) {
+    private int id;
+    public FinalBossSpawner(int dmg, int id) {
         damage = dmg;
+        this.id = id;
     }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
-                .with(new Enemy(false, this.damage))
+                .with(new Enemy(false, this.damage, this.id))
                 .with(new FinalBoss())
                 .with(new Position(59, 59))
                 .with(new TextureStorage("textures/map/boss_final.png"))

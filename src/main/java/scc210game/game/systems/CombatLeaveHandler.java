@@ -42,5 +42,9 @@ public class CombatLeaveHandler implements System {
 	private void handleEvent(World world, Event e) {
 		java.lang.System.out.println("Left combat in map");
 
+		LeaveCombatEvent evt = (LeaveCombatEvent) e;
+
+		java.lang.System.out.println("player health after fight; " + evt.score.getPlayerAbsHealth());
+
 	}
 }
