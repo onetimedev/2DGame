@@ -10,6 +10,7 @@ public class LeaveCombatEvent extends StateEvent {
 
     public LeaveCombatEvent(Scoring score, int winner)
     {
-
+        this.score = score;
+        this.winner = winner;
     }
 }
