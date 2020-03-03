@@ -51,7 +51,7 @@ public class CombatState extends BaseInGameState {
         world.entityBuilder().with(new Scoring(scores.getPlayerExperience(), scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth())).build();
         world.entityBuilder().with(new CombatResources()).build();
 
-        new EnemyController(world, CombatEnemy.class, CombatPlayerWeapon.class, 3).start();
+        new EnemyController(world, CombatEnemy.class, 3).start();
 
     }
 

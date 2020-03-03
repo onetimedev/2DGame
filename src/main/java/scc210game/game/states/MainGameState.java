@@ -74,6 +74,7 @@ public class MainGameState extends BaseInGameState {
 			return new TransPush(new CombatState(evt1.scores, evt1.textureName, evt1.weapon, evt1.background, evt1.enemyDamage));
 		}
 
+
 		return super.handleEvent(evt, world);
 
 
