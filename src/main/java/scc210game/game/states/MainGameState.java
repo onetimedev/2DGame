@@ -7,6 +7,8 @@ import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.Transition;
+import scc210game.game.events.DialogueCreateEvent;
+import scc210game.game.map.DialogueMessage;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
@@ -65,7 +67,12 @@ public class MainGameState extends BaseInGameState {
 				}
         world.entityBuilder().with(new FinalBossSpawner(20, id)).build();
 
-    }
+
+				world.eventQueue.broadcast(new DialogueCreateEvent(new DialogueMessage().getIntroDialogue(),
+						(e, w) -> System.out.println(""),
+						(e, w) -> System.out.println("")));
+	}
+
 
 	@Override
 	public Transition handleEvent(StateEvent evt, World world) {
