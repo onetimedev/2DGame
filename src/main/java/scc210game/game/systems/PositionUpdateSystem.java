@@ -370,8 +370,13 @@ public class PositionUpdateSystem implements System {
 
 		java.lang.System.out.println("Chest State Initiated");
 		var playerInv = world.fetchComponent(player, Inventory.class);
+
+
+		var selectedWeapon = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst().orElseThrow();
+		var sw = world.fetchComponent(selectedWeapon, Inventory.class);
+
 		var targetInv = world.fetchComponent(target, Inventory.class);
-		world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, targetInv, player, target));
+		world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, targetInv, player, selectedWeapon, target));
 	}
 
 

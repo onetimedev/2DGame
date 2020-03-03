@@ -36,6 +36,11 @@ public class PlayerSpawner implements Spawner {
 
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
+		world.entityBuilder()
+				.with(new Inventory(1))
+				.with(new SelectedWeaponInventory())
+				.build();
+
 		return builder
 				.with(new Player())
 				.with(new Inventory(5))

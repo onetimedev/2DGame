@@ -61,12 +61,12 @@ public class MainGameState extends BaseInGameState {
 	public Transition handleEvent(StateEvent evt, World world) {
 		if (evt instanceof EnterInventoryEvent) {
 			EnterInventoryEvent evt1 = (EnterInventoryEvent) evt;
-			return new TransPush(new InventoryViewState(world, evt1.invEnt, evt1.inv));
+			return new TransPush(new InventoryViewState(world, evt1.invEnt, evt1.inv, evt1.selectedItemEnt, evt1.selectedItemInventory));
 		}
 
 		if (evt instanceof EnterTwoInventoryEvent) {
 			EnterTwoInventoryEvent evt1 = (EnterTwoInventoryEvent) evt;
-			return new TransPush(new TwoInventoryViewState(world, evt1.inv0Ent, evt1.inv0, evt1.inv1Ent, evt1.inv1));
+			return new TransPush(new TwoInventoryViewState(world, evt1.inv0Ent, evt1.inv0, evt1.selectedItemEnt, evt1.selectedItemInventory, evt1.inv1Ent, evt1.inv1));
 		}
 
 		if(evt instanceof TriggerCombatEvent){

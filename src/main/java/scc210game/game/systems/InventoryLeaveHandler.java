@@ -31,7 +31,7 @@ public class InventoryLeaveHandler implements System {
             if (e instanceof InventoryUpdateEvent) {
                 InventoryUpdateEvent e1 = (InventoryUpdateEvent) e;
                 for (var inv: e1.inventories) {
-                    var srcInv = world.fetchComponent(inv.l, Inventory.class);
+                    var srcInv = world.fetchComponent(inv.l, inv.r.getClass());
                     srcInv.clear();
 
                     inv.r.items().forEach(t -> srcInv.addItemToSlot(t.l, t.r));

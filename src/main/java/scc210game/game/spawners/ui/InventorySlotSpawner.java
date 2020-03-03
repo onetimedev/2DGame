@@ -27,14 +27,16 @@ public class InventorySlotSpawner implements Spawner {
     private final float height;
     private final Inventory inventory;
     private final int slotID;
+    private final Color slotColour;
 
-    public InventorySlotSpawner(float x, float y, float width, float height, Inventory inventory, int slotID) {
+    public InventorySlotSpawner(float x, float y, float width, float height, Inventory inventory, int slotID, Color slotColour) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.inventory = inventory;
         this.slotID = slotID;
+        this.slotColour = slotColour;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class InventorySlotSpawner implements Spawner {
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
 
-                    var fillColour = w.hasComponent(e, UIHovered.class) ? new Color(130, 90, 50) : new Color(120, 90, 55);  //138,88,53
+                    var fillColour = w.hasComponent(e, UIHovered.class) ? this.slotColour.brighter() : this.slotColour;  //138,88,53
 
                     var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
