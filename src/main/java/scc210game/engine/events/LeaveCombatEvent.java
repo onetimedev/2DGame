@@ -7,14 +7,13 @@ import scc210game.engine.state.event.StateEvent;
 public class LeaveCombatEvent extends StateEvent {
 
     public Scoring score;
-    public int enemyId;
-
     public Entity enemy;
+    public boolean playerWins;
 
-    public LeaveCombatEvent(Scoring score, int enemyId, Entity enemy)
+    public LeaveCombatEvent(Scoring score, Entity enemy, boolean playerWins)
     {
         this.score = score;
-        this.enemyId = enemyId;
         this.enemy = enemy;
+        this.playerWins = playerWins;
     }
 }
