@@ -6,9 +6,9 @@ import scc210game.engine.ecs.Component;
 public class Scoring extends Component {
 
 
-    private int playerExperience;
-    private int playerHealth;
-    private int enemyHealth;
+    public int playerExperience;
+    public int playerHealth;
+    public int enemyHealth;
     private static int maxHealth = 100;
 
     public Scoring(int playerExperience, int playerHealth, int enemyHealth)
