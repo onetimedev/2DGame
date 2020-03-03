@@ -9,6 +9,10 @@ public class DialogueMessage {
 
 	private String message = "";
 
+	public DialogueMessage() {
+
+	}
+
 	// Enemy = 0, NPC = 1, Chest = 2, Boss = 3, FinalBoss = 4
 	//Grass = 0, Water = 1, Fire = 2, Ice = 3
 	public DialogueMessage(int entityType, int biome) {
@@ -134,6 +138,10 @@ public class DialogueMessage {
 		return s;
 	}
 
+	public String getNoEquippedWeapon() {
+		return "Please equip a weapon to fight with!\n\n----- Press Q or ENTER to Continue -----";
+	}
+
 
 		//Grass = 0, Water = 1, Fire = 2, Ice = 3
 		private void npcDialogue(int biome) {
@@ -215,8 +223,33 @@ public class DialogueMessage {
 	}
 
 
+	public String getVictoryDialogue() {
+		String s = "";
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("A hard fought battle, through skill you have succeeded!");
+		possDialogs.add("Another creature that can no longer plague your home!");
+		possDialogs.add("A convincing victory!");
 
-		//Grass = 0, Water = 1, Fire = 2, Ice = 3
+		s += possDialogs.get(randomMessage(possDialogs.size()));
+		s += "\n\n----- Press Q or ENTER to Continue -----";
+		return s;
+	}
+
+
+	public String getDefeatDialogue() {
+		String s = "";
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("The light begins to fade, perhaps they are too strong.");
+		possDialogs.add("It seems only the best weapons will suffice to defeat such a foe!");
+
+		s += possDialogs.get(randomMessage(possDialogs.size()));
+		s += "\n\n----- Press Q or ENTER to Respawn -----";
+		return s;
+	}
+
+
+
+	//Grass = 0, Water = 1, Fire = 2, Ice = 3
 		private void bossDialogue(int biome) {
 			switch (biome) {
 				case 0: {

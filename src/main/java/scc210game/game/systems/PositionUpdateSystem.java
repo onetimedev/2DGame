@@ -15,6 +15,7 @@ import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
+import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
 import scc210game.engine.audio.Audio;
 import javax.annotation.Nonnull;
@@ -216,21 +217,21 @@ public class PositionUpdateSystem implements System {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, Enemy.class)),  //hardcoded biometype
-								(e, w) -> refuse(world, playerEnt)));
+								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class)),
-								(e, w) -> refuse(world, playerEnt)));
+								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class)),
-								(e, w) -> refuse(world, playerEnt)));
+								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					steps.oldCount = steps.count;
 					break;
@@ -241,7 +242,7 @@ public class PositionUpdateSystem implements System {
 					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> acceptChest(world, playerEnt, chestEnt),
-							(e, w) -> refuse(world, playerEnt)));
+							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -249,8 +250,8 @@ public class PositionUpdateSystem implements System {
 					java.lang.System.out.println("NPC nearby");
 					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> refuse(world, playerEnt),
-							(e, w) -> refuse(world, playerEnt)));
+							(e, w) -> DialogueHelper.refuse(world, playerEnt),
+							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -434,34 +435,28 @@ public class PositionUpdateSystem implements System {
 
 
 			// Getting inventory to get currently equipped item to pass into combat
+
 			var invEntO = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst();
 			if (!invEntO.isPresent())
 				return;
 			var invEnt = invEntO.get();
 			var invComp = world.fetchComponent(invEnt, Inventory.class);
 
-			var item = findItem(invComp.items().findFirst().orElseThrow().l, world);  // Isolate item entity from stream of items
+			try {
+				var item = findItem(invComp.items().findFirst().orElseThrow().l, world);  // Isolate item entity from stream of items
+				var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
+				var scores = world.fetchComponent(player, Scoring.class);
+				world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, itemTextureStorage, background, enemyDamage.damage, enemy));
+			}
+			catch(NoSuchElementException e) {
+				DialogueMessage dl = new DialogueMessage();
+				world.eventQueue.broadcast(new DialogueCreateEvent(dl.getNoEquippedWeapon(),
+						(en, w) -> DialogueHelper.refuse(world, player),
+						(en, w) -> DialogueHelper.refuse(world, player)));
+			}
 
-			var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
 
 
-			var scores = world.fetchComponent(player, Scoring.class);
-
-			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, itemTextureStorage, background, enemyDamage.damage, enemy));
-
-	}
-
-
-	/**
-	 * Method triggered upon player refusal of an entities dialogue option.
-	 * @param world the world for this state
-	 * @param player the player entity
-	 */
-	public void refuse(World world, Entity player) {
-		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(1f/0.6f);
-		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
-		positionLocked.locked = false;
 	}
 
 

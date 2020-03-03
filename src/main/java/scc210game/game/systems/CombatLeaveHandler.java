@@ -8,12 +8,13 @@ import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.render.MainViewResource;
-import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.game.components.Dialogue;
 import scc210game.game.components.PlayerLocked;
 import scc210game.game.events.DialogueCreateEvent;
+import scc210game.game.map.DialogueMessage;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
+import scc210game.game.utils.DialogueHelper;
 
 import javax.annotation.Nonnull;
 
@@ -49,10 +50,10 @@ public class CombatLeaveHandler implements System {
 			return;
 		var player = playerEntO.get();
 
-		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(1f/0.6f);
-		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
-		positionLocked.locked = false;
+		//var view = world.fetchGlobalResource(MainViewResource.class);
+		//view.mainView.zoom(1f/0.6f);
+		//var positionLocked = world.fetchComponent(player, PlayerLocked.class);
+		//positionLocked.locked = false;
 
 		var scoring = world.fetchComponent(player, Scoring.class);
 
@@ -63,24 +64,30 @@ public class CombatLeaveHandler implements System {
 		java.lang.System.out.println("Evt Score: " + evt.score);
 		scoring.playerExperience = evt.score.playerExperience;
 
+		DialogueMessage dl = new DialogueMessage();
+
 		//evt.enemy
 		if(evt.playerWins) {
-			enemyDefeated(evt.enemy, world);
-			combatEndDialog(true);
+			//enemyDefeated(evt.enemy, world);
+			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getVictoryDialogue(),
+					(en, w) -> DialogueHelper.refuse(world, player),
+					(en, w) -> DialogueHelper.refuse(world, player)));
+
+			//TODO: SET ENEMY to defeated
+			//TODO: Set tiles to no collision
+
 		}
-		else
-			combatEndDialog(false);
+		else {
+			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getDefeatDialogue(),
+					(en, w) -> DialogueHelper.refuse(world, player),  // TODO: Respawning / loss of items etc needs to be done here
+					(en, w) -> DialogueHelper.refuse(world, player))); // TODO: Respawning / loss of items etc needs to be done here OR
+
+			//TODO: Respawning here after dialogue closed
+		}
 
 
 
 
-	}
-
-	private String combatEndDialog(boolean playerWin) {
-		if(playerWin)
-			java.lang.System.out.println("yup");
-
-		return "";
 	}
 
 
