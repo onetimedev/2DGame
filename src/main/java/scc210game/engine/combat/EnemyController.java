@@ -20,7 +20,6 @@ public class EnemyController {
 
     private World w;
     private Class<? extends Component> spriteClass;
-    private Class<? extends Component> weaponClass;
     private boolean start = true;
     private boolean fight = true;
 
@@ -34,10 +33,9 @@ public class EnemyController {
     private int damage;
 
 
-    public EnemyController(World w, Class<? extends Component> spriteClass, Class<? extends Component> weaponClass, int damage){
+    public EnemyController(World w, Class<? extends Component> spriteClass, int damage){
         this.w = w;
         this.spriteClass = spriteClass;
-        this.weaponClass = weaponClass;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.damage = damage;
     }
@@ -70,11 +68,25 @@ public class EnemyController {
 
     }
 
+
+    public int maxFrame()
+    {
+        try{
+            Texture t = new Texture();
+            t.loadFromFile(Paths.get(getSprite().spriteImage));
+            return (t.getSize().x / t.getSize().y)-1;
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     private void animateSprite()
     {
         //scheduledExecutorService.schedule(this::animate, 200, TimeUnit.MILLISECONDS);
         getSprite().nextChange = System.currentTimeMillis() + 60;
-        if(getSprite().state < 3) {
+
+        if(getSprite().state < maxFrame()) {
             getSprite().state++;
         }
         getSprite().signal = true;

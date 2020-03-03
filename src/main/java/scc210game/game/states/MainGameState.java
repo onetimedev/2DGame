@@ -74,9 +74,6 @@ public class MainGameState extends BaseInGameState {
 			return new TransPush(new CombatState(evt1.scores, evt1.textureName, evt1.weapon, evt1.background, evt1.enemyDamage));
 		}
 
-		if(evt instanceof LeaveCombatEvent){
-			System.out.println("Left combat in map");
-		}
 
 		return super.handleEvent(evt, world);
 

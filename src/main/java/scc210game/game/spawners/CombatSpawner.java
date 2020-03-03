@@ -32,6 +32,13 @@ public class CombatSpawner implements Spawner {
 
     public CombatSpawner(SpriteType spriteInfo)
     {
+        try{
+            t.loadFromFile(Paths.get(spriteInfo.getTextureLocation()));
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
         this.spriteInfo = spriteInfo;
         if(!this.spriteInfo.getEnemyStatus())
         {
@@ -63,10 +70,8 @@ public class CombatSpawner implements Spawner {
                             var playerEnt = w.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
                             var image = w.fetchComponent(playerEnt, CombatImage.class);
 
-                            Texture t = new Texture();
-                            try {
                                 //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
-                                t.loadFromFile(Paths.get(image.getPath()));
+                                //t.loadFromFile(Paths.get(image.getPath()));
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
                                     this.image = new Sprite(t);
@@ -79,11 +84,12 @@ public class CombatSpawner implements Spawner {
                                     if(System.currentTimeMillis() >= state.nextChange && state.signal){
                                         this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
                                         System.out.println(t.getSize().x);
-                                        if(state.state < 3) {
+                                        int maxFrame = (t.getSize().x / t.getSize().y)-1;
+                                        if(state.state < maxFrame) {
                                             state.nextChange = System.currentTimeMillis() + 60;
                                             state.state++;
                                         }else{
-                                            state.state = 3;
+                                            state.state = maxFrame;
                                             this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
                                             state.signal = false;
                                         }
@@ -91,15 +97,10 @@ public class CombatSpawner implements Spawner {
                                         this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
                                     }
                                     //System.out.println(this.image.getGlobalBounds().height);
-                                    this.image.setScale(new Vector2f(1.3f,1.3f));
+                                    this.image.setScale(new Vector2f(1f,1f));
 
                                 }
 
-                            }
-                            catch (IOException error)
-                            {
-                                error.printStackTrace();
-                            }
                             var dimensions = w.fetchComponent(e, UITransform.class);
                             if(!this.spriteInfo.getEnemyStatus()) {
                                 this.image.setPosition(position.x*64, position.y*64);
