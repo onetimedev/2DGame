@@ -216,21 +216,21 @@ public class PositionUpdateSystem implements System {
 					if(t.getTextureName().contains("final")) {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, Enemy.class)),  //hardcoded biometype
+								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, Enemy.class, 5)),  //hardcoded biometype
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class)),
+								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Boss.class, 4)),
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
 						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class)),
+								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class, 1)),
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					steps.oldCount = steps.count;
@@ -238,7 +238,7 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveChest()) {  // Chest check
 					java.lang.System.out.println("Chest nearby");
-					var chestEnt = getEntityAtPos(world, t, Chest.class);
+					var chestEnt = getEntityAtPos(world, t, Chest.class, 1);
 					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> acceptChest(world, playerEnt, chestEnt),
@@ -267,10 +267,22 @@ public class PositionUpdateSystem implements System {
 	 * @param klass component class being searched for
 	 * @return
 	 */
-	private Entity getEntityAtPos(World world, Tile t, Class<? extends Component> klass) {
+	private Entity getEntityAtPos(World world, Tile t, Class<? extends Component> klass, int radius) {
 		return world.applyQuery(Query.builder().require(klass).build()).filter(e -> {
 			var pos = world.fetchComponent(e, Position.class);
-			return pos.xPos == t.getXPos() && pos.yPos == t.getYPos();
+
+			for(int i=0; i < radius; i++) {
+				if(pos.xPos == t.getXPos() && pos.yPos == t.getYPos()+i || pos.xPos == t.getXPos() && pos.yPos == t.getYPos() -i)
+					return true;
+				if(pos.xPos == t.getXPos() +i && pos.yPos == t.getYPos() || pos.xPos == t.getXPos() -i && pos.yPos == t.getYPos())
+					return true;
+				if(pos.xPos == t.getXPos()-i && pos.yPos == t.getYPos()-i || pos.xPos == t.getXPos() +i && pos.yPos == t.getYPos() +i)
+					return true;
+				if(pos.xPos == t.getXPos() -i && pos.yPos == t.getYPos() +i || pos.xPos == t.getXPos() +i && pos.yPos == t.getYPos() -i)
+					return true;
+			}
+
+			return (pos.xPos == t.getXPos() && pos.yPos == t.getYPos()) || (pos.xPos == t.getXPos() && pos.yPos == t.getYPos());
 		}).findFirst().orElseThrow();
 	}
 
