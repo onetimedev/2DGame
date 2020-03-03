@@ -5,6 +5,7 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Text;
 import org.jsfml.system.Vector2f;
 import scc210game.engine.ecs.Entity;
+import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.render.Renderable;
@@ -17,7 +18,11 @@ import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Item;
+import scc210game.game.components.Inventory;
+import scc210game.game.components.SelectedWeaponInventory;
+import scc210game.game.map.Player;
 import scc210game.game.spawners.WeaponSpawner;
+import scc210game.game.states.events.EnterInventoryEvent;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 
 import java.awt.*;
@@ -45,33 +50,11 @@ public class EnterInventoryButtonSpawner implements Spawner {
                 .with(new UIText("Inventory"))
                 .with(new UITransform(correctedPos.x, correctedPos.y, 0, correctedSize.x, correctedSize.y))
                 .with(new UIClickable((Entity e, World w) -> {
-                    var inv = new Inventory(14);
-                    var invEnt = w.entityBuilder()
-                            .with(inv)
-                            .build();
-
-                    for (var i = 0; i < 4; i++) {
-                        var itemEnt = w.entityBuilder()
-                                .with(new WeaponSpawner(i * 10))
-                                .build();
-                        var item = w.fetchComponent(itemEnt, Item.class);
-                        inv.addItem(item.itemID);
-                    }
-
-                    var inv1 = new Inventory(14);
-                    var invEnt1 = w.entityBuilder()
-                            .with(inv1)
-                            .build();
-
-                    for (var i = 0; i < 4; i++) {
-                        var itemEnt = w.entityBuilder()
-                                .with(new WeaponSpawner(i * 10))
-                                .build();
-                        var item = w.fetchComponent(itemEnt, Item.class);
-                        inv1.addItem(item.itemID);
-                    }
-
-                    w.ecs.acceptEvent(new EnterTwoInventoryEvent(inv, inv1, invEnt, invEnt1));
+                    var player = w.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+                    var inv = w.fetchComponent(player, Inventory.class);
+                    var selectedWeapon = w.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst().orElseThrow();
+                    var sw = w.fetchComponent(selectedWeapon, Inventory.class);
+                    w.ecs.acceptEvent(new EnterInventoryEvent(inv, sw, player, selectedWeapon));
                 }))
                 .with(new Renderable(Set.of(ViewType.UI), 2, (Entity e, RenderWindow rw, World w) -> {
                     var trans = w.fetchComponent(e, UITransform.class);
@@ -87,7 +70,7 @@ public class EnterInventoryButtonSpawner implements Spawner {
 
                     rw.draw(rect);
 
-                    var text = new Text(textContent.text, Font.freesans, 24) {{
+                    var text = new Text(textContent.text, Font.CaladeaRegular, 50) {{
                         this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
                     }};
 

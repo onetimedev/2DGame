@@ -23,7 +23,7 @@ import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
-import scc210game.game.components.PositionUpdateSystem;
+import scc210game.game.systems.PositionUpdateSystem;
 import scc210game.game.resources.ItemIDCounterResource;
 import scc210game.game.states.MainMenuState;
 import scc210game.game.systems.DialogueHandlingSystem;
@@ -47,7 +47,7 @@ public class Main {
 
     private Main() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1920, 1080), "SCC210 Game");
+        this.mainWindow.create(new VideoMode(1920, 1080), "Elemental Guardian - A Return Home");
         this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{

@@ -14,11 +14,9 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
-import scc210game.engine.utils.ResourceLoader;
-import scc210game.game.components.OldPosition;
-import scc210game.game.components.Steps;
+import scc210game.game.components.*;
 import scc210game.game.map.Player;
-import scc210game.game.components.TextureStorage;
+import scc210game.engine.utils.ResourceLoader;
 
 import java.time.Duration;
 import java.util.Set;
@@ -30,7 +28,7 @@ public class PlayerSpawner implements Spawner {
 	public PlayerSpawner() {
 		try {
 			this.t = new Texture();
-			this.t.loadFromFile(ResourceLoader.resolve("textures/player_anim.png"));
+			this.t.loadFromFile(ResourceLoader.resolve("textures/player/player_anim.png"));
 		} catch (final Exception e) {
 			throw new RuntimeException();
 		}
@@ -38,19 +36,24 @@ public class PlayerSpawner implements Spawner {
 
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
+		world.entityBuilder()
+				.with(new Inventory(1))
+				.with(new SelectedWeaponInventory())
+				.build();
+
 		return builder
 				.with(new Player())
+				.with(new Inventory(5))
 				.with(new Position(15, 106))
 				.with(new OldPosition(15, 106))
 				.with(new Velocity(0, 0))
+				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
-				.with(new TextureStorage("textures/player_anim.png"))
+				.with(new TextureStorage("textures/player/player_anim.png"))
 				.with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {
 				}), true))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
-						//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
 						PlayerSpawner::accept));
-
 	}
 
 	private static void accept(Entity entity, RenderWindow window, World world) {

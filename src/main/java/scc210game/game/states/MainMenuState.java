@@ -10,6 +10,7 @@ import scc210game.engine.state.trans.TransQuit;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
 import scc210game.engine.utils.ResourceLoader;
+import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.states.events.QuitGameEvent;
 import scc210game.game.states.events.StartGameEvent;
 
@@ -31,10 +32,14 @@ public class MainMenuState extends InputHandlingState {
     @Override
     public void onStart(World world) {
         this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Start Game",
+
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Start Game",
                 MainMenuState::startClick)).build();
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Quit Game",
+
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Quit Game",
                 MainMenuState::quitClick)).build();
+
+        world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
     }
 
     @Override

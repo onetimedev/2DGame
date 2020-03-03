@@ -42,7 +42,7 @@ public class DialogueSpawner implements Spawner {
 
         rw.draw(rect);
 
-        var text = new Text(dialogue.text, Font.freesans, 24) {{
+        var text = new Text(dialogue.text, Font.CaladeaRegular, 24) {{
             this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
         }};
 

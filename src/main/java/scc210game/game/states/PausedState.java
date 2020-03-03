@@ -6,6 +6,7 @@ import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
+import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;
 
@@ -24,10 +25,13 @@ public class PausedState extends BaseInGameState {
 
     @Override
     public void onStart(World world) {
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.1f, 0.6f, 0.1f, "Resume Game",
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Resume Game",
                 PausedState::resumeButton)).build();
-        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.28f, 0.6f, 0.1f, "Main Menu",
+
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Main Menu",
                 PausedState::mainMenuButton)).build();
+
+        world.entityBuilder().with(new BackgroundSpawner("pause.png")).build();
     }
 
     @Override

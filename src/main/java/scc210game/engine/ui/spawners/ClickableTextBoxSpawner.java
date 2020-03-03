@@ -37,26 +37,6 @@ public class ClickableTextBoxSpawner implements Spawner {
         this.clickAction = clickAction;
     }
 
-    private static void accept(Entity e, RenderWindow rw, World w) {
-        var trans = w.fetchComponent(e, UITransform.class);
-        var textContent = w.fetchComponent(e, UIText.class);
-
-        var fillColour = w.hasComponent(e, UIHovered.class) ? Color.blue : Color.lightGray;
-
-        var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
-            this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-            this.setFillColor(UiUtils.transformColor(fillColour));
-            this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
-        }};
-
-        rw.draw(rect);
-
-        var text = new Text(textContent.text, Font.freesans, 24) {{
-            this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
-        }};
-
-        rw.draw(text);
-    }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
@@ -69,4 +49,32 @@ public class ClickableTextBoxSpawner implements Spawner {
                 .with(new UIClickable(this.clickAction))
                 .with(new Renderable(Set.of(ViewType.UI), 100, ClickableTextBoxSpawner::accept));
     }
+
+
+  /**
+   * Creating and rendering the boxes in the window
+   * @param e the entity to fetch components for
+   * @param rw the render window
+   * @param w the world for the current state
+   */
+  private static void accept(Entity e, RenderWindow rw, World w) {
+    var trans = w.fetchComponent(e, UITransform.class);
+    var textContent = w.fetchComponent(e, UIText.class);
+
+    var fillColour = w.hasComponent(e, UIHovered.class) ? new Color(155,66,64) : new Color(145,36,34);
+
+    var rect = new RectangleShape(UiUtils.convertUiSize(rw, trans.size())) {{
+      this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+      this.setFillColor(UiUtils.transformColor(fillColour));
+      this.setOutlineColor(UiUtils.transformColor(Color.BLACK));
+    }};
+
+    rw.draw(rect);
+
+    var text = new Text(textContent.text, Font.CaladeaRegular, 50) {{
+      this.setPosition(UiUtils.convertUiPosition(rw, trans.pos()));
+    }};
+
+    rw.draw(text);
+  }
 }
