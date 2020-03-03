@@ -32,7 +32,7 @@ public class EnemySpawner implements Spawner {
 
     public EnemySpawner(Tile tile, int dmg, int id) {
         this.id = id;
-      this.setTexture(tile.getTextureName());  // Update enemyTexturePath
+        this.setTexture(tile.getTextureName());  // Update enemyTexturePath
       try {
         this.t = new Texture();
         this.t.loadFromFile(ResourceLoader.resolve(enemyTexturePath));

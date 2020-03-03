@@ -152,8 +152,8 @@ public class EnemyController extends Component{
 
             }else
             {
-                animateDeath(CombatEnemy.class, null, true);
                 scheduledExecutorService.shutdown();
+                animateDeath(CombatEnemy.class, null, true);
             }
 
 

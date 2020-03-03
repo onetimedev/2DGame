@@ -63,7 +63,9 @@ public class CombatLeaveHandler implements System {
 		java.lang.System.out.println("Evt Score: " + evt.score);
 		scoring.playerExperience = evt.score.playerExperience;
 
-		//evt.enemy
+		//evt.enemyw
+		world.deactivateCombat();
+
 		if(evt.playerWins) {
 			enemyDefeated(evt.enemy, world);
 			combatEndDialog(true);

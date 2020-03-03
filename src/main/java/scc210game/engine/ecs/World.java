@@ -36,8 +36,8 @@ public class World {
     @Nonnull
     public final EventQueue eventQueue;
 
-    private boolean isCombatActive = false;
-    private boolean activeAnimation = true;
+    public boolean isCombatActive = false;
+    public boolean activeAnimation = true;
 
     public World(@Nonnull ECS ecs) {
         this.ecs = ecs;
