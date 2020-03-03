@@ -8,6 +8,8 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatEnemyWeapon;
+import scc210game.game.components.CombatPlayer;
+import scc210game.game.components.CombatPlayerWeapon;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -16,7 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class EnemyController {
+public class EnemyController extends Component{
 
     private World w;
     private Class<? extends Component> spriteClass;
@@ -38,9 +40,10 @@ public class EnemyController {
         this.spriteClass = spriteClass;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.damage = damage;
+        start();
     }
 
-    public void start()
+    private void start()
     {
 
 
@@ -125,6 +128,13 @@ public class EnemyController {
                             //System.out.println("collided so moving backward");
                             collisionCount++;
                             new CombatUtils().damagePlayer(w, damage);
+
+                            if(new CombatUtils().getAbsHealth(w, false) <= 0)
+                            {
+                                animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, true);
+                            }
+
+
                             new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                             this.animateSprite();
                         } else {
@@ -142,7 +152,7 @@ public class EnemyController {
 
             }else
             {
-                animateDeath();
+                animateDeath(CombatEnemy.class, null, true);
                 scheduledExecutorService.shutdown();
             }
 
@@ -153,10 +163,12 @@ public class EnemyController {
     }
 
 
-    public void animateDeath()
+    public void animateDeath(Class<? extends Component> sprite, Class<? extends Component> weapon, boolean enemy)
     {
-        new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 150, CombatUtils.DOWN, true).animateYAxis();
+        new CombatAnimator(w, sprite, weapon, 150, CombatUtils.DOWN, enemy).animateYAxis();
     }
+
+
 
     private int getMove()
     {

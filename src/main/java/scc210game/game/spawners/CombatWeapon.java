@@ -37,6 +37,8 @@ public class CombatWeapon implements Spawner {
     public String imageLocation;
 
 
+    public Texture t = new Texture();
+
     public CombatWeapon(boolean enemy, World world, int damage, String location)
     {
         this.enemy = enemy;
@@ -47,6 +49,13 @@ public class CombatWeapon implements Spawner {
 
         this.damage = damage;
         this.imageLocation = location;
+
+        try {
+            t.loadFromFile(Paths.get(this.imageLocation));
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
 
 
@@ -65,9 +74,6 @@ public class CombatWeapon implements Spawner {
                         (Entity e, RenderWindow rw, World w) -> {
 
                     var dimensions = w.fetchComponent(e, UITransform.class);
-                    Texture t = new Texture();
-                    try {
-                        t.loadFromFile(Paths.get(this.imageLocation));
                         Sprite pl = new Sprite(t);
 
                         pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
@@ -76,12 +82,6 @@ public class CombatWeapon implements Spawner {
                         pl.setOrigin((xPosition/2)+30,(yPosition/2)+30);
                         pl.setRotation(dimensions.rotation);
                         rw.draw(pl);
-
-                    }
-                    catch (IOException error) {
-                        System.out.println("error");
-                        throw new RuntimeException();
-                    }
 
 
                 }));

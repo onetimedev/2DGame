@@ -22,6 +22,7 @@ import javax.swing.*;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class PositionUpdateSystem implements System {
 	Audio au = new Audio();

@@ -6,6 +6,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.events.ExitCombatState;
 import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
 
 import java.util.concurrent.Executors;
@@ -195,6 +196,10 @@ public class CombatAnimator {
         animationCounter = 0;
         animationMax = 0;
         scheduledExecutorService.shutdown();
+
+        var combatInfo = world.applyQuery(Query.builder().require(CombatInfo.class).build()).findFirst().orElseThrow();
+        var info = world.fetchComponent(combatInfo, CombatInfo.class);
+        info.didPlayerWin = spriteClass == CombatPlayer.class;
         world.ecs.acceptEvent(new ExitCombatState());
 
     }
