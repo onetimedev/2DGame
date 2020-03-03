@@ -43,13 +43,15 @@ public class CombatSpawner implements Spawner {
         if(!this.spriteInfo.getEnemyStatus())
         {
             xPosition = 0.0f;
-            yPosition = (0.64f - this.height);
+            yPosition = (0.63f - this.height);
             this.klass = CombatPlayer.class;
         }
         else
         {
+            float textureHeight = (float) t.getSize().y;
             xPosition = 0.75f;
-            yPosition = 0.25f;
+            yPosition = (float)(textureHeight/1080)-0.02f;
+            System.out.println("Y: " + textureHeight);
             this.klass = CombatEnemy.class;
         }
 
@@ -74,7 +76,10 @@ public class CombatSpawner implements Spawner {
 
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
-                                    this.image = new Sprite(t);
+                                    var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
+                                    var state = w.fetchComponent(spriteState, CombatSprite.class);
+
+                                    this.image = new Sprite(t, new IntRect(365*state.playerSprite,0,365,365));
                                     //this.image.setScale(new Vector2f(5.61f, 5.61f));
                                 }
                                 else
@@ -82,19 +87,19 @@ public class CombatSpawner implements Spawner {
                                     var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
                                     var state = w.fetchComponent(spriteState, CombatSprite.class);
                                     if(System.currentTimeMillis() >= state.nextChange && state.signal){
-                                        this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
+                                        this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                         System.out.println(t.getSize().x);
                                         int maxFrame = (t.getSize().x / t.getSize().y)-1;
-                                        if(state.state < maxFrame) {
+                                        if(state.enemyState < maxFrame) {
                                             state.nextChange = System.currentTimeMillis() + 60;
-                                            state.state++;
+                                            state.enemyState++;
                                         }else{
-                                            state.state = maxFrame;
-                                            this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
+                                            state.enemyState = maxFrame;
+                                            this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                             state.signal = false;
                                         }
                                     }else{
-                                        this.image = new Sprite(t, new IntRect(365*state.state,0,365,365));
+                                        this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                     }
                                     //System.out.println(this.image.getGlobalBounds().height);
                                     this.image.setScale(new Vector2f(1f,1f));

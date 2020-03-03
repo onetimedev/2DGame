@@ -44,7 +44,7 @@ public class CombatHealthBar implements Spawner
         {
             //boss
             enemy = true;
-            this.x = 0.65f;
+            this.x = 0.7f;
         }
 
     }

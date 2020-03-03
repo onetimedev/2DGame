@@ -19,7 +19,9 @@ public class CombatUtils
     public static final float X_AXIS_MOVE_DISTANCE = 0.003f;
     public static final float Y_AXIS_MOVE_DISTANCE = 0.005f;
 
-    public static String PLAYER_SPRITE = "src/main/resources/textures/Combat/Player-in-combat.png";
+    public static String PLAYER_SPRITE = "src/main/resources/textures/Combat/Combat-player-sprite-sheet.png";
+
+    public static float WEAPON_PADDING = 0.06f;
 
     public boolean hasCollided(UITransform rect1, UITransform rect2)
     {

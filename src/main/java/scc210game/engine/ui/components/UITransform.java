@@ -88,6 +88,17 @@ public class UITransform extends Component {
      */
     public float rotation;
 
+    public UITransform(UITransform uiTransform)
+    {
+        this.originXPos = uiTransform.originXPos;
+        this.originYPos = uiTransform.originYPos;
+        this.xPos = uiTransform.xPos;
+        this.yPos = uiTransform.yPos;
+        this.zPos = uiTransform.zPos;
+        this.width = uiTransform.width;
+        this.height = uiTransform.height;
+        this.rotation = uiTransform.rotation;
+    }
 
     public UITransform(float originXPos, float originYPos, float xPos, float yPos, int zPos, float width, float height) {
         this.originXPos = originXPos;

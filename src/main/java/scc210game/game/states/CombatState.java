@@ -27,6 +27,7 @@ public class CombatState extends BaseInGameState {
     public int enemyDamage;
     public Entity enemy;
 
+
     public CombatState(Scoring s, String tn, TextureStorage wp, String bg, int enDmg, Entity enemy) {
         scores = s;
         textureName = tn;
@@ -34,12 +35,14 @@ public class CombatState extends BaseInGameState {
         background = bg;
         enemyDamage = enDmg;
         this.enemy = enemy;
-        System.out.println(enemyDamage);
+        System.out.println(weapon.getPath());
     }
 
 
     @Override
     public void onStart(World world) {
+        String weaponPath = "src/main/resources/" + weapon.getPath();
+
         world.activateCombat();
 
         world.entityBuilder().with(new CombatInfo()).build();
@@ -51,11 +54,11 @@ public class CombatState extends BaseInGameState {
         world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", textureName, true, 1))).build();
 
         world.entityBuilder().with(new CombatSpawner(new SpriteType("player", CombatUtils.PLAYER_SPRITE, false, 0))).build();
-        world.entityBuilder().with(new CombatWeapon(false, world, 5, weapon.getPath())).build();
+        world.entityBuilder().with(new CombatWeapon(false, world, 5, weaponPath)).build();
 
 
         world.entityBuilder().with(new CombatSprite(textureName)).build();
-        world.entityBuilder().with(new Scoring(scores.getPlayerExperience(), scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth())).build();
+        world.entityBuilder().with(new Scoring(scores.getPlayerExperience(), scores.getPlayerAbsHealth() ,scores.getEnemyAbsHealth())).build();
         world.entityBuilder().with(new CombatResources()).build();
 
         world.entityBuilder().with(new EnemyController(world, CombatEnemy.class, enemyDamage)).build();

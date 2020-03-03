@@ -27,7 +27,7 @@ public class CombatWeapon implements Spawner {
     private float yPosition;
     private float width = 0.05f;
     private float height = 0.1f;
-    private float rotation = 0f;//starting rotation
+    private float rotation = 270f;//starting rotation
 
 
     private boolean enemy;
@@ -44,7 +44,7 @@ public class CombatWeapon implements Spawner {
         this.enemy = enemy;
         var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
         var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-        this.xPosition = (cplayerPosition.width)-0.0f;
+        this.xPosition = (cplayerPosition.width)+0.015f;
         this.yPosition = (cplayerPosition.height/2)+0.23f;
 
         this.damage = damage;
@@ -77,7 +77,7 @@ public class CombatWeapon implements Spawner {
                         Sprite pl = new Sprite(t);
 
                         pl.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
-                        pl.setScale(new Vector2f(1,1));
+                        pl.setScale(new Vector2f(2.55f,2.55f));
                         //pl.setTextureRect(new IntRect(0,0,200,200));
                         pl.setOrigin((xPosition/2)+30,(yPosition/2)+30);
                         pl.setRotation(dimensions.rotation);

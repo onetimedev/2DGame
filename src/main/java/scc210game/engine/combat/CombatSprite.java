@@ -7,7 +7,8 @@ public class CombatSprite extends Component
 {
 
     public String spriteImage;
-    public int state = 0;
+    public int enemyState = 0;
+    public int playerSprite = 1;
     public boolean signal = false;
 
     public long nextChange = System.currentTimeMillis();

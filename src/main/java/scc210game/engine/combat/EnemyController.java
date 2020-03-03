@@ -1,6 +1,5 @@
 package scc210game.engine.combat;
 
-import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
@@ -89,8 +88,8 @@ public class EnemyController extends Component{
         //scheduledExecutorService.schedule(this::animate, 200, TimeUnit.MILLISECONDS);
         getSprite().nextChange = System.currentTimeMillis() + 60;
 
-        if(getSprite().state < maxFrame()) {
-            getSprite().state++;
+        if(getSprite().enemyState < maxFrame()) {
+            getSprite().enemyState++;
         }
         getSprite().signal = true;
     }
@@ -114,7 +113,7 @@ public class EnemyController extends Component{
                 if (collisionCount >= 3) {
                     new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
                     collisionCount = 0;
-                    getSprite().state = 0;
+                    getSprite().enemyState = 0;
                     getSprite().signal = false;
                 } else {
                     if (getMove() != 3) {
@@ -131,6 +130,7 @@ public class EnemyController extends Component{
 
                             if(new CombatUtils().getAbsHealth(w, false) <= 0)
                             {
+                                scheduledExecutorService.shutdown();
                                 animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, true);
                             }
 

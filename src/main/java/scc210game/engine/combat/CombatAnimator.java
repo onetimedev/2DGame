@@ -68,6 +68,8 @@ public class CombatAnimator {
         var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
         var damage = world.fetchComponent(weapon, CombatPlayerWeapon.class);
 
+        UITransform modWeaponAttributes = new UITransform(weaponAttributes);
+        modWeaponAttributes.xPos = modWeaponAttributes.xPos + CombatUtils.WEAPON_PADDING;
         switch (this.direction)
         {
             case CombatUtils.FORWARD: {
@@ -77,11 +79,12 @@ public class CombatAnimator {
                     weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
                     continueXAxisAnimation();
                 }
-                else
+                else if(new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)) || new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true)))
                 {
-                    if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
-                    {
-                        new CombatUtils().damageEnemy(world, damage.damage);
+                    if(new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true))) {
+                        if (new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
+                            new CombatUtils().damageEnemy(world, damage.damage);
+                        }
                     }
                     exit();
                 }
