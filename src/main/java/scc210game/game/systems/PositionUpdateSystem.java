@@ -443,9 +443,8 @@ public class PositionUpdateSystem implements System {
 
 			var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
 
-			Scoring scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
 
-			java.lang.System.out.println(enemyDamage.damage);
+			var scores = world.fetchComponent(player, Scoring.class);
 
 			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, itemTextureStorage, background, enemyDamage.damage, enemy));
 
