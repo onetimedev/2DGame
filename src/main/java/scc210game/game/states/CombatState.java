@@ -41,7 +41,7 @@ public class CombatState extends BaseInGameState {
     @Override
     public void onStart(World world) {
         world.activateCombat();
-
+        world.entityBuilder().with(new CombatInfo()).build();
         world.entityBuilder().with(new CombatBackground(background)).build();
         //TODO:
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
