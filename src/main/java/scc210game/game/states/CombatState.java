@@ -67,7 +67,7 @@ public class CombatState extends BaseInGameState {
             var scoring = world.applyQuery(Query.builder().require(Scoring.class).build()).findFirst().orElseThrow();
             var scores = world.fetchComponent(scoring, Scoring.class);
 
-            world.ecs.eventQueue.broadcast(new LeaveCombatEvent(new Scoring(scores.playerExperience,scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth()), 0));  //TODO:
+            world.ecs.eventQueue.broadcast(new LeaveCombatEvent(new Scoring(scores.playerExperience,scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth()), 0, this.enemy));  //TODO:
             return TransPop.getInstance();
         }
         return super.handleEvent(evt, world);
