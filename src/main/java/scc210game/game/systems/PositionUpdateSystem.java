@@ -384,52 +384,57 @@ public class PositionUpdateSystem implements System {
 	 */
 	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
 		java.lang.System.out.println("Combat State Initiated");
-		var enemyDamage = world.fetchComponent(player, Enemy.class);
+		var enemyDamage = world.fetchComponent(enemy, Enemy.class);
 
 		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
-		String root = "src/main/resources/";
+		String root = "src/main/resources/textures/";
+		String combatPath = "Combat/Enlarged/";
 		String textureName = "";
 		String background = "";
 		switch(biomeType) {
 				case 0: {
-					background = "textures/Combat/combat-bground-grass.png";
+					background = root + "Combat/combat-bground-grass.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = root + "Earth-Boss-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Earth-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = root + "Earth-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Earth-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 1: {
-					background = "textures/Combat/combat-background-water.png";
+					background = root + "Combat/combat-background-water.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = root + "Water-Boss-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Water-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = root + "Water-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Water-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 2: {
-					background = "textures/Combat/combat-background-lava.png";
+					background = root + "Combat/combat-background-lava.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = root + "Fire-Boss-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Fire-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = root + "Fire-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Fire-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 				case 3: {
-					background = "textures/Combat/combat-background-ice.png";
+					background = root + "Combat/combat-background-ice.png";
 					if(enemyTexture.getPath().contains("boss"))
-						textureName = root + "Ice-Boss-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Ice-Boss-Combat-Animation-LARGE.png";
 					else
-						textureName = root +"Ice-Enemy-Combat-Animation-LARGE.png";
+						textureName = root + combatPath + "Ice-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
 			}
 
 
-			//TextureStorage weapon =  world.fetchComponent(player, SelectedWeaponInventory.class);;  //TODO: waiting for player currently selected item
+		var playerTexture = world.fetchComponent(enemy, TextureStorage.class);
+
+		//TextureStorage weapon =  world.fetchComponent(player, SelectedWeaponInventory.class);;  //TODO: waiting for player currently selected item
 			Scoring scores = new Scoring(0, 100, 100);  //TODO: Needs to be updated after combat
 
-			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, new TextureStorage("src/main/resources/textures/Basic-Sword.png"), background, enemyDamage.damage));
+			java.lang.System.out.println(enemyDamage.damage);
+
+			world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName, playerTexture, background, enemyDamage.damage));
 
 	}
 

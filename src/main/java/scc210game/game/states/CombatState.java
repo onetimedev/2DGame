@@ -41,7 +41,7 @@ public class CombatState extends BaseInGameState {
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();
 
-        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", "./src/main/resources/textures/Combat/Enlarged/" + textureName, true, 1))).build();
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", textureName, true, 1))).build();
 
         world.entityBuilder().with(new CombatSpawner(new SpriteType("player", "./src/main/resources/textures/Combat/Player-in-combat.png", false, 0))).build();
         world.entityBuilder().with(new CombatWeapon(false, world, 5, "./src/main/resources/textures/Weapons/Basic-Sword.png")).build();

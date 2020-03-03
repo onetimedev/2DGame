@@ -9,7 +9,7 @@ import java.util.Map;
 public class Enemy extends Component {
 
     public boolean defeated = false;
-    public int damage;
+    public int damage = 1;
 
     static {
         register(Enemy.class, j -> {

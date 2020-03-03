@@ -30,6 +30,7 @@ public class CombatBackground implements Spawner {
 
     public CombatBackground(String background)
     {
+      System.out.println(background);
         this.bg = background;
     }
 
