@@ -13,7 +13,7 @@ public class WaterShaderUpdaterSystem implements System {
     @Override
     public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
         this.value += timeDelta.toMillis() / 4000f;
-        this.value %= 2.0f;
+        this.value %= 0.6f;
         Shaders.water.setParameter("rot", this.value);
     }
 }

@@ -5,7 +5,7 @@ uniform sampler2D texture;
 uniform float rot;
 
 #define AMP 0.1
-#define WAVELENGTH 0.4
+#define WAVELENGTH 0.6
 
 void main()
 {
