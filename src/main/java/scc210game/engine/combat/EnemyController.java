@@ -1,10 +1,12 @@
 package scc210game.engine.combat;
 
 import org.jsfml.graphics.Texture;
+import scc210game.engine.audio.Audio;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatEnemyWeapon;
 import scc210game.game.components.CombatPlayer;
@@ -32,6 +34,7 @@ public class EnemyController extends Component{
     private int collisionCount = 0;
 
     private int damage;
+    Audio au = new Audio();
 
 
     public EnemyController(World w, Class<? extends Component> spriteClass, int damage){
@@ -172,6 +175,7 @@ public class EnemyController extends Component{
 
     public void animateDeath(Class<? extends Component> sprite, Class<? extends Component> weapon, boolean enemy)
     {
+        this.au.playSound(ResourceLoader.resolve("sounds/enemy_death.wav"), false);
         new CombatAnimator(w, sprite, weapon, 150, CombatUtils.DOWN, enemy).animateYAxis();
     }
 
