@@ -169,7 +169,6 @@ public class CombatLeaveHandler implements System {
 			var enPos = world.fetchComponent(en, Position.class);
 			if (enPos.xPos == enemyPos.xPos && enPos.yPos == enemyPos.yPos) {
 				var enComp = world.fetchComponent(en, Enemy.class);
-				java.lang.System.out.println("DEFEATED SET");
 				enComp.defeated = true;
 			}
 		});

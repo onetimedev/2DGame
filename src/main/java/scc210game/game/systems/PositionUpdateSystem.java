@@ -213,7 +213,7 @@ public class PositionUpdateSystem implements System {
 					continue;
 				if (t.getHasEnemy()) {  // Enemy checks
 
-					if(t.getTextureName().contains("basalt")) {
+					if(t.getTextureName().contains("basalt") && !t.getTextureName().contains("light")) {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, FinalBoss.class, 9)),  //hardcoded biometype
@@ -221,14 +221,12 @@ public class PositionUpdateSystem implements System {
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						java.lang.System.out.println("Boss nearby");
-						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Boss.class, 4)),
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else {
 						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
-						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), getEntityAtPos(world, t, Enemy.class, 1)),
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
@@ -239,7 +237,6 @@ public class PositionUpdateSystem implements System {
 				else if (t.canHaveChest()) {  // Chest check
 					java.lang.System.out.println("Chest nearby");
 					var chestEnt = getEntityAtPos(world, t, Chest.class, 1);
-					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> acceptChest(world, playerEnt, chestEnt),
 							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
@@ -248,7 +245,6 @@ public class PositionUpdateSystem implements System {
 				}
 				else if (t.canHaveStory()) {  // NPC check
 					java.lang.System.out.println("NPC nearby");
-					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
 					world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> DialogueHelper.refuse(world, playerEnt),
 							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
