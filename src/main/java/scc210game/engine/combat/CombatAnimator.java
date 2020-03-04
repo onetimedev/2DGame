@@ -102,7 +102,7 @@ public class CombatAnimator {
                                 target.yPos = weaponAttributes.yPos;
                                 target.visible = true;
                                 target.visibleUntil = System.currentTimeMillis() + TargetPosition.TIMEOUT;
-                                target.offset = -getOffset();
+                                target.offset = getOffset();
                             }
                         }
                     }

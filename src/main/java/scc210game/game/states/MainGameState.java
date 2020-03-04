@@ -66,7 +66,7 @@ public class MainGameState extends BaseInGameState {
 					map.getTile(v.x,v.y).setHasEnemy(true);
 					map.getTile(v.x,v.y).setCanHaveStory(true);
 				}
-        world.entityBuilder().with(new FinalBossSpawner(20, id)).build();
+        world.entityBuilder().with(new FinalBossSpawner(90, id)).build();
 
 
 				world.eventQueue.broadcast(new DialogueCreateEvent(new DialogueMessage().getIntroDialogue(),
