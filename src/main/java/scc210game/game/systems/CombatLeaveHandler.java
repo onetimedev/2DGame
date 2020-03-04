@@ -8,6 +8,8 @@ import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.movement.Position;
+import scc210game.game.components.Dialogue;
+import scc210game.game.components.Inventory;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
@@ -72,10 +74,9 @@ public class CombatLeaveHandler implements System {
 		}
 		else {  // If the player has lost and needs to respawn
 			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getDefeatDialogue(),
-					(en, w) -> DialogueHelper.refuse(world, player),  // TODO: Respawning / loss of items etc needs to be done here
-					(en, w) -> DialogueHelper.refuse(world, player))); // TODO: Respawning / loss of items etc needs to be done here OR
+					(en, w) -> resetPlayerInventory(player, world),  // TODO: Respawning / loss of items etc needs to be done here
+					(en, w) -> resetPlayerInventory(player, world))); // TODO: Respawning / loss of items etc needs to be done here OR
 
-			//TODO: Respawning here after dialogue closed
 		}
 
 
@@ -207,6 +208,19 @@ public class CombatLeaveHandler implements System {
 
 		}
 
+
+	}
+
+
+	/**
+	 * Method to reset a players inventory after a loss
+	 * @param player the player entity
+	 * @param world the world for the state
+	 */
+	private void resetPlayerInventory(Entity player, World world) {
+		var playerInv = world.fetchComponent(player, Inventory.class);
+		playerInv.clear();
+		DialogueHelper.refuse(world, player);
 
 	}
 

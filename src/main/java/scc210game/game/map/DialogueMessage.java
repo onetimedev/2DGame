@@ -249,7 +249,8 @@ public class DialogueMessage {
 		possDialogs.add("It seems only the best weapons will suffice to defeat such a foe!");
 
 		s += possDialogs.get(randomMessage(possDialogs.size()));
-		s += "\n\n----- Press Q or ENTER to Respawn -----";
+		s += "\n\nYour inventory seems lighter, it seems these creatures have taken all!";
+		s += "\n----- Press Q or ENTER to Respawn -----";
 		return s;
 	}
 
