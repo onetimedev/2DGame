@@ -1,5 +1,6 @@
 package scc210game.game.spawners;
 
+import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Vector2f;
@@ -10,6 +11,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.game.Shaders;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 
@@ -56,10 +58,14 @@ public class MapSpawner implements Spawner {
                 if (x < mapLeft || x > mapRight || y < mapTop || y > mapBottom)
                     continue;
 
-                Sprite tile = new Sprite(m.getTile(x, y).getTexture());
+                var tile1 = m.getTile(x, y);
+                Sprite tile = new Sprite(tile1.getTexture());
                 tile.setPosition(x * 64, y * 64);
                 //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
-                window.draw(tile);
+                if (tile1.getTextureName().equals("water.png"))
+                    window.draw(tile, new RenderStates(Shaders.water));
+                else
+                    window.draw(tile);
                 //tileCount++;
             }
 

@@ -28,7 +28,6 @@ import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.systems.*;
 import scc210game.game.resources.ItemIDCounterResource;
 import scc210game.game.states.MainMenuState;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +68,7 @@ public class Main {
                 ToolTipHandler::new,
                 InventoryLeaveHandler::new,
                 CombatLeaveHandler::new,
+                (ecs) -> new WaterShaderUpdaterSystem(),
                 (ecs) -> new RenderSystem(this.mainWindow, this.views) // NOTE: always render last
         );
         this.ecs = new ECS(systems, new MainMenuState());
