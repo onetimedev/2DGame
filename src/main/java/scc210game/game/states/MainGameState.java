@@ -64,7 +64,7 @@ public class MainGameState extends BaseInGameState {
 				new Vector2i(59, 61), new Vector2i(60, 61), new Vector2i(61, 61)};
 				for (Vector2i v: fBossTiles) {
 					map.getTile(v.x,v.y).setHasEnemy(true);
-					map.getTile(v.x,v.y).setTexture("map/basalt.png");
+					map.getTile(v.x,v.y).setCanHaveStory(true);
 				}
         world.entityBuilder().with(new FinalBossSpawner(20, id)).build();
 
