@@ -369,6 +369,7 @@ public class PositionUpdateSystem implements System {
 	 * @param player the player entity
 	 */
 	public void acceptChest(World world, Entity player, Entity target) {
+		au.playSound(Paths.get("./src/main/resources/sounds/open_chest.wav"), false);
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(1f/0.6f);
 
