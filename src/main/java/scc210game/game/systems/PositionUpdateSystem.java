@@ -311,23 +311,23 @@ public class PositionUpdateSystem implements System {
 	public void biomeSound(int type, Audio au) {
 		switch(type) {
 			case 0: { //grass
-				au.playSound(Paths.get("./src/main/resources/sounds/walking_medium.wav"), false);
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_medium.wav"), false,  15.0f);
 				break;
 			}
 			case 1: { //sand
-				au.playSound(Paths.get("./src/main/resources/sounds/walking_sand.wav"), false);
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_sand.wav"), false, 20.0f);
 				break;
 			}
 			case 2: { //basalt
-				au.playSound(Paths.get("./src/main/resources/sounds/walking_gravel.wav"), false);
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_gravel.wav"), false, 30.0f);
 				break;
 			}
 			case 3: { //snow
-				au.playSound(Paths.get("./src/main/resources/sounds/walking_snow.wav"), false);
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_snow.wav"), false, 15.0f);
 				break;
 			}
 			case 5: { //path
-				au.playSound(Paths.get("./src/main/resources/sounds/walking_path.wav"), false);
+				au.playSound(Paths.get("./src/main/resources/sounds/walking_path.wav"), false, 10.0f);
 				break;
 			}
 		}

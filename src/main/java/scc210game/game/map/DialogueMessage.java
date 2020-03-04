@@ -1,5 +1,8 @@
 package scc210game.game.map;
 
+import scc210game.engine.audio.Audio;
+
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -7,6 +10,7 @@ import java.util.ArrayList;
 */
 public class DialogueMessage {
 
+	Audio au = new Audio();
 	private String message = "";
 
 	// Enemy = 0, NPC = 1, Chest = 2, Boss = 3, FinalBoss = 4
@@ -137,6 +141,7 @@ public class DialogueMessage {
 
 		//Grass = 0, Water = 1, Fire = 2, Ice = 3
 		private void npcDialogue(int biome) {
+			au.stopSound();
 			switch (biome) {
 				case 0: {
 					grassNPCDialogue();

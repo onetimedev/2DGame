@@ -35,7 +35,7 @@ public class BaseInGameState extends InputHandlingState {
         }
 
         if (evt instanceof TogglePauseEvent) {
-            this.au.playSound(ResourceLoader.resolve("sounds/pause.wav"), false);
+            this.au.playSound(ResourceLoader.resolve("sounds/pause.wav"), false, 20.0f);
             return new TransPush(new PausedState());
         }
 

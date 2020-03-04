@@ -31,7 +31,7 @@ public class MainMenuState extends InputHandlingState {
 
     @Override
     public void onStart(World world) {
-        this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
+        this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true, 20.0f);
 
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.22f, 0.2f, 0.05f, "Start Game",
                 MainMenuState::startClick)).build();
@@ -46,7 +46,7 @@ public class MainMenuState extends InputHandlingState {
     public Transition handleEvent(StateEvent evt, World world) {
         if (evt instanceof StartGameEvent) {
             this.au.stopSound();
-            this.au.playSound(ResourceLoader.resolve("sounds/menuSelect.wav"), false);
+            this.au.playSound(ResourceLoader.resolve("sounds/menuSelect.wav"), false, 20.0f);
             // transition to the main game state
             return new TransPush(new MainGameState());
         }
