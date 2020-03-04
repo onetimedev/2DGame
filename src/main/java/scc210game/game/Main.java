@@ -6,6 +6,7 @@ import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
+import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
@@ -44,7 +45,7 @@ public class Main {
 
     private Main() {
         this.mainWindow = new RenderWindow();
-        this.mainWindow.create(new VideoMode(1920, 1080), "Elemental Guardian - A Return Home");
+        this.mainWindow.create(new VideoMode(1920, 1080), "Elemental Guardian - A Return Home", WindowStyle.FULLSCREEN);
         this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
