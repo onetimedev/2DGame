@@ -6,9 +6,12 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.events.ExitCombatState;
 import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
+import scc210game.game.components.TargetPosition;
 
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +71,15 @@ public class CombatAnimator {
         var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
         var damage = world.fetchComponent(weapon, CombatPlayerWeapon.class);
 
+        var targetEntity = world.applyQuery(Query.builder().require(TargetPosition.class).build()).findFirst().get();
+        var target =  world.fetchComponent(targetEntity, TargetPosition.class);
+
+        var enemyPos = world.applyQuery(Query.builder().require(CombatEnemy.class).build()).findFirst().get();
+        var enemyPosAttr =  world.fetchComponent(enemyPos, UITransform.class);
+
+
+
+
         UITransform modWeaponAttributes = new UITransform(weaponAttributes);
         modWeaponAttributes.xPos = modWeaponAttributes.xPos + CombatUtils.WEAPON_PADDING;
         switch (this.direction)
@@ -84,6 +96,14 @@ public class CombatAnimator {
                     if(new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true))) {
                         if (new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
                             new CombatUtils().damageEnemy(world, damage.damage);
+                            if(!target.visible) {
+                                java.lang.System.out.println("WEapon x: " + weaponAttributes.xPos);
+                                target.xPos = weaponAttributes.xPos;
+                                target.yPos = weaponAttributes.yPos;
+                                target.visible = true;
+                                target.visibleUntil = System.currentTimeMillis() + TargetPosition.TIMEOUT;
+                                target.offset = -getOffset();
+                            }
                         }
                     }
                     exit();
@@ -133,8 +153,14 @@ public class CombatAnimator {
             case CombatUtils.DOWN:{
                 var sprite = world.applyQuery(Query.builder().require(spriteClass).build()).findFirst().get();
                 var spriteAttributes = world.fetchComponent(sprite, UITransform.class);
-
                 spriteAttributes.yPos += CombatUtils.Y_AXIS_MOVE_DISTANCE;
+
+                if(weaponClass != null){
+                    var spriteWeapon = world.applyQuery(Query.builder().require(weaponClass).build()).findFirst().get();
+                    var spriteWeaponAttributes = world.fetchComponent(spriteWeapon, UITransform.class);
+                    spriteWeaponAttributes.yPos += CombatUtils.Y_AXIS_MOVE_DISTANCE;
+                }
+
                 continueYAxisAnimation();
             }
         }
@@ -226,6 +252,13 @@ public class CombatAnimator {
         return enemy ? 0.65f : 0.0f;
     }
 
+    private float getOffset()
+    {
+        Random r = new Random();
+        float min = 0.01f;
+        float max = 0.1f;
+        return (min + r.nextFloat() * (max - min));
 
+    }
 
 }

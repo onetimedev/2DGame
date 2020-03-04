@@ -12,7 +12,7 @@ public class FilledInventorySpawner implements Spawner {
 
         for (var i = 0; i < 1; i++) {
             var itemEnt = world.entityBuilder()
-                    .with(new WeaponSpawner(i * 10))
+                    .with(new WeaponSpawner(i + 10))
                     .build();
             var item = world.fetchComponent(itemEnt, Item.class);
             inv.addItem(item.itemID);

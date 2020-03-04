@@ -43,7 +43,7 @@ public class MainGameState extends BaseInGameState {
         // Spawning of all Enemies
         int id = 0;
         for (final Tile tile : map.getEnemyTiles()) {
-            world.entityBuilder().with(new EnemySpawner(tile, 10, id)).build();
+            world.entityBuilder().with(new EnemySpawner(tile, 40, id)).build();
             id++;
         }
 
@@ -53,7 +53,7 @@ public class MainGameState extends BaseInGameState {
 
         int count = 0;
         for (final Vector2i[] v : map.getBossCoords()) {
-            world.entityBuilder().with(new BossSpawner(v, count, map, 15, id)).build();
+            world.entityBuilder().with(new BossSpawner(v, count, map, 55, id)).build();
             count++;
             id++;
         }
@@ -89,7 +89,7 @@ public class MainGameState extends BaseInGameState {
 
 		if(evt instanceof TriggerCombatEvent){
 			TriggerCombatEvent evt1 = (TriggerCombatEvent) evt;
-			return new TransPush(new CombatState(evt1.scores, evt1.textureName, evt1.weapon, evt1.background, evt1.enemyDamage, evt1.enemy));
+			return new TransPush(new CombatState(evt1.scores, evt1.textureName, evt1.weapon, evt1.background, evt1.enemyDamage, evt1.enemy, evt1.weaponDamage));
 		}
 
 

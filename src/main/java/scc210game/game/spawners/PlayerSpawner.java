@@ -5,6 +5,7 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import scc210game.engine.animation.Animate;
+import scc210game.engine.combat.CombatUtils;
 import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
@@ -50,7 +51,7 @@ public class PlayerSpawner implements Spawner {
 				.with(new Velocity(0, 0))
 				.with(new PlayerLocked(false))
 				.with(new Steps(5, 0))
-				.with(new Scoring(0, 100, 100))
+				.with(new Scoring(0, new CombatUtils().STARTING_HEALTH, new CombatUtils().STARTING_HEALTH))
 				.with(new TextureStorage("textures/player/player_anim.png"))
 				.with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {
 				}), true))

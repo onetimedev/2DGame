@@ -31,7 +31,7 @@ public class CombatHealthBar implements Spawner
     {
 
         this.width = 0.3f;
-        this.height = 0.005f;
+        this.height = 0.008f;
         this.y = 0f;
         if(user == CombatUtils.PLAYER)
         {
@@ -83,21 +83,21 @@ public class CombatHealthBar implements Spawner
 
     private Color getBarColor(World w)
     {
-        int health = new CombatUtils().getAbsHealth(w, enemy);
-        if(health >= 0 && health <= 10)
+        float health = new CombatUtils().getHealth(w, enemy);
+        if(health >= 0.0 && health <= 0.1f)
         {
             return Color.RED;
         }
-        else if(health >= 10 && health <= 20)
+        else if(health >= 0.1 && health <= 0.2)
         {
             return Color.ORANGE;
 
         }
-        else if(health >= 20 && health <= 50)
+        else if(health >= 0.2 && health <= 0.5)
         {
             return Color.YELLOW;
         }
-        else if(health >= 50 && health <= 100)
+        else if(health >= 0.5 && health <= 1.0)
         {
             return Color.GREEN;
         }

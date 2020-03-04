@@ -106,6 +106,10 @@ public class EnemyController extends Component{
 
     private void initMove()
     {
+
+        var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
+        var state = w.fetchComponent(spriteState, CombatSprite.class);
+
         if(w.getActiveAnimation())
         {
             if(getHealth() > 0) {
@@ -131,6 +135,7 @@ public class EnemyController extends Component{
                             if(new CombatUtils().getAbsHealth(w, false) <= 0)
                             {
                                 scheduledExecutorService.shutdown();
+                                w.deactivateCombat();
                                 animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, true);
                             }
 
@@ -153,6 +158,8 @@ public class EnemyController extends Component{
             }else
             {
                 scheduledExecutorService.shutdown();
+                w.deactivateCombat();
+                state.playerSprite = 1;
                 animateDeath(CombatEnemy.class, null, true);
             }
 

@@ -12,10 +12,12 @@ import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
+import scc210game.game.components.TargetPosition;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -57,6 +59,9 @@ public class CombatMovement implements System {
 
             var spriteState = world.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
             var state = world.fetchComponent(spriteState, CombatSprite.class);
+
+            var targetEntity = world.applyQuery(Query.builder().require(TargetPosition.class).build()).findFirst().get();
+            var target =  world.fetchComponent(targetEntity, TargetPosition.class);
 
             if (event instanceof KeyPressedEvent) {
                 KeyPressedEvent type = (KeyPressedEvent) event;
@@ -101,10 +106,16 @@ public class CombatMovement implements System {
                                 if(new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true)))
                                 {
                                     new CombatUtils().damageEnemy(world, damage.damage);
-
+                                    if(!target.visible) {
+                                        target.xPos = weaponAttributes.xPos;
+                                        target.yPos = weaponAttributes.yPos;
+                                        target.visible = true;
+                                        target.visibleUntil = java.lang.System.currentTimeMillis() + TargetPosition.TIMEOUT;
+                                        target.offset = getOffset();
+                                    }
                                 }
 
-                                }
+                            }
                             }
                             //cplayerWeaponPosition.xPos += 0.1f;
                         }
@@ -138,6 +149,15 @@ public class CombatMovement implements System {
             }
 
         }
+    }
+
+    private float getOffset()
+    {
+        Random r = new Random();
+        float min = 0.01f;
+        float max = 0.1f;
+        return (min + r.nextFloat() * (max - min));
+
     }
 
 

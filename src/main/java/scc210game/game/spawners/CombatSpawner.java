@@ -50,8 +50,12 @@ public class CombatSpawner implements Spawner {
         {
             float textureHeight = (float) t.getSize().y;
             xPosition = 0.75f;
-            yPosition = (float)(textureHeight/1080)-0.02f;
-            System.out.println("Y: " + textureHeight);
+            if(spriteInfo.getEnemyLevel() == 55) {
+                //yPosition = (float) (textureHeight / 1080) - 0.15f;
+                yPosition = (float) (textureHeight / 1080) - 0.1f;
+            }else{
+                yPosition = (float) (textureHeight / 1080) - 0.02f;
+            }
             this.klass = CombatEnemy.class;
         }
 
@@ -71,21 +75,17 @@ public class CombatSpawner implements Spawner {
 
                             var playerEnt = w.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
                             var image = w.fetchComponent(playerEnt, CombatImage.class);
-
+                            var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
+                            var state = w.fetchComponent(spriteState, CombatSprite.class);
                                 //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
 
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
-                                    var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
-                                    var state = w.fetchComponent(spriteState, CombatSprite.class);
-
                                     this.image = new Sprite(t, new IntRect(365*state.playerSprite,0,365,365));
                                     //this.image.setScale(new Vector2f(5.61f, 5.61f));
                                 }
                                 else
                                 {
-                                    var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
-                                    var state = w.fetchComponent(spriteState, CombatSprite.class);
                                     if(System.currentTimeMillis() >= state.nextChange && state.signal){
                                         this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                         System.out.println(t.getSize().x);
@@ -102,7 +102,12 @@ public class CombatSpawner implements Spawner {
                                         this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                     }
                                     //System.out.println(this.image.getGlobalBounds().height);
-                                    this.image.setScale(new Vector2f(1f,1f));
+
+                                    if(spriteInfo.getEnemyLevel() == 55){
+                                        this.image.setScale(new Vector2f(1.3f,1.3f));
+                                    }else{
+                                        this.image.setScale(new Vector2f(1f,1f));
+                                    }
 
                                 }
 

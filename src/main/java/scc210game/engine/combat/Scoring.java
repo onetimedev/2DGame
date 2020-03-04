@@ -9,7 +9,6 @@ public class Scoring extends Component {
     public int playerExperience;
     public int playerHealth;
     public int enemyHealth;
-    private static int maxHealth = 100;
 
     public Scoring(int playerExperience, int playerHealth, int enemyHealth)
     {
@@ -39,7 +38,7 @@ public class Scoring extends Component {
 
     public float getHealthPercentage(int healthVal)
     {
-        return ((float)healthVal/(float) maxHealth);
+        return ((float)healthVal/(float) new CombatUtils().MAX_HEALTH);
     }
 
 

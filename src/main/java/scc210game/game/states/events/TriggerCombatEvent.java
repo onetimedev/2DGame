@@ -13,14 +13,16 @@ public class TriggerCombatEvent extends StateEvent {
 	public String background;
 	public int enemyDamage;
 	public Entity enemy;
+	public int weaponDamage;
 
-	public TriggerCombatEvent(Scoring s, String tn, TextureStorage wp, String bg, int enDmg, Entity enemy) {
+	public TriggerCombatEvent(Scoring s, String tn, TextureStorage wp, String bg, int enDmg, Entity enemy, int weaponDamage) {
 		scores = s;
 		textureName = tn;
 		weapon = wp.copy();
 		background = bg;
 		enemyDamage = enDmg;
 		this.enemy = enemy;
+		this.weaponDamage = weaponDamage;
 	}
 
 }

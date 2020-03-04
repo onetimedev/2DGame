@@ -450,11 +450,14 @@ public class PositionUpdateSystem implements System {
 
 			try {
 				var item = findItem(invComp.items().findFirst().orElseThrow().l, world);  // Isolate item entity from stream of items
+				var itemDamage = world.fetchComponent(item, Item.class);
+
 				var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
 				var scores = world.fetchComponent(player, Scoring.class);
-				world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName,  itemTextureStorage, background, enemyDamage.damage, enemy));
+				world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName,  itemTextureStorage, background, enemyDamage.damage, enemy, itemDamage.level));
 			}
-			catch(NoSuchElementException e) {
+			catch(NoSuchElementException e)
+			{
 				DialogueMessage dl = new DialogueMessage();
 				world.eventQueue.broadcast(new DialogueCreateEvent(dl.getNoEquippedWeapon(),
 						(en, w) -> DialogueHelper.refuse(world, player),

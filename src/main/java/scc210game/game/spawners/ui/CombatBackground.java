@@ -27,11 +27,18 @@ public class CombatBackground implements Spawner {
     private float height = 1f;
 
     private String bg;
+    private Texture t = new Texture();
 
     public CombatBackground(String background)
     {
-      System.out.println(background);
         this.bg = background;
+
+        try {
+            t.loadFromFile(Paths.get(bg));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -46,19 +53,11 @@ public class CombatBackground implements Spawner {
                         (Entity e, RenderWindow rw, World w) -> {
 
                             var dimensions = w.fetchComponent(e, UITransform.class);
-                            Texture t = new Texture();
-                            try {
-                                t.loadFromFile(Paths.get(bg));
-                                Sprite bg = new Sprite(t);
-                                bg.setScale(new Vector2f(1,1));
-                                bg.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
-                                rw.draw(bg);
+                            Sprite bg = new Sprite(t);
+                            bg.setScale(new Vector2f(1,1));
+                            bg.setPosition(UiUtils.convertUiPosition(rw, dimensions.pos()));
+                            rw.draw(bg);
 
-                            }
-                            catch (IOException error) {
-                                System.out.println("cant load images error");
-                                throw new RuntimeException();
-                            }
 
                 }));
 

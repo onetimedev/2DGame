@@ -12,10 +12,12 @@ import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayerWeapon;
+import scc210game.game.components.TargetPosition;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.spawners.CombatSpawner;
 import scc210game.game.spawners.CombatWeapon;
 import scc210game.game.spawners.EnemySpawner;
+import scc210game.game.spawners.WoundSpawner;
 import scc210game.game.spawners.ui.CombatBackground;
 
 public class CombatState extends BaseInGameState {
@@ -26,16 +28,19 @@ public class CombatState extends BaseInGameState {
     public String background;
     public int enemyDamage;
     public Entity enemy;
+    public int weaponDamage;
 
 
-    public CombatState(Scoring s, String tn, TextureStorage wp, String bg, int enDmg, Entity enemy) {
+    public CombatState(Scoring s, String tn, TextureStorage wp, String bg, int enDmg, Entity enemy, int weaponDamage) {
         scores = s;
         textureName = tn;
         weapon = wp.copy();
         background = bg;
         enemyDamage = enDmg;
         this.enemy = enemy;
-        System.out.println(weapon.getPath());
+        this.weaponDamage = weaponDamage;
+
+        System.out.println("enemy name: " + tn);
     }
 
 
@@ -45,16 +50,17 @@ public class CombatState extends BaseInGameState {
 
         world.activateCombat();
 
+        world.entityBuilder().with(new TargetPosition()).build();
         world.entityBuilder().with(new CombatInfo()).build();
         world.entityBuilder().with(new CombatBackground(background)).build();
         //TODO:
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();
 
-        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", textureName, true, 1))).build();
+        world.entityBuilder().with(new CombatSpawner(new SpriteType("water enemy", textureName, true, enemyDamage))).build();
 
         world.entityBuilder().with(new CombatSpawner(new SpriteType("player", CombatUtils.PLAYER_SPRITE, false, 0))).build();
-        world.entityBuilder().with(new CombatWeapon(false, world, 5, weaponPath)).build();
+        world.entityBuilder().with(new CombatWeapon(false, world, weaponDamage, weaponPath)).build();
 
 
         world.entityBuilder().with(new CombatSprite(textureName)).build();
@@ -62,6 +68,9 @@ public class CombatState extends BaseInGameState {
         world.entityBuilder().with(new CombatResources()).build();
 
         world.entityBuilder().with(new EnemyController(world, CombatEnemy.class, enemyDamage)).build();
+
+        world.entityBuilder().with(new WoundSpawner()).build();
+
 
 
     }
