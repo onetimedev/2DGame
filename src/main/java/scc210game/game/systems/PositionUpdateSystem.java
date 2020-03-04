@@ -212,8 +212,7 @@ public class PositionUpdateSystem implements System {
 				if(t == null)
 					continue;
 				if (t.getHasEnemy()) {  // Enemy checks
-
-					if(t.getTextureName().contains("basalt") && !t.getTextureName().contains("light")) {
+					if(t.canHaveStory() && t.getTextureName().contains("light")) {
 						java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, 2, getEntityAtPos(world, t, FinalBoss.class, 9)),  //hardcoded biometype
