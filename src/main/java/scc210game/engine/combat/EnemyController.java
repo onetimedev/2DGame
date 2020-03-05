@@ -14,6 +14,9 @@ import scc210game.game.components.CombatPlayerWeapon;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,6 +40,7 @@ public class EnemyController extends Component{
     Audio au = new Audio();
 
 
+
     public EnemyController(World w, Class<? extends Component> spriteClass, int damage){
         this.w = w;
         this.spriteClass = spriteClass;
@@ -48,22 +52,7 @@ public class EnemyController extends Component{
     private void start()
     {
 
-
-        if(startFirst()){
-            start = true;
-            scheduledExecutorService.scheduleAtFixedRate(this::initMove, 0, 800, TimeUnit.MILLISECONDS);
-
-        }
-        else
-        {
-            if(start)
-            {
-                scheduledExecutorService.scheduleAtFixedRate(this::initMove, 0, 800, TimeUnit.MILLISECONDS);
-
-            }
-
-        }
-
+        scheduledExecutorService.scheduleAtFixedRate(this::initMove, 0, 800, TimeUnit.MILLISECONDS);
 
     }
 
@@ -88,7 +77,6 @@ public class EnemyController extends Component{
 
     private void animateSprite()
     {
-        //scheduledExecutorService.schedule(this::animate, 200, TimeUnit.MILLISECONDS);
         getSprite().nextChange = System.currentTimeMillis() + 60;
 
         if(getSprite().enemyState < maxFrame()) {
@@ -115,22 +103,31 @@ public class EnemyController extends Component{
 
         if(w.getActiveAnimation())
         {
-            if(getHealth() > 0) {
+            if(getHealth() > 0)
+            {
 
-                if (collisionCount >= 3) {
-                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
+                if (collisionCount >= getCollisionMax())
+                {
+                    new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD, false).animateXAxis();
+                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+
+                    this.animateSprite();
+
                     collisionCount = 0;
                     getSprite().enemyState = 0;
                     getSprite().signal = false;
-                } else {
-                    if (getMove() != 3) {
+                }
+                else
+                {
+                    if (hasMove())
+                    {
                         //forward move
-                        //System.out.println("enemy moving forward");
                         UITransform attributes = new CombatUtils().getOpponent(w, true);
                         float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
                         UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
 
-                        if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false))) {
+                        if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false)))
+                        {
                             //System.out.println("collided so moving backward");
                             collisionCount++;
                             new CombatUtils().damagePlayer(w, damage);
@@ -145,20 +142,23 @@ public class EnemyController extends Component{
 
                             new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                             this.animateSprite();
-                        } else {
+                        }
+                        else
+                        {
                             //System.out.println("moving forward");
                             new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                         }
-                    } else if (getMove() != 4) {
+
+                    }
+                    else
+                    {
                         //backwards move
-                        //System.out.println("enemy moving backward");
                         new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
-                    } else {
-                        //System.out.println("no move");
                     }
                 }
 
-            }else
+            }
+            else
             {
                 scheduledExecutorService.shutdown();
                 w.deactivateCombat();
@@ -167,7 +167,9 @@ public class EnemyController extends Component{
             }
 
 
-        }else{
+        }
+        else
+        {
             scheduledExecutorService.shutdown();
         }
     }
@@ -181,39 +183,49 @@ public class EnemyController extends Component{
 
 
 
-    private int getMove()
-    {
-        return new Random().nextInt((10 - 1) + 1) + 1;
-    }
 
-
-    private boolean startFirst()
+    public boolean hasMove()
     {
-        int number = new Random().nextInt((100 - 1) + 1) + 1;
-        if(number >= 80 && number <= 100){
-            //20% chance
-            return true;
+        int number = new Random().nextInt((10 - 1) + 1) + 1;
+        ArrayList<Integer> chances = new ArrayList<>();
+        if(damage == 40)
+        {
+            chances = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
+
+        }
+        else if(damage == 55){
+            chances = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6));
+        }
+        else
+        {
+             chances = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8));
         }
 
-        return false;
+        if(chances.contains(number))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
-
-    public void setStart(boolean bool)
+    public int getCollisionMax()
     {
-        this.start = bool;
+        if(damage == 40) {
+            return 3;
+        }else if(damage == 55){
+            return 2;
+        }else{
+            return 1;
+        }
     }
 
-    public void endFight()
-    {
-        fight = false;
-    }
 
-    public void startFight()
-    {
-        fight = true;
-    }
+
+
 
 
 }

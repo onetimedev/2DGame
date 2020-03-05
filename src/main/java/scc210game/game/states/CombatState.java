@@ -40,7 +40,6 @@ public class CombatState extends BaseInGameState {
         this.enemy = enemy;
         this.weaponDamage = weaponDamage;
 
-        System.out.println("enemy name: " + tn);
     }
 
 
