@@ -56,7 +56,7 @@
         grid-column: 2;
         grid-row: 3;
       }
-      .pcol3 {
+      .col3 {
         grid-column: 1;
         grid-row: 4;
       }
@@ -64,19 +64,27 @@
         grid-column: 2;
         grid-row: 4;
       }
-      .col1, .col3 {
+	  .col5 {
+        grid-column: 1;
+        grid-row: 5;
+      }
+	  .col6 {
+        grid-column: 2;
+        grid-row: 5;
+      }
+      .col1, .col3, .col5 {
         justify-self: right;
         margin-right: 410px;
       }
-      .col2, .col4 {
+      .col2, .col4, .col6 {
         justify-self: left;
         margin-left: -300px;
       }
-      .col1, .col2, .col3, .col4 {
+      .col1, .col2, .col3, .col4, .col5, .col6 {
         text-align: center;
         width: 440px;
       }
-      .col1 img, .col2 img, .col3 img, .col4 img {
+      .col1 img, .col2 img, .col3 img, .col4 img, .col5 img, .col6 img {
         width: 440px;
       }
 
@@ -100,13 +108,13 @@
           font-size: 16px;
           padding-top: 5px;
         }
-        .col1, .col2, .col3, .col4 {
+        .col1, .col2, .col3, .col4, .col5, .col6 {
           margin: 0;
           justify-self: center;
           width: 350px;
           padding-bottom: 50px;
         }
-        .col1 img, .col2 img, .col3 img, .col4 img {
+        .col1 img, .col2 img, .col3 img, .col4 img, .col5 img, .col6 img {
           width: 350px;
         }
         .col1 {
@@ -119,14 +127,21 @@
         }
         .col3 {
           grid-column: 1;
-          grid-row: 6;
+          grid-row: 4;
         }
         .col4 {
           grid-column: 1;
           grid-row: 7;
         }
+		.col5 {
+		  grid-column: 1;
+		  grid-row: 5
+		}
+		.col6 {
+          grid-column: 1;
+          grid-row: 7;
         }
-      }
+	}
     </style>
 </head>
 
@@ -163,7 +178,7 @@
 	  beaten the game, but you will still be free to explore the map.</p>
     </div>
     <div class="col3">
-      <img src="" alt="" />
+      <img src="map.png" alt="Game Map"/>
 	  
       <p> </p>
     </div>
@@ -171,6 +186,10 @@
       <img src="controls.png" alt="Game Controls"/>
       <p></p>
     </div>
-
-  </div>
+	<div class="col5">
+		<img src="combat.png" alt="Game Combat"/>
+	</div>
+	<div class="col6">
+		<img src="inventory.png" alt="Game Inventory"/>
+	</div>
 </body>
