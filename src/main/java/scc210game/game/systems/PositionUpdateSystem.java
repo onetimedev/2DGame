@@ -447,7 +447,6 @@ public class PositionUpdateSystem implements System {
 
 
 			// Getting inventory to get currently equipped item to pass into combat
-
 			var invEntO = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst();
 			if (!invEntO.isPresent())
 				return;

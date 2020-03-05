@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Create map as part of the ECS
+ * Create map as a component of the ECS
  */
 public class Map extends Component {
     private final Tile[][] mapTiles;
@@ -72,6 +72,10 @@ public class Map extends Component {
     }
 
 
+    /**
+     * Method to serialize the map so that it can be saved in its current state
+     * @return JSON Key val map of the map contents
+     */
     @Override
     public Jsonable serialize() {
         var mapTilesS = Arrays.stream(mapTiles)
@@ -106,6 +110,11 @@ public class Map extends Component {
                 "bossCoords", bossCoordsS));
     }
 
+
+    /**
+     * Constructor to populate the map with the results from the JSON data,
+     * translated into Tile objects.
+     */
     public Map() {
         GenerateMap genMap = new GenerateMap();
         this.mapTiles = genMap.getGenTiles();
@@ -115,6 +124,15 @@ public class Map extends Component {
         this.chestTiles = genMap.getGenChestTiles();
     }
 
+
+    /**
+     * Constructor only used to reload a map after having saved
+     * @param mapTiles
+     * @param enemyTiles
+     * @param npcTiles
+     * @param bossCoords
+     * @param chestTiles
+     */
     Map(Tile[][] mapTiles, ArrayList<Tile> enemyTiles, ArrayList<Tile> npcTiles, ArrayList<Vector2i[]> bossCoords, ArrayList<Tile> chestTiles) {
         this.mapTiles = mapTiles;
         this.enemyTiles = enemyTiles;
@@ -122,6 +140,8 @@ public class Map extends Component {
         this.bossCoords = bossCoords;
         this.chestTiles = chestTiles;
     }
+
+
 
     public Tile[][] getMap() {
         return this.mapTiles;

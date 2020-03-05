@@ -19,6 +19,10 @@ import scc210game.game.map.Tile;
 import java.time.Duration;
 import java.util.Set;
 
+
+/**
+ * Class to create an enemy entity with its components
+ */
 public class EnemySpawner implements Spawner {
     private final Texture t;
     private final int xSpawn;
@@ -29,7 +33,12 @@ public class EnemySpawner implements Spawner {
     private int id;
 
 
-
+  /**
+   * Constructor to assign attributes that will be used in the creation of the entity
+   * @param tile the tile to place the enemy on
+   * @param dmg the amount of damage the enemy will do
+   * @param id the number of the enemy
+   */
     public EnemySpawner(Tile tile, int dmg, int id) {
         this.id = id;
         this.setTexture(tile.getTextureName());  // Update enemyTexturePath
@@ -50,6 +59,10 @@ public class EnemySpawner implements Spawner {
     }
 
 
+  /**
+   * Method to set the texture path of the enemy
+   * @param type the type of enemy texture to set
+   */
   public void setTexture(String type) {
     switch (type) {
       case "enemy_basalt.png": {
@@ -72,6 +85,12 @@ public class EnemySpawner implements Spawner {
   }
 
 
+  /**
+   * Method to create and return the enemy as an entity with its components
+   * @param builder the {@link World.EntityBuilder} to inject into
+   * @param world the World the entity is being built in
+   * @return the new enemy entity
+   */
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
       return builder
@@ -85,9 +104,16 @@ public class EnemySpawner implements Spawner {
           EnemySpawner::accept));
     }
 
+
+  /**
+   * Method called for the rendering of the entity to the game window
+   * @param entity the player entity
+   * @param window the game window
+   * @param world the world for this state
+   */
     private static void accept(Entity entity, RenderWindow window, World world) {
       var enemy = world.fetchComponent(entity, Enemy.class);
-      if(!enemy.defeated) {  //TODO: Get if specific enemy has been defeated
+      if(!enemy.defeated) {
 
         var position = world.fetchComponent(entity, Position.class);
         var textureStorage = world.fetchComponent(entity, TextureStorage.class);
