@@ -159,7 +159,7 @@ public class ECS {
     private void deserializeAndReplaceInner(Jsonable j) {
         var json = (JsonObject) j;
 
-        var resourcesS = (JsonObject) json.get("resources");
+        var resourcesS = (JsonObject) json.get("globalResources");
         //noinspection RedundantCast
         resourcesS.forEach((resourceType, resourceS) -> {
             var resource = SerDe.deserialize((Jsonable) resourceS, resourceType, Resource.class);

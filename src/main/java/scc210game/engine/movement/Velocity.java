@@ -3,6 +3,7 @@ package scc210game.engine.movement;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 
 public class Velocity extends Component {
 
@@ -13,8 +14,8 @@ public class Velocity extends Component {
 	static {
 		register(Velocity.class, j -> {
 			var json = (JsonObject) j;
-			float velX = (float) json.get("dx");
-			float velY = (float) json.get("dy");
+			float velX = LoadJsonNum.loadFloat(json.get("dx"));
+			float velY = LoadJsonNum.loadFloat(json.get("dy"));
 
 			return new Velocity(velX, velY);
 		});

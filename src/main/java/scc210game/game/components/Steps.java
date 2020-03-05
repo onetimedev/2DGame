@@ -3,6 +3,7 @@ package scc210game.game.components;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 
 
 public class Steps extends Component {
@@ -13,8 +14,8 @@ public class Steps extends Component {
 	static {
 		register(Steps.class, j -> {
             var json = (JsonObject) j;
-			int cnt = (int) json.get("count");
-			int ocnt = (int) json.get("oldCount");
+			int cnt = LoadJsonNum.loadInt(json.get("count"));
+			int ocnt = LoadJsonNum.loadInt(json.get("oldCount"));
 
 			return new Steps(cnt, ocnt);
 		});
