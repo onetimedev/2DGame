@@ -439,7 +439,8 @@ public class PositionUpdateSystem implements System {
 				}
 
 				case 4:{
-					textureName = root + "Combat/Final-Boss-Combat-Animation.png";
+					textureName = root + "Combat/Enlarged/Final-Boss-Combat-Animation-LARGE.png";
+					background = root + "Combat/combat-background-lava.png";
 					break;
 				}
 		}

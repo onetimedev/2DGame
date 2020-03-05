@@ -69,7 +69,6 @@ public class CombatState extends BaseInGameState {
         world.entityBuilder().with(new WoundSpawner()).build();
 
 
-
     }
 
 

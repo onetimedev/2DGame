@@ -118,7 +118,6 @@ public class CombatSpawner implements Spawner {
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
                                     {
                                         this.image.setScale(new Vector2f(1.3f, 1.3f));
-                                        yPosition -= 0.005f;
                                     }
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE) {
                                         this.image.setScale(new Vector2f(1.5f, 1.5f));
