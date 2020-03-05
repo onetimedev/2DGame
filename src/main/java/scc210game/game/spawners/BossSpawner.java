@@ -79,6 +79,7 @@ public class BossSpawner implements Spawner {
         return builder
                 .with(new Enemy(false, this.damage, id))
                 .with(new Boss())
+                .with(new FilledInventorySpawner())
                 .with(new Position(this.bossCoords[0].x, this.bossCoords[0].y))
                 .with(new TextureStorage(this.bossTexturePath))
                 .with(new Animate(Duration.ofMillis((600 * this.t.getSize().x) / 64 - 1), ((e, w) -> {

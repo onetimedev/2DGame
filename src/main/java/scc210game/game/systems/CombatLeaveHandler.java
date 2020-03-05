@@ -10,9 +10,13 @@ import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.movement.Position;
 import scc210game.game.components.Dialogue;
 import scc210game.game.components.Inventory;
+import scc210game.game.components.SelectedWeaponInventory;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
+import scc210game.game.spawners.ChestSpawner;
+import scc210game.game.spawners.FilledInventorySpawner;
+import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
 import javax.annotation.Nonnull;
@@ -54,6 +58,8 @@ public class CombatLeaveHandler implements System {
 	 * @param e the generic event
 	 */
 	private void handleEvent(World world, Event e) {
+		java.lang.System.out.println("Combat exit event triggered");
+
 		var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
 		if (!playerEntO.isPresent())
 			return;
@@ -69,13 +75,13 @@ public class CombatLeaveHandler implements System {
 		if(evt.playerWins) {  // If the player has won
 			String msg = enemyDefeated(evt.enemy, world);
 			world.eventQueue.broadcast(new DialogueCreateEvent(msg,
-					(en, w) -> DialogueHelper.refuse(world, player),
+					(en, w) -> winReward(world, evt.enemy, player),
 					(en, w) -> DialogueHelper.refuse(world, player)));
 		}
 		else {  // If the player has lost and needs to respawn
 			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getDefeatDialogue(),
-					(en, w) -> resetPlayerInventory(player, world),  // TODO: Respawning / loss of items etc needs to be done here
-					(en, w) -> resetPlayerInventory(player, world))); // TODO: Respawning / loss of items etc needs to be done here OR
+					(en, w) -> resetPlayerInventory(player, world),
+					(en, w) -> resetPlayerInventory(player, world)));
 
 		}
 
@@ -171,6 +177,7 @@ public class CombatLeaveHandler implements System {
 			if (enPos.xPos == enemyPos.xPos && enPos.yPos == enemyPos.yPos) {
 				var enComp = world.fetchComponent(en, Enemy.class);
 				enComp.defeated = true;
+
 			}
 		});
 
@@ -221,6 +228,47 @@ public class CombatLeaveHandler implements System {
 		var playerInv = world.fetchComponent(player, Inventory.class);
 		playerInv.clear();
 		DialogueHelper.refuse(world, player);
+
+	}
+
+
+	/**
+	 * Method to give the player an item reward for beating an enemy.
+	 * @param world the world for the current state
+	 * @param enemy the enemy entity
+	 * @param player the player entity
+	 */
+	public void winReward(World world, Entity enemy, Entity player) {
+		DialogueHelper.refuse(world, player);
+		int rng = (int) (Math.random() * 50);  // Chance of enemy dropping item
+
+		var playerInv = world.fetchComponent(player, Inventory.class);
+		var boss = world.fetchComponent(enemy, Boss.class);
+		var finalBoss = world.fetchComponent(enemy, FinalBoss.class);
+
+
+		var selectedWeapon = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst().orElseThrow();
+		var sw = world.fetchComponent(selectedWeapon, Inventory.class);
+
+		var enemyInv = world.fetchComponent(enemy, Inventory.class);
+
+		if(enemyInv == null)
+			java.lang.System.out.println("Enemy Inv Null");
+		else {
+			if (finalBoss == null) {
+				if (boss == null) {
+					if (rng > 30) // If it is an enemy then chance of item
+						world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemy));
+				} else {   // if it is a boss
+					world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemy));
+				}
+			} else {  // If it is the finalboss
+				world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemy));
+
+			}
+		}
+
+
 
 	}
 

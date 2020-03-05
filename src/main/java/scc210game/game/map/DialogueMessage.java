@@ -104,7 +104,7 @@ public class DialogueMessage {
 					"No longer being stressed by an Elemental presence that had made such a beautiful place inhospitable.\n" +
 					"Now communities will be able to return and live as they once did, it is much closer to being home again.";
 
-			s += "\n\n----- Press Q or ENTER to Continue -----";
+			s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 			return s;
 		}
 
@@ -113,7 +113,7 @@ public class DialogueMessage {
 				"Leaving only the natural dangers plaguing a travellers path.\n" +
 				"Another step towards reclaiming your home from these Elementals that have driven so many away and decimated what once were thriving villages.";
 
-		s += "\n\n----- Press Q or ENTER to Continue -----";
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
@@ -122,7 +122,7 @@ public class DialogueMessage {
 				"Even the grass seemingly started to move with the wind, no longer being stopped by such a monster.\n" +
 				"Removing such a terror and drain on the earth element can only help to restore your home to what it once was.";
 
-		s += "\n\n----- Press Q or ENTER to Continue -----";
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
@@ -131,16 +131,16 @@ public class DialogueMessage {
 				"Now perhaps these idyllic sands will be inhabitable again by those who choose to return to their lives here.\n" +
 				"Restoring the populations trust that these Elementals are truly gone will be challenging however.";
 
-		s += "\n\n----- Press Q or ENTER to Continue -----";
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
 	public String getFinalBossDefeatDialogue() {
 		String s = "The gigantic Elemental crashed to the ground. Immediately a change could be felt, this was nothing like the previous Elementals.\n" +
 				"Controlling the elements and taking the land and homes of generations was no more. No longer would your home be threatened or in danger.\n" +
-				"Now the communities and lives can be restored, with the knowledge that these Elementals are gone. Time will tell how damaging the reign of these creatures has been.";
+				"Now the communities and lives can be restored, with the knowledge that these Elementals are gone. Now you can explore, and settle back into your home!";
 
-		s += "\n\n----- Press Q or ENTER to Continue -----";
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
@@ -237,7 +237,8 @@ public class DialogueMessage {
 		possDialogs.add("A convincing victory!");
 
 		s += possDialogs.get(randomMessage(possDialogs.size()));
-		s += "\n\n----- Press Q or ENTER to Continue -----";
+		s += "\n\n----- Press Q to Ignore, ENTER for a chance to get an item -----";
+
 		return s;
 	}
 

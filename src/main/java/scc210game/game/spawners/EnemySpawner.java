@@ -76,6 +76,7 @@ public class EnemySpawner implements Spawner {
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
       return builder
         .with(new Enemy(false, this.damage, this.id))
+        .with(new FilledInventorySpawner())
         .with(new Position(this.xSpawn, this.ySpawn))
         .with(new TextureStorage(this.enemyTexturePath))
         .with(new Animate(Duration.ofMillis((400 * this.t.getSize().x) / 64 - 1), ((e, w) -> {
