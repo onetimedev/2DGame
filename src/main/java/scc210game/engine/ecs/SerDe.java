@@ -62,6 +62,7 @@ public abstract class SerDe {
     /**
      * Serialize a component
      *
+     *
      * @return a json object representing the deserialized component
      */
     public Jsonable serialize() {
