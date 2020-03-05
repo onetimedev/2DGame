@@ -122,14 +122,14 @@ public class CombatSpawner implements Spawner {
 
                                     if(spriteInfo.getEnemyLevel() == CombatUtils.ENEMY_DAMAGE)
                                     {
-                                        this.image.setScale(new Vector2f(0.8f,0.8f));
+                                        this.image.setScale(new Vector2f(1f,1f));
                                     }
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
                                     {
-                                        this.image.setScale(new Vector2f(1.2f, 1.2f));
+                                        this.image.setScale(new Vector2f(1.1f, 1.1f));
                                     }
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE) {
-                                        this.image.setScale(new Vector2f(1.5f, 1.5f));
+                                        this.image.setScale(new Vector2f(1.2f, 1.2f));
                                     }
 
 
