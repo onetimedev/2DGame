@@ -230,6 +230,7 @@ public class CombatAnimator {
         var combatInfo = world.applyQuery(Query.builder().require(CombatInfo.class).build()).findFirst().orElseThrow();
         var info = world.fetchComponent(combatInfo, CombatInfo.class);
         info.didPlayerWin = spriteClass != CombatPlayer.class;
+        world.deactivateCombat();
         world.ecs.acceptEvent(new ExitCombatState());
 
     }

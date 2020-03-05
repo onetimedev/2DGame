@@ -102,7 +102,7 @@ public class EnemyController extends Component{
         var lock = w.fetchComponent(cLock, ControlLock.class);
 
 
-        if(w.getActiveAnimation())
+        if(w.getCombatStatus())
         {
             if(getHealth() > 0)
             {
