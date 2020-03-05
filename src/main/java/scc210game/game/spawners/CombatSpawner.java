@@ -44,26 +44,17 @@ public class CombatSpawner implements Spawner {
         if(!this.spriteInfo.getEnemyStatus())
         {
             xPosition = 0.0f;
-            yPosition = (0.63f - this.height);
+            //yPosition = (0.63f - this.height);
             this.klass = CombatPlayer.class;
         }
         else
         {
             float textureHeight = (float) t.getSize().y;
             xPosition = 0.75f;
-
-            /*
-            if(spriteInfo.getEnemyLevel() == 25)
-            {
-                yPosition = (float) (textureHeight / 1080) - 0.02f;
-            }
-            else
-            {
-                yPosition = (float) (textureHeight / 1080) - 0.1f;
-            }
-*/
             this.klass = CombatEnemy.class;
         }
+
+        yPosition = 0.8f;
 
     }
 
@@ -93,7 +84,7 @@ public class CombatSpawner implements Spawner {
                             double height = (double) t.getSize().y / 1080;
                             float fheight = (float) (height);
 
-                            spriteUI.yPos = fMaxHeight - fheight;
+                            //spriteUI.yPos = fMaxHeight - fheight;
 
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
