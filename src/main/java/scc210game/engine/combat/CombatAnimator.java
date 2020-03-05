@@ -6,10 +6,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.events.ExitCombatState;
 import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.ui.components.UITransform;
-import scc210game.game.components.CombatEnemy;
-import scc210game.game.components.CombatPlayer;
-import scc210game.game.components.CombatPlayerWeapon;
-import scc210game.game.components.TargetPosition;
+import scc210game.game.components.*;
 
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -102,7 +99,7 @@ public class CombatAnimator {
                                 target.yPos = weaponAttributes.yPos;
                                 target.visible = true;
                                 target.visibleUntil = System.currentTimeMillis() + TargetPosition.TIMEOUT;
-                                target.offset = getOffset();
+                                target.offset = new CombatUtils().getOffset();
                             }
                         }
                     }
@@ -214,9 +211,13 @@ public class CombatAnimator {
 
     private void exit()
     {
+        var cLock = world.applyQuery(Query.builder().require(ControlLock.class).build()).findFirst().orElseThrow();
+        var lock = world.fetchComponent(cLock, ControlLock.class);
+        if(lock.isLocked()) lock.unlock();
         animationCounter = 0;
         animationMax = 0;
         scheduledExecutorService.shutdown();
+
     }
 
 
@@ -252,13 +253,5 @@ public class CombatAnimator {
         return enemy ? 0.65f : 0.0f;
     }
 
-    private float getOffset()
-    {
-        Random r = new Random();
-        float min = 0.01f;
-        float max = 0.1f;
-        return (min + r.nextFloat() * (max - min));
-
-    }
 
 }

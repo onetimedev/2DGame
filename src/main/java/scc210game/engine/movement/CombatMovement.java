@@ -12,6 +12,7 @@ import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
+import scc210game.game.components.ControlLock;
 import scc210game.game.components.TargetPosition;
 
 import javax.annotation.Nonnull;
@@ -30,13 +31,12 @@ public class CombatMovement implements System {
     private ScheduledExecutorService scheduledExecutorService;
 
 
-
-    private World world;
     public CombatMovement(ECS ecs) {
         this.eventReader = ecs.eventQueue.makeReader();
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         ecs.eventQueue.listen(this.eventReader, KeyPressedEvent.class);
         ecs.eventQueue.listen(this.eventReader, KeyDepressedEvent.class);
+
     }
 
     @Override
@@ -50,115 +50,104 @@ public class CombatMovement implements System {
     @SuppressWarnings("unchecked")
     private void handleMovement(World world, Event event)
     {
+
         if(world.getCombatStatus()) {
-            this.world = world;
-            var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
-            var combatPlayerWeapon = world.applyQuery(Query.builder().require(CombatPlayerWeapon.class).build()).findFirst().get();
-            var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-            var cplayerWeaponPosition = world.fetchComponent(combatPlayerWeapon, UITransform.class);
+            var cLock = world.applyQuery(Query.builder().require(ControlLock.class).build()).findFirst().orElseThrow();
+            var lock = world.fetchComponent(cLock, ControlLock.class);
 
-            var spriteState = world.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
-            var state = world.fetchComponent(spriteState, CombatSprite.class);
+            if (!lock.isLocked()) {
+                var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
+                var combatPlayerWeapon = world.applyQuery(Query.builder().require(CombatPlayerWeapon.class).build()).findFirst().get();
+                var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
+                var cplayerWeaponPosition = world.fetchComponent(combatPlayerWeapon, UITransform.class);
 
-            var targetEntity = world.applyQuery(Query.builder().require(TargetPosition.class).build()).findFirst().get();
-            var target =  world.fetchComponent(targetEntity, TargetPosition.class);
+                var spriteState = world.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
+                var state = world.fetchComponent(spriteState, CombatSprite.class);
 
-            if (event instanceof KeyPressedEvent) {
-                KeyPressedEvent type = (KeyPressedEvent) event;
+                var targetEntity = world.applyQuery(Query.builder().require(TargetPosition.class).build()).findFirst().get();
+                var target = world.fetchComponent(targetEntity, TargetPosition.class);
 
-                switch (type.key) {
-                    case A: {
+                if (event instanceof KeyPressedEvent) {
+                    KeyPressedEvent type = (KeyPressedEvent) event;
 
-                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.BACKWARD, false).animateXAxis();
-                        state.playerSprite = 0;
-                        left = true;
-                        new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
-                        cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
+                    switch (type.key) {
+                        case A: {
 
-                        break;
-                    }
-                    case D: {
-                        //right move
-                        new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.FORWARD, false).animateXAxis();
-                        state.playerSprite = 2;
-                        left = false;
+                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.BACKWARD, false).animateXAxis();
+                            state.playerSprite = 0;
+                            left = true;
+                            new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
+                            cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
 
-                        break;
-                    }
+                            break;
+                        }
+                        case D: {
+                            //right move
+                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.FORWARD, false).animateXAxis();
+                            state.playerSprite = 2;
+                            left = false;
 
-                    case SPACE: {
-                        //attack
-                        if(!new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
-                        {
-                            if(!left) {
-                                new CombatUtils().getCombatResources(world).raisePlayerWeapon();
-                                cplayerWeaponPosition.rotation = WEAPON_RAISED;
+                            break;
+                        }
 
-                                var sprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
-                                var spriteAttributes = world.fetchComponent(sprite, UITransform.class);
+                        case SPACE: {
+                            //attack
+                            if (!new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
+                                if (!left) {
+                                    new CombatUtils().getCombatResources(world).raisePlayerWeapon();
+                                    cplayerWeaponPosition.rotation = WEAPON_RAISED;
 
-                                var weapon = world.applyQuery(Query.builder().require(CombatPlayerWeapon.class).build()).findFirst().get();
-                                var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
-                                var damage = world.fetchComponent(weapon, CombatPlayerWeapon.class);
-                                UITransform modWeaponAttributes = new UITransform(weaponAttributes);
-                                modWeaponAttributes.xPos = modWeaponAttributes.xPos + CombatUtils.WEAPON_PADDING;
+                                    var sprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
+                                    var spriteAttributes = world.fetchComponent(sprite, UITransform.class);
 
-                                if(new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true)))
-                                {
-                                    new CombatUtils().damageEnemy(world, damage.damage);
-                                    if(!target.visible) {
-                                        target.xPos = weaponAttributes.xPos;
-                                        target.yPos = weaponAttributes.yPos;
-                                        target.visible = true;
-                                        target.visibleUntil = java.lang.System.currentTimeMillis() + TargetPosition.TIMEOUT;
-                                        target.offset = getOffset();
+                                    var weapon = world.applyQuery(Query.builder().require(CombatPlayerWeapon.class).build()).findFirst().get();
+                                    var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
+                                    var damage = world.fetchComponent(weapon, CombatPlayerWeapon.class);
+                                    UITransform modWeaponAttributes = new UITransform(weaponAttributes);
+                                    modWeaponAttributes.xPos = modWeaponAttributes.xPos + CombatUtils.WEAPON_PADDING;
+
+                                    if (new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true))) {
+                                        new CombatUtils().damageEnemy(world, damage.damage);
+                                        if (!target.visible) {
+                                            target.xPos = weaponAttributes.xPos;
+                                            target.yPos = weaponAttributes.yPos;
+                                            target.visible = true;
+                                            target.visibleUntil = java.lang.System.currentTimeMillis() + TargetPosition.TIMEOUT;
+                                            target.offset = new CombatUtils().getOffset();
+                                        }
                                     }
-                                }
 
-                            }
+                                }
                             }
                             //cplayerWeaponPosition.xPos += 0.1f;
                         }
                         break;
                     }
 
-            }else if(event instanceof KeyDepressedEvent){
-                KeyDepressedEvent type = (KeyDepressedEvent) event;
+                } else if (event instanceof KeyDepressedEvent) {
+                    KeyDepressedEvent type = (KeyDepressedEvent) event;
 
-                if(type.key == Keyboard.Key.SPACE)
-                {
-                    if(new CombatUtils().getCombatResources(world).getPlayerWeaponRaised())
-                    {
+                    if (type.key == Keyboard.Key.SPACE) {
+                        if (new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
 
-                        new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
-                        cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
+                            new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
+                            cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
 
-                        //cplayerWeaponPosition.xPos -= 0.1f;
+                            //cplayerWeaponPosition.xPos -= 0.1f;
+                        }
+
+                    } else if (type.key == Keyboard.Key.D) {
+                        state.playerSprite = 1;
+                    } else if (type.key == Keyboard.Key.A) {
+                        state.playerSprite = 1;
+                        left = false;
                     }
+                }
 
-                }
-                else if (type.key == Keyboard.Key.D)
-                {
-                    state.playerSprite = 1;
-                }
-                else if(type.key == Keyboard.Key.A)
-                {
-                    state.playerSprite = 1;
-                    left = false;
-                }
             }
-
         }
     }
 
-    private float getOffset()
-    {
-        Random r = new Random();
-        float min = 0.01f;
-        float max = 0.1f;
-        return (min + r.nextFloat() * (max - min));
-
-    }
 
 
 

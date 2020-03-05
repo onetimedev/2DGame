@@ -7,6 +7,8 @@ import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
 
+import java.util.Random;
+
 public class CombatUtils
 {
     public static final int FORWARD = 0;
@@ -113,5 +115,14 @@ public class CombatUtils
         }else{
             return w.fetchComponent(handle, Scoring.class).getPlayerAbsHealth();
         }
+    }
+
+    public float getOffset()
+    {
+        Random r = new Random();
+        float min = 0.01f;
+        float max = 0.05f;
+        return (min + r.nextFloat() * (max - min));
+
     }
 }

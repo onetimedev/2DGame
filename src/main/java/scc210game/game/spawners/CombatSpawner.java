@@ -56,6 +56,16 @@ public class CombatSpawner implements Spawner {
             }else{
                 yPosition = (float) (textureHeight / 1080) - 0.02f;
             }
+
+            if(spriteInfo.getEnemyLevel() == 25)
+            {
+                yPosition = (float) (textureHeight / 1080) - 0.02f;
+            }
+            else
+            {
+                yPosition = (float) (textureHeight / 1080) - 0.1f;
+            }
+
             this.klass = CombatEnemy.class;
         }
 
@@ -102,11 +112,13 @@ public class CombatSpawner implements Spawner {
                                         this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                     }
                                     //System.out.println(this.image.getGlobalBounds().height);
+                                    
 
-                                    if(spriteInfo.getEnemyLevel() == 55){
-                                        this.image.setScale(new Vector2f(1.3f,1.3f));
-                                    }else{
+                                    if(spriteInfo.getEnemyLevel() == 25)
+                                    {
                                         this.image.setScale(new Vector2f(1f,1f));
+                                    }else{
+                                        this.image.setScale(new Vector2f(1.3f,1.3f));
                                     }
 
                                 }

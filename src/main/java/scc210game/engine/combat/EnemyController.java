@@ -7,10 +7,7 @@ import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.ResourceLoader;
-import scc210game.game.components.CombatEnemy;
-import scc210game.game.components.CombatEnemyWeapon;
-import scc210game.game.components.CombatPlayer;
-import scc210game.game.components.CombatPlayerWeapon;
+import scc210game.game.components.*;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -101,6 +98,10 @@ public class EnemyController extends Component{
         var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
         var state = w.fetchComponent(spriteState, CombatSprite.class);
 
+        var cLock = w.applyQuery(Query.builder().require(ControlLock.class).build()).findFirst().orElseThrow();
+        var lock = w.fetchComponent(cLock, ControlLock.class);
+
+
         if(w.getActiveAnimation())
         {
             if(getHealth() > 0)
@@ -108,7 +109,7 @@ public class EnemyController extends Component{
 
                 if (collisionCount >= getCollisionMax())
                 {
-                    new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 15, CombatUtils.BACKWARD, false).animateXAxis();
+                    new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 65, CombatUtils.BACKWARD, false).animateXAxis();
                     new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
 
                     this.animateSprite();
@@ -123,14 +124,15 @@ public class EnemyController extends Component{
                     {
                         //forward move
                         UITransform attributes = new CombatUtils().getOpponent(w, true);
-                        float collisionXPos = attributes.xPos + (CombatUtils.X_AXIS_MOVE_DISTANCE * 15);
-                        UITransform newAttr = new UITransform(attributes.xPos, attributes.yPos, attributes.zPos, attributes.width, attributes.height);
+                        UITransform newAttr = new UITransform((attributes.xPos), attributes.yPos, attributes.zPos, attributes.width, attributes.height);
 
                         if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false)))
                         {
                             //System.out.println("collided so moving backward");
+                            lock.lock();
                             collisionCount++;
-                            new CombatUtils().damagePlayer(w, damage);
+                            new CombatUtils().damagePlayer(w, (damage*2));
+                            new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 65, CombatUtils.BACKWARD, false).animateXAxis();
 
                             if(new CombatUtils().getAbsHealth(w, false) <= 0)
                             {
