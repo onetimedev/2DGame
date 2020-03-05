@@ -27,7 +27,7 @@ public class HandleHovered implements System {
 
     @Override
     public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
-        for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+        for (Iterator<Event> it = world.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
             Event e = it.next();
 
             if (e instanceof EntityHoverStartEvent) {
