@@ -59,14 +59,6 @@ public class CombatSpawner implements Spawner {
             this.klass = CombatEnemy.class;
         }
 
-        /*
-        var rw = world.fetchGlobalResource(MainWindowResource.class);
-
-        double maxHeight = (double) rw.mainWindow.getSize().y / 1080;
-        float fMaxHeight = (float) maxHeight;
-        double height = (double) t.getSize().y / 1080;
-        float fheight = (float) (height);
-*/
         yPosition = 0.35f;
 
 
@@ -122,13 +114,16 @@ public class CombatSpawner implements Spawner {
                                     if(spriteInfo.getEnemyLevel() == CombatUtils.ENEMY_DAMAGE)
                                     {
                                         this.image.setScale(new Vector2f(1f,1f));
+                                        System.out.println("In enemy");
                                     }
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
                                     {
-                                        this.image.setScale(new Vector2f(1.1f, 1.1f));
+                                        this.image.setScale(new Vector2f(1.3f, 1.3f));
+                                        System.out.println("In boss");
                                     }
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE) {
-                                        this.image.setScale(new Vector2f(1.2f, 1.2f));
+                                        this.image.setScale(new Vector2f(1.5f, 1.5f));
+                                        System.out.println("In final boss");
                                     }
 
 

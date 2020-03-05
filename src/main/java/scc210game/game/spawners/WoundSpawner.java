@@ -59,8 +59,8 @@ public class WoundSpawner implements Spawner {
                             var dimensions = w.fetchComponent(enemyEntity, UITransform.class);
                             Sprite pl = new Sprite(t);
 
-                            float newX = dimensions.xPos + 0.12f + target.offset;
-                            float newY = dimensions.yPos + 0.12f + target.offset;
+                            float newX = dimensions.xPos + 0.1f + target.offset;
+                            float newY = dimensions.yPos + 0.1f + target.offset;
 
 
                             UITransform newAttr = new UITransform(dimensions);
