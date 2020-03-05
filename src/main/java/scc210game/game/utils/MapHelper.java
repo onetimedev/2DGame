@@ -39,7 +39,7 @@ public class MapHelper {
 	 */
 	public static void changeTiles(Map map, Vector2i[] tileCoords, String newTextureName, boolean collision, boolean enemy) {
 		for (Vector2i v: tileCoords) {
-			map.getTile(v.x, v.y).setTexture("map/" + newTextureName);
+			map.getTile(v.x, v.y).setTexture(newTextureName);
 			map.getTile(v.x, v.y).setHasCollision(collision);
 			map.getTile(v.x, v.y).setHasEnemy(enemy);
 		}
