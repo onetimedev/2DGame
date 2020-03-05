@@ -46,19 +46,23 @@ public class MapHelper {
 	}
 
 	/**
-	 * Method to change all tiles collision and enemy values at given coordinates
+	 * Method to change all tiles collision, textures and enemy values at given coordinates
 	 * @param map
 	 * @param tileCoords
+	 * @param newTextureName
 	 * @param collision
 	 * @param enemy
 	 */
-	public static void changeTiles(Map map, Vector2i[] tileCoords, boolean collision, boolean enemy) {
+	public static void changeTiles(Map map, Vector2i[] tileCoords, String newTextureName, boolean collision, boolean enemy, boolean story) {
 		for (Vector2i v: tileCoords) {
+			map.getTile(v.x, v.y).setTexture("map/" + newTextureName);
 			map.getTile(v.x, v.y).setHasCollision(collision);
 			map.getTile(v.x, v.y).setHasEnemy(enemy);
-		}
+			map.getTile(v.x, v.y).setCanHaveStory(story);
 
+		}
 	}
+
 
 
 	/**

@@ -112,6 +112,17 @@ public class ECS {
         this.globalResources.put(r.getClass(), r);
     }
 
+
+    /**
+     * Remove a global resource
+     *
+     * @param r the {@link Resource} to remove
+     */
+    public void removeGlobalResource(Class<? extends Resource> r) {
+        this.globalResources.remove(r);
+    }
+
+
     /**
      * Fetch a resource
      *

@@ -16,10 +16,12 @@ import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
 import scc210game.game.spawners.ChestSpawner;
 import scc210game.game.spawners.FilledInventorySpawner;
+import scc210game.game.spawners.PlayerSpawner;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
 import javax.annotation.Nonnull;
+import javax.swing.*;
 import java.time.Duration;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -45,7 +47,7 @@ public class CombatLeaveHandler implements System {
 	@Override
 	public void run(@Nonnull World world, @Nonnull Duration timeDelta) {
 
-		for (Iterator<Event> it = world.ecs.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
+		for (Iterator<Event> it = world.eventQueue.getEventsFor(this.eventReader); it.hasNext(); ) {
 			Event e = it.next();
 			this.handleEvent(world, e);
 		}
@@ -59,26 +61,30 @@ public class CombatLeaveHandler implements System {
 	 */
 	private void handleEvent(World world, Event e) {
 		java.lang.System.out.println("Combat exit event triggered");
+		LeaveCombatEvent evt = (LeaveCombatEvent) e;
 
-		var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
-		if (!playerEntO.isPresent())
-			return;
-		var player = playerEntO.get();
+		var player = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
+		
+
+		java.lang.System.out.println("Player gotten");
+
 		var scoring = world.fetchComponent(player, Scoring.class);
 
-		LeaveCombatEvent evt = (LeaveCombatEvent) e;
+
 		scoring.playerExperience = evt.score.playerExperience;  //Update players experience after combat
 
-		world.deactivateCombat();
+		java.lang.System.out.println("Event case, scoring EXP updated");
 
 		DialogueMessage dl = new DialogueMessage();
 		if(evt.playerWins) {  // If the player has won
+			java.lang.System.out.println("Player Won");
 			String msg = enemyDefeated(evt.enemy, world);
 			world.eventQueue.broadcast(new DialogueCreateEvent(msg,
 					(en, w) -> winReward(world, evt.enemy, player),
 					(en, w) -> DialogueHelper.refuse(world, player)));
 		}
 		else {  // If the player has lost and needs to respawn
+			java.lang.System.out.println("Player Lost");
 			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getDefeatDialogue(),
 					(en, w) -> resetPlayerInventory(player, world),
 					(en, w) -> resetPlayerInventory(player, world)));
@@ -134,7 +140,7 @@ public class CombatLeaveHandler implements System {
 						Vector2i[] fBossTiles = {new Vector2i(59,59), new Vector2i(60,59), new Vector2i(61,59),
 						new Vector2i(59,60), new Vector2i(60,60), new Vector2i(61,60),
 						new Vector2i(59, 61), new Vector2i(60, 61), new Vector2i(61, 61)};
-						MapHelper.changeTiles(mapComp, fBossTiles, "light_basalt.png",false, false);
+						MapHelper.changeTiles(mapComp, fBossTiles, "light_basalt.png",false, false, false);
 
 					}
 				}

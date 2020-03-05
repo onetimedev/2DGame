@@ -16,4 +16,5 @@ public class LeaveCombatEvent extends StateEvent {
         this.enemy = enemy;
         this.playerWins = playerWins;
     }
+
 }

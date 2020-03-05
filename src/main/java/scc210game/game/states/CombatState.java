@@ -11,6 +11,7 @@ import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.components.*;
+import scc210game.game.resources.MainWorldEventQueueResource;
 import scc210game.game.spawners.CombatSpawner;
 import scc210game.game.spawners.CombatWeapon;
 import scc210game.game.spawners.EnemySpawner;
@@ -36,7 +37,6 @@ public class CombatState extends BaseInGameState {
         enemyDamage = enDmg;
         this.enemy = enemy;
         this.weaponDamage = weaponDamage;
-
     }
 
 
@@ -82,7 +82,8 @@ public class CombatState extends BaseInGameState {
 
             var scores = world.fetchComponent(scoring, Scoring.class);
             var info = world.fetchComponent(combatInfo, CombatInfo.class);
-            world.ecs.eventQueue.broadcast(new LeaveCombatEvent(new Scoring(scores.playerExperience,scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth()), this.enemy, info.didPlayerWin));  //TODO:
+            var mainWorldEventQ = world.fetchGlobalResource(MainWorldEventQueueResource.class);
+            mainWorldEventQ.queue.broadcast(new LeaveCombatEvent(new Scoring(scores.playerExperience,scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth()), this.enemy, info.didPlayerWin));  //TODO:
             return TransPop.getInstance();
         }
         return super.handleEvent(evt, world);

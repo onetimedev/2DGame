@@ -42,7 +42,6 @@ public class PlayerSpawner implements Spawner {
 				.with(new Inventory(1))
 				.with(new SelectedWeaponInventory())
 				.build();
-
 		return builder
 				.with(new Player())
 				.with(new Inventory(5))

@@ -13,6 +13,7 @@ import scc210game.game.map.DialogueMessage;
 import scc210game.game.map.Map;
 import scc210game.game.map.Player;
 import scc210game.game.map.Tile;
+import scc210game.game.resources.MainWorldEventQueueResource;
 import scc210game.game.spawners.*;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.spawners.ui.EnterInventoryButtonSpawner;
@@ -26,6 +27,7 @@ public class MainGameState extends BaseInGameState {
 
 	@Override
 	public void onStart(World world) {
+				world.addGlobalResource(new MainWorldEventQueueResource(world.eventQueue));
         world.entityBuilder().with(new MapSpawner()).build();
         world.entityBuilder().with(new PlayerSpawner()).build();
         world.entityBuilder().with(
@@ -75,6 +77,11 @@ public class MainGameState extends BaseInGameState {
 						(e, w) -> System.out.println("")));
 	}
 
+	@Override
+	public void onStop(World world) {
+		world.ecs.removeGlobalResource(MainWorldEventQueueResource.class);
+		super.onStop(world);
+	}
 
 	@Override
 	public Transition handleEvent(StateEvent evt, World world) {
