@@ -60,6 +60,16 @@ public class World {
         return componentMaps.get(e).values().stream();
     }
 
+
+    /**
+     * Test if the given entity is in this world
+     * @param e the entity to test
+     * @return if the entity 'e' is in this world
+     */
+    public boolean hasEntity(Entity e) {
+        return this.entities.contains(e);
+    }
+
     void addEntity(Entity e, @Nonnull Collection<? extends Component> components) {
         this.entities.add(e);
 
