@@ -67,7 +67,7 @@ public class CombatSpawner implements Spawner {
         double height = (double) t.getSize().y / 1080;
         float fheight = (float) (height);
 */
-        yPosition = 0.5f;
+        yPosition = 0.2f;
 
 
     }
