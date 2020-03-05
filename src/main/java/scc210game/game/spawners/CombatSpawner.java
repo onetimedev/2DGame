@@ -62,6 +62,16 @@ public class CombatSpawner implements Spawner {
         yPosition = 0.35f;
 
 
+        if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
+        {
+            yPosition = 0.25f;
+        }
+        else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE)
+        {
+            yPosition = 0.15f;
+        }
+
+
     }
 
     @Override
@@ -118,11 +128,9 @@ public class CombatSpawner implements Spawner {
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
                                     {
                                         this.image.setScale(new Vector2f(1.3f, 1.3f));
-                                        yPosition -= 0.005f;
                                     }
                                     else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE) {
                                         this.image.setScale(new Vector2f(1.5f, 1.5f));
-                                        System.out.println("In final boss");
                                     }
 
 
