@@ -85,8 +85,8 @@ public class CombatAnimator {
                 if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)))
                 {
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    //weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    weaponAttributes.xPos = (spriteAttributes.width)+0.0144f;
+                    //weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;weaponAttributes.xPos = (spriteAttributes.xPos)+0.0144f;
+                    weaponAttributes.xPos = (spriteAttributes.xPos) + 0.2f;
                     continueXAxisAnimation();
                 }
                 else if(new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)) || new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true)))
@@ -112,7 +112,7 @@ public class CombatAnimator {
                 if(!(spriteAttributes.xPos <= getEnd()))
                 {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    weaponAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
+                    weaponAttributes.xPos = (spriteAttributes.xPos) + 0.2f;
 
                     continueXAxisAnimation();
                 }
