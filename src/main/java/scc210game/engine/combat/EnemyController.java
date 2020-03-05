@@ -138,7 +138,7 @@ public class EnemyController extends Component{
                             {
                                 scheduledExecutorService.shutdown();
                                 w.deactivateCombat();
-                                animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, true);
+                                animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, false);
                             }
 
 

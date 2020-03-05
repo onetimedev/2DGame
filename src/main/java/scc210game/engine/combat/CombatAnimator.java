@@ -133,18 +133,14 @@ public class CombatAnimator {
     public void animateYAxis()
     {
         if(animationCounter < animationMax) {
-            if (!enemy) {
-
-            } else {
-                scheduledExecutorService.schedule(this::moveYEnemySprite, 15, TimeUnit.MILLISECONDS);
-            }
+            scheduledExecutorService.schedule(this::moveYSprite, 15, TimeUnit.MILLISECONDS);
         }else{
             exitCombat();
 
         }
     }
 
-    private void moveYEnemySprite()
+    private void moveYSprite()
     {
         switch(this.direction){
             case CombatUtils.DOWN:{

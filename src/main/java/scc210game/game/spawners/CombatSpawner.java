@@ -7,6 +7,7 @@ import scc210game.engine.combat.CombatSprite;
 import scc210game.engine.combat.CombatUtils;
 import scc210game.engine.combat.SpriteType;
 import scc210game.engine.ecs.*;
+import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
@@ -31,8 +32,12 @@ public class CombatSpawner implements Spawner {
 
     Class<? extends Component> klass;
 
-    public CombatSpawner(SpriteType spriteInfo)
+    World world;
+
+    public CombatSpawner(SpriteType spriteInfo, World world)
     {
+        this.world = world;
+
         try{
             t.loadFromFile(Paths.get(spriteInfo.getTextureLocation()));
         }catch (IOException e)
@@ -53,6 +58,20 @@ public class CombatSpawner implements Spawner {
             xPosition = 0.75f;
             this.klass = CombatEnemy.class;
         }
+
+        var playerEnt = world.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
+
+        var spriteUI = world.fetchComponent(playerEnt, UITransform.class);
+
+        var rw = world.fetchGlobalResource(MainWindowResource.class);
+
+
+        double maxHeight = (double) rw.mainWindow.getSize().y / 1080;
+        float fMaxHeight = (float) maxHeight;
+        double height = (double) t.getSize().y / 1080;
+        float fheight = (float) (height);
+
+        spriteUI.yPos = fMaxHeight - fheight + 0.05f;
 
 
     }
@@ -77,13 +96,6 @@ public class CombatSpawner implements Spawner {
                             var state = w.fetchComponent(spriteState, CombatSprite.class);
                                 //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
 
-                            var spriteUI = w.fetchComponent(playerEnt, UITransform.class);
-                            double maxHeight = (double) rw.getSize().y / 1080;
-                            float fMaxHeight = (float) maxHeight;
-                            double height = (double) t.getSize().y / 1080;
-                            float fheight = (float) (height);
-
-                            spriteUI.yPos = fMaxHeight - fheight + 0.05f;
 
 
                                 if(!this.spriteInfo.getEnemyStatus())
