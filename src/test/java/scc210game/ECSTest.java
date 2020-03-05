@@ -6,6 +6,7 @@ import org.junit.Test;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
 import scc210game.engine.state.State;
+import scc210game.game.utils.LoadJsonNum;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
@@ -36,8 +37,8 @@ class Velocity extends Component {
         register(Velocity.class, j -> {
             var json = (JsonObject) j;
 
-            var dx = (Integer) json.get("dx");
-            var dy = (Integer) json.get("dy");
+            var dx = LoadJsonNum.loadInt(json.get("dx"));
+            var dy = LoadJsonNum.loadInt(json.get("dy"));
 
             return new Velocity(dx, dy);
         });
@@ -67,8 +68,8 @@ class Position extends Component {
         register(Position.class, j -> {
             var json = (JsonObject) j;
 
-            var x = (Integer) json.get("x");
-            var y = (Integer) json.get("y");
+            var x = LoadJsonNum.loadInt(json.get("x"));
+            var y = LoadJsonNum.loadInt(json.get("y"));
 
             return new Position(x, y);
         });

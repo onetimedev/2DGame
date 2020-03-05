@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+import scc210game.game.utils.LoadJsonNum;
 import scc210game.game.utils.MapHelper;
 
 import java.io.IOException;
@@ -66,8 +67,8 @@ public class Tile {
 	 */
 	public static Tile deserialize(JsonObject json) {  // changing JSON to Tile class
 		String texture = (String) json.get("texture");
-		int x = (int) json.get("x");
-		int y = (int) json.get("y");
+		int x = LoadJsonNum.loadInt(json.get("x"));
+		int y = LoadJsonNum.loadInt(json.get("y"));
 		Boolean hasCol = (Boolean) json.get("collision");
 		Boolean hasCh = (Boolean) json.get("chest");
 		Boolean hasEn = (Boolean) json.get("enemy");

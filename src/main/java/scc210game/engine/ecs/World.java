@@ -150,7 +150,9 @@ public class World {
     @SuppressWarnings("unchecked")
     @Nonnull
     public <T extends Resource> T fetchResource(Class<T> resourceType) {
-        return (T) this.resourceMap.get(resourceType);
+        Resource resource = this.resourceMap.get(resourceType);
+        assert resource != null : String.format("No resource for: %s", resourceType);
+        return (T) resource;
     }
 
     /**

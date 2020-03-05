@@ -23,7 +23,7 @@ class Search{
         while(start <= end){
             int index = start + (end - start) / 2;
 
-            String[] currentData = keys[index].split("=");
+            String[] currentData = keys[index].split("=", 2);
 
             int result = keyId.compareTo(currentData[0]);
 

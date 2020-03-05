@@ -13,6 +13,7 @@ import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.states.events.QuitGameEvent;
 import scc210game.game.states.events.StartGameEvent;
+import scc210game.game.states.events.ToggleLoadingGameEvent;
 
 public class MainMenuState extends InputHandlingState {
     static {
@@ -29,6 +30,10 @@ public class MainMenuState extends InputHandlingState {
         w.ecs.acceptEvent(new QuitGameEvent());
     }
 
+    private static void loadClick(Entity e, World w) {
+        w.ecs.acceptEvent(new ToggleLoadingGameEvent());
+    }
+
     @Override
     public void onStart(World world) {
         this.au.playSound(ResourceLoader.resolve("sounds/love_from_afar.wav"), true);
@@ -38,6 +43,9 @@ public class MainMenuState extends InputHandlingState {
 
         world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.30f, 0.2f, 0.05f, "Quit Game",
                 MainMenuState::quitClick)).build();
+
+        world.entityBuilder().with(new ClickableTextBoxSpawner(0.2f, 0.38f, 0.2f, 0.05f, "Load Game",
+                MainMenuState::loadClick)).build();
 
         world.entityBuilder().with(new BackgroundSpawner("menu.png")).build();
     }
@@ -53,6 +61,10 @@ public class MainMenuState extends InputHandlingState {
 
         if (evt instanceof QuitGameEvent) {
             return TransQuit.getInstance();
+        }
+
+        if (evt instanceof ToggleLoadingGameEvent) {
+            return new TransPush(new LoadingGameState());
         }
 
         return super.handleEvent(evt, world);

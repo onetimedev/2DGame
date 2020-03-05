@@ -24,6 +24,7 @@ import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
 import scc210game.game.resources.ItemIDCounterResource;
+import scc210game.game.resources.SavesDatabaseResource;
 import scc210game.game.states.MainMenuState;
 import scc210game.game.systems.*;
 
@@ -72,6 +73,7 @@ public class Main {
         this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
         this.ecs.addGlobalResource(new MainWindowResource(this.mainWindow));
         this.ecs.addGlobalResource(new ItemIDCounterResource());
+        this.ecs.addGlobalResource(new SavesDatabaseResource());
         this.ecs.start();
     }
 

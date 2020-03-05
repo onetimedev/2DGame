@@ -10,6 +10,7 @@ import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
 import scc210game.engine.utils.SerDeBase64;
 import scc210game.engine.utils.SerializableTriConsumer;
+import scc210game.game.utils.LoadJsonNum;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class Renderable extends Component {
 			var renderFn = SerDeBase64.deserializeFromBase64((String) json.get("renderFn"),
 					(Class<SerializableTriConsumer<Entity, RenderWindow, World>>)(Class<?>)SerializableTriConsumer.class);
 
-			var height = (Integer) json.get("height");
+			var height = LoadJsonNum.loadInt(json.get("height"));
 
 			return new Renderable(includedViews, height, renderFn);
 		});
