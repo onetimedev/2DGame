@@ -437,7 +437,12 @@ public class PositionUpdateSystem implements System {
 						textureName = root + combatPath + "Ice-Enemy-Combat-Animation-LARGE.png";
 					break;
 				}
-			}
+
+				case 4:{
+					textureName = root + "Combat/Final-Boss-Combat-Animation.png";
+					break;
+				}
+		}
 
 
 			// Getting inventory to get currently equipped item to pass into combat
