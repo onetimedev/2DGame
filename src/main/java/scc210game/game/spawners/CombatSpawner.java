@@ -93,7 +93,7 @@ public class CombatSpawner implements Spawner {
                             double height = (double) t.getSize().y / 1080;
                             float fheight = (float) (height * 0.8f);
 
-                            spriteUI.yPos = fMaxHeight - fheight;
+                            spriteUI.yPos = fMaxHeight;
 
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {

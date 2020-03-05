@@ -460,6 +460,7 @@ public class PositionUpdateSystem implements System {
 				var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
 				var scores = world.fetchComponent(player, Scoring.class);
 				world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName,  itemTextureStorage, background, enemyDamage.damage, enemy, itemDamage.level));
+				java.lang.System.out.println("Sending combat request");
 			}
 			catch(NoSuchElementException e)
 			{
