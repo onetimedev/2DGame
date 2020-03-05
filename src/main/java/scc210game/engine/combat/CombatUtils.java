@@ -23,8 +23,8 @@ public class CombatUtils
     public static String TARGET_TEXTURE = "src/main/resources/textures/Combat/focus.png";
     public static float WEAPON_PADDING = 0.01f;
 
-    public static int MAX_HEALTH = 300;
-    public static int STARTING_HEALTH = 300;
+    public static int MAX_HEALTH = 400;
+    public static int STARTING_HEALTH = 400;
 
     public boolean hasCollided(UITransform rect1, UITransform rect2)
     {
