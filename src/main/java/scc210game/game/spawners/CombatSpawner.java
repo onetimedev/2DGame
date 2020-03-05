@@ -59,16 +59,15 @@ public class CombatSpawner implements Spawner {
             this.klass = CombatEnemy.class;
         }
 
-        //var playerEnt = world.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
+        /*
         var rw = world.fetchGlobalResource(MainWindowResource.class);
-
 
         double maxHeight = (double) rw.mainWindow.getSize().y / 1080;
         float fMaxHeight = (float) maxHeight;
         double height = (double) t.getSize().y / 1080;
         float fheight = (float) (height);
-
-        yPosition = 0.8f;
+*/
+        yPosition = 0.5f;
 
 
     }
