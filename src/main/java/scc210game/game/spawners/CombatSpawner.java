@@ -52,6 +52,7 @@ public class CombatSpawner implements Spawner {
             float textureHeight = (float) t.getSize().y;
             xPosition = 0.75f;
 
+            /*
             if(spriteInfo.getEnemyLevel() == 25)
             {
                 yPosition = (float) (textureHeight / 1080) - 0.02f;
@@ -60,7 +61,7 @@ public class CombatSpawner implements Spawner {
             {
                 yPosition = (float) (textureHeight / 1080) - 0.1f;
             }
-
+*/
             this.klass = CombatEnemy.class;
         }
 
@@ -68,6 +69,7 @@ public class CombatSpawner implements Spawner {
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
+
 
         var position = UiUtils.correctAspectRatio(new Vector2f(this.xPosition, this.yPosition));
         var size = UiUtils.correctAspectRatio(new Vector2f(this.width, this.height));
@@ -78,11 +80,20 @@ public class CombatSpawner implements Spawner {
                 .with(new Renderable(Set.of(ViewType.UI), 2,
                         (Entity e, RenderWindow rw, World w) -> {
 
+
                             var playerEnt = w.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
                             var image = w.fetchComponent(playerEnt, CombatImage.class);
                             var spriteState = w.applyQuery(Query.builder().require(CombatSprite.class).build()).findFirst().orElseThrow();
                             var state = w.fetchComponent(spriteState, CombatSprite.class);
                                 //String spriteImage = this.enemy ? "./src/main/resources/textures/boss_water.png" : "./src/main/resources/textures/player_anim.png";
+
+                            var spriteUI = w.fetchComponent(playerEnt, UITransform.class);
+                            double maxHeight = (double) rw.getSize().y / 1080;
+                            float fMaxHeight = (float) maxHeight;
+                            double height = (double) t.getSize().y / 1080;
+                            float fheight = (float) (height * 0.8f);
+
+                            spriteUI.yPos = fMaxHeight - fheight;
 
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
@@ -113,21 +124,18 @@ public class CombatSpawner implements Spawner {
                                     {
                                         this.image.setScale(new Vector2f(0.8f,0.8f));
                                     }
-                                    else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE){
-                                        this.image.setScale(new Vector2f(1.2f,1.2f));
+                                    else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
+                                    {
+                                        this.image.setScale(new Vector2f(1.2f, 1.2f));
                                     }
-                                    else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE){
-                                        this.image.setScale(new Vector2f(1.5f,1.5f));
+                                    else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE) {
+                                        this.image.setScale(new Vector2f(1.5f, 1.5f));
                                     }
 
 
                                 }
 
                             var dimensions = w.fetchComponent(e, UITransform.class);
-                            if(!this.spriteInfo.getEnemyStatus()) {
-                                this.image.setPosition(position.x*64, position.y*64);
-                                //this.image.setTextureRect(new IntRect(0, 0, 64, 64));
-                            }
 
 
 
