@@ -33,7 +33,7 @@ public class SavingGameResource extends Resource {
         }
 
         this.createNewSelected = true;
-        this.selectedSave = 0;
+        this.selectedSave = saves.size();
     }
 
     private void saveSaves(World w) {
