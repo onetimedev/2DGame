@@ -23,6 +23,14 @@ public abstract class State extends SerDe {
     }
 
     /**
+     * Called when this game state is reloaded from disk
+     *
+     * @param world the world associated with this state
+     */
+    public void onReload(World world) {
+    }
+
+    /**
      * Called when this game state is stopped
      *
      * @param world the world associated with this state

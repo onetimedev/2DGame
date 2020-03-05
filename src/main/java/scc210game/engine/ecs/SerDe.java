@@ -33,6 +33,11 @@ public abstract class SerDe {
      */
     public static <T extends SerDe> T deserialize(@Nonnull Jsonable j, Class<T> type) {
         // java.lang.System.err.println("type=" + type + ", result=" + SerDe.deserializers.get(type).apply(j));
+        try {
+            Class.forName(type.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         assert (SerDe.deserializers.get(type) != null): "No Deserialize implementation for: " + type;
 
         return type.cast(SerDe.deserializers.get(type).apply(j));
@@ -44,6 +49,11 @@ public abstract class SerDe {
      * @return The deserialized component
      */
     public static <T extends SerDe> T deserialize(@Nonnull Jsonable j, String type, Class<T> parentType) {
+        try {
+            Class.forName(type);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         assert (SerDe.deserializersByName.get(type) != null): "No Deserialize implementation for: " + type;
 
         return parentType.cast(SerDe.deserializersByName.get(type).apply(j));

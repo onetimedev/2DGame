@@ -6,6 +6,7 @@ import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.SerDe;
 import scc210game.game.items.ItemData;
+import scc210game.game.utils.LoadJsonNum;
 
 import java.util.List;
 import java.util.Map;
@@ -42,11 +43,14 @@ public class Item extends Component {
     static {
         register(Item.class, j -> {
             var json = (JsonObject) j;
-            var itemID = (Integer) json.get("itemID");
+            var itemID = LoadJsonNum.loadInt(json.get("itemID"));
             var name = (String) json.get("name");
-            var level = (Integer) json.get("level");
+            var level = LoadJsonNum.loadInt(json.get("level"));
             var itemDatasS = (JsonArray) json.get("itemDatas");
-            var itemDatas = itemDatasS.stream().map(i -> SerDe.deserialize((Jsonable) i, ItemData.class)).collect(Collectors.toList());
+            var itemDatas = itemDatasS.stream().map(aS -> {
+                var a = (JsonArray) aS;
+                return SerDe.deserialize((Jsonable) a.get(1), (String) a.get(0), ItemData.class);
+            }).collect(Collectors.toList());
 
             return new Item(itemID, name, level, itemDatas);
         });
@@ -58,7 +62,7 @@ public class Item extends Component {
                 "itemID", this.itemID,
                 "name", this.name,
                 "level", this.level,
-                "itemDatas", this.itemDatas.stream().map(ItemData::serialize).collect(Collectors.toList())
+                "itemDatas", this.itemDatas.stream().map(d -> new JsonArray(List.of(d.getClass().getName(), d.serialize()))).collect(Collectors.toList())
         ));
     }
 

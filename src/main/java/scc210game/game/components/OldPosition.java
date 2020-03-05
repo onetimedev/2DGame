@@ -3,6 +3,7 @@ package scc210game.game.components;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 
 public class OldPosition extends Component {
     public float xPos;
@@ -11,8 +12,8 @@ public class OldPosition extends Component {
     static {
         register(OldPosition.class, j -> {
             var json = (JsonObject) j;
-            float x = (float) json.get("xPos");
-            float y = (float) json.get("yPos");
+            float x = LoadJsonNum.loadFloat(json.get("xPos"));
+            float y = LoadJsonNum.loadFloat(json.get("yPos"));
 
             return new OldPosition(x, y);
         });

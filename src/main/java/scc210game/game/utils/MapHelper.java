@@ -20,7 +20,7 @@ public class MapHelper {
 	public static Texture loadTexture(String fileName) {
         try {
             Texture t = new Texture();
-            t.loadFromFile(Paths.get("./src/main/resources/textures/", fileName));
+            t.loadFromFile(Paths.get("./src/main/resources/textures/map/", fileName));
             return t;
         }
         catch (final Exception e) {
@@ -71,19 +71,19 @@ public class MapHelper {
 	 */
 	public static void setTileToBiome(Tile t) {
 		if(t.getYPos() < 60 && t.getXPos() < 60) {
-			t.setTexture("map/sand.png");
+			t.setTexture("sand.png");
 		}
 		else if(t.getYPos() < 60 && t.getXPos() > 60) {
-			t.setTexture("map/light_basalt.png");
+			t.setTexture("light_basalt.png");
 		}
 		else if(t.getYPos() > 60 && t.getXPos() < 55) {
-			t.setTexture("map/grass.png");
+			t.setTexture("grass.png");
 		}
 		else if(t.getYPos() > 60 && t.getXPos() > 40) {
-			t.setTexture("map/snow.png");
+			t.setTexture("snow.png");
 		}
 		if((t.getYPos() == 49 && t.getXPos() == 112) || (t.getYPos() == 61 && t.getXPos() == 113) || (t.getYPos() == 48 && t.getXPos() == 93)) {
-			t.setTexture("map/grass.png");
+			t.setTexture("grass.png");
 		}
 	}
 
