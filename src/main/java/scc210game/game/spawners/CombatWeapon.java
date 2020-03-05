@@ -44,8 +44,8 @@ public class CombatWeapon implements Spawner {
         this.enemy = enemy;
         var combatPlayerSprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
         var cplayerPosition = world.fetchComponent(combatPlayerSprite, UITransform.class);
-        this.xPosition = (cplayerPosition.width)+0.0144f;
-        this.yPosition = (cplayerPosition.height/2)+0.235f;
+        this.xPosition = (cplayerPosition.width)+0.012f;
+        this.yPosition = (cplayerPosition.height/2)+0.225f;
 
         this.damage = damage;
         this.imageLocation = location;

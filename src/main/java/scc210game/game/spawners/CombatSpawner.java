@@ -50,12 +50,6 @@ public class CombatSpawner implements Spawner {
         {
             float textureHeight = (float) t.getSize().y;
             xPosition = 0.75f;
-            if(spriteInfo.getEnemyLevel() == 55) {
-                //yPosition = (float) (textureHeight / 1080) - 0.15f;
-                yPosition = (float) (textureHeight / 1080) - 0.1f;
-            }else{
-                yPosition = (float) (textureHeight / 1080) - 0.02f;
-            }
 
             if(spriteInfo.getEnemyLevel() == 25)
             {
@@ -116,7 +110,7 @@ public class CombatSpawner implements Spawner {
 
                                     if(spriteInfo.getEnemyLevel() == 25)
                                     {
-                                        this.image.setScale(new Vector2f(1f,1f));
+                                        this.image.setScale(new Vector2f(0.9f,0.9f));
                                     }else{
                                         this.image.setScale(new Vector2f(1.3f,1.3f));
                                     }

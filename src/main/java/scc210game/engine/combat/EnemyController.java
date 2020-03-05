@@ -110,7 +110,7 @@ public class EnemyController extends Component{
                 if (collisionCount >= getCollisionMax())
                 {
                     new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 65, CombatUtils.BACKWARD, false).animateXAxis();
-                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
+                    new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.BACKWARD, true).animateXAxis();
 
                     this.animateSprite();
 
