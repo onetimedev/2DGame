@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.system.Vector2f;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 
 
 /**
@@ -14,13 +15,13 @@ public class UITransform extends Component {
         register(UITransform.class, j -> {
             var json = (JsonObject) j;
 
-            Float originXPos = (Float) json.get("originXPos");
-            Float originYPos = (Float) json.get("originYPos");
-            Float xPos = (Float) json.get("xPos");
-            Float yPos = (Float) json.get("yPos");
-            Integer zPos = (Integer) json.get("zPos");
-            Float width = (Float) json.get("width");
-            Float height = (Float) json.get("height");
+            Float originXPos = LoadJsonNum.loadFloat(json.get("originXPos"));
+            Float originYPos = LoadJsonNum.loadFloat(json.get("originYPos"));
+            Float xPos = LoadJsonNum.loadFloat(json.get("xPos"));
+            Float yPos = LoadJsonNum.loadFloat(json.get("yPos"));
+            Integer zPos = LoadJsonNum.loadInt(json.get("zPos"));
+            Float width = LoadJsonNum.loadFloat(json.get("width"));
+            Float height = LoadJsonNum.loadFloat(json.get("height"));
 
             return new UITransform(originXPos, originYPos, xPos, yPos, zPos, width, height);
         });

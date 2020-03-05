@@ -223,7 +223,7 @@ public class DatabaseManager {
 
 
 
-    public List getAllKeys()
+    public List<String> getAllKeys()
     {
         LOG(DatabaseOperation.COLLECT_ALL_KEYS, "All Keys", getTS());
         return Arrays.asList(Keys());
@@ -256,8 +256,10 @@ public class DatabaseManager {
             if(file.toString().contains(DatabaseOperation.DELIMITER))
             {
                 String[] keys = file.toString().split(DatabaseOperation.DELIMITER);
-                Arrays.sort(keys);
-                return keys;
+                return Arrays.stream(keys)
+                        .map(k -> k.split("=", 2)[0])
+                        .sorted()
+                        .toArray(String[]::new);
             }
             else
             {

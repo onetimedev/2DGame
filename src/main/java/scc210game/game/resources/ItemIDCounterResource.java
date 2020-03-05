@@ -3,7 +3,9 @@ package scc210game.game.resources;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Resource;
+import scc210game.game.utils.LoadJsonNum;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class ItemIDCounterResource extends Resource {
@@ -24,7 +26,7 @@ public class ItemIDCounterResource extends Resource {
     static {
         register(ItemIDCounterResource.class, j -> {
             var json = (JsonObject) j;
-            return new ItemIDCounterResource((Integer) json.get("lastItemID"));
+            return new ItemIDCounterResource(LoadJsonNum.loadInt(json.get("lastItemID")));
         });
     }
 

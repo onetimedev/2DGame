@@ -7,6 +7,7 @@ import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
 import scc210game.engine.utils.SerDeBase64;
 import scc210game.engine.utils.SerializableBiConsumer;
+import scc210game.game.utils.LoadJsonNum;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
@@ -58,7 +59,7 @@ public class Animate extends Component {
             var json = (JsonObject) j;
 
             var duration = Duration.parse((String) json.get("duration"));
-            var pctComplete = (Float) json.get("pctComplete");
+            var pctComplete = LoadJsonNum.loadFloat(json.get("pctComplete"));
             var looping = (Boolean) json.get("looping");
 
             @SuppressWarnings("unchecked")

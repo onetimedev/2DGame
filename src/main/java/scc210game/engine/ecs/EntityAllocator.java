@@ -2,6 +2,7 @@ package scc210game.engine.ecs;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
+import scc210game.game.utils.LoadJsonNum;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -42,6 +43,6 @@ class EntityAllocator {
 
     public static EntityAllocator deserialize(Jsonable j) {
         var json = (JsonObject) j;
-        return new EntityAllocator((Long) json.get("currentID"));
+        return new EntityAllocator(LoadJsonNum.loadLong(json.get("currentID")));
     }
 }

@@ -5,6 +5,7 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 import scc210game.game.utils.MapHelper;
 
 import java.util.ArrayList;
@@ -57,8 +58,8 @@ public class Map extends Component {
                             .stream()
                             .map(vS -> {
                                 var a = (JsonArray) vS;
-                                var x = (Integer) a.get(0);
-                                var y = (Integer) a.get(1);
+                                var x = LoadJsonNum.loadInt(a.get(0));
+                                var y = LoadJsonNum.loadInt(a.get(1));
 
                                 return new Vector2i(x, y);
                             })
