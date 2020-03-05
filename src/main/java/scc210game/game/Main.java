@@ -146,7 +146,7 @@ public class Main {
                         break;
                     }
                     case CLOSED: {
-                        this.ecs.getCurrentWorld().killAnimation();
+                        this.ecs.getCurrentWorld().deactivateCombat();
                         this.mainWindow.close();
                         break;
                     }
