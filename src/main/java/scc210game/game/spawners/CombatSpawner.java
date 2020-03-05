@@ -59,10 +59,7 @@ public class CombatSpawner implements Spawner {
             this.klass = CombatEnemy.class;
         }
 
-        var playerEnt = world.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
-
-        var spriteUI = world.fetchComponent(playerEnt, UITransform.class);
-
+        //var playerEnt = world.applyQuery(Query.builder().require(klass).build()).findFirst().orElseThrow();
         var rw = world.fetchGlobalResource(MainWindowResource.class);
 
 
@@ -71,7 +68,7 @@ public class CombatSpawner implements Spawner {
         double height = (double) t.getSize().y / 1080;
         float fheight = (float) (height);
 
-        spriteUI.yPos = fMaxHeight - fheight + 0.05f;
+        yPosition = fMaxHeight - fheight + 0.05f;
 
 
     }

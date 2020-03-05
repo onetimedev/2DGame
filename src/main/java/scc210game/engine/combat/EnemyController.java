@@ -190,12 +190,12 @@ public class EnemyController extends Component{
     {
         int number = new Random().nextInt((10 - 1) + 1) + 1;
         ArrayList<Integer> chances = new ArrayList<>();
-        if(damage == 40)
+        if(damage == CombatUtils.ENEMY_DAMAGE)
         {
             chances = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
 
         }
-        else if(damage == 55){
+        else if(damage == CombatUtils.BOSS_DAMAGE){
             chances = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6));
         }
         else
@@ -216,9 +216,9 @@ public class EnemyController extends Component{
 
     public int getCollisionMax()
     {
-        if(damage == 40) {
+        if(damage == CombatUtils.ENEMY_DAMAGE) {
             return 3;
-        }else if(damage == 55){
+        }else if(damage == CombatUtils.BOSS_DAMAGE){
             return 2;
         }else{
             return 1;

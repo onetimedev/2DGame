@@ -112,7 +112,7 @@ public class CombatAnimator {
                 if(!(spriteAttributes.xPos <= getEnd()))
                 {
                     spriteAttributes.xPos -= CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    weaponAttributes.xPos = (spriteAttributes.xPos) + 0.15f;
+                    weaponAttributes.xPos = (spriteAttributes.xPos) + 0.18f;
 
                     continueXAxisAnimation();
                 }

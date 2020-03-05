@@ -31,6 +31,8 @@ public class CombatMovement implements System {
     private ScheduledExecutorService scheduledExecutorService;
 
 
+
+
     public CombatMovement(ECS ecs) {
         this.eventReader = ecs.eventQueue.makeReader();
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
