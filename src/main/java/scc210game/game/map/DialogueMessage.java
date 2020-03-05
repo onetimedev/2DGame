@@ -316,9 +316,9 @@ public class DialogueMessage {
 
 	public String getIntroDialogue() {
 		String s = "After many years you have returned home, to revisit the communities and areas where you once lived.\n" +
-				"However no longer present are those who you once knew! " +
-				"\nNow the inhabitants of your home are Elemental creatures, intent on controlling the elements at any cost!\n" +
-				"\nMove using W A S D    |    ENTER or Q for dialogs    |    SPACE to attack    |    ESC to exit inventory or pause    |    CLICK top left chest icon for inventory" +
+				"However no longer present are those who you once knew! Now the inhabitants of your home are Elemental creatures, intent on controlling the elements at any cost!" +
+				"\nYou must find and defeat the four elemental bosses to face the elemental controlling this invasion!" +
+				"\n\nMove using W A S D    |    ENTER or Q for dialogs    |    SPACE to attack    |    ESC to exit inventory or pause    |    CLICK top left chest icon for inventory" +
 				"\n\n----- Press Q or ENTER to Continue -----";
 
 		return s;
