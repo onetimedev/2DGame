@@ -131,7 +131,7 @@ public class EnemyController extends Component{
                             //System.out.println("collided so moving backward");
                             lock.lock();
                             collisionCount++;
-                            new CombatUtils().damagePlayer(w, (damage*2));
+                            new CombatUtils().damagePlayer(w, (damage+10));
                             new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 65, CombatUtils.BACKWARD, false).animateXAxis();
 
                             if(new CombatUtils().getAbsHealth(w, false) <= 0)

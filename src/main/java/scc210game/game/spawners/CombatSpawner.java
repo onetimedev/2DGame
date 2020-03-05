@@ -4,6 +4,7 @@ import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import scc210game.engine.combat.CombatImage;
 import scc210game.engine.combat.CombatSprite;
+import scc210game.engine.combat.CombatUtils;
 import scc210game.engine.combat.SpriteType;
 import scc210game.engine.ecs.*;
 import scc210game.engine.render.Renderable;
@@ -108,12 +109,17 @@ public class CombatSpawner implements Spawner {
                                     //System.out.println(this.image.getGlobalBounds().height);
 
 
-                                    if(spriteInfo.getEnemyLevel() == 25)
+                                    if(spriteInfo.getEnemyLevel() == CombatUtils.ENEMY_DAMAGE)
                                     {
-                                        this.image.setScale(new Vector2f(0.9f,0.9f));
-                                    }else{
-                                        this.image.setScale(new Vector2f(1.3f,1.3f));
+                                        this.image.setScale(new Vector2f(0.8f,0.8f));
                                     }
+                                    else if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE){
+                                        this.image.setScale(new Vector2f(1.2f,1.2f));
+                                    }
+                                    else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE){
+                                        this.image.setScale(new Vector2f(1.5f,1.5f));
+                                    }
+
 
                                 }
 

@@ -1,6 +1,7 @@
 package scc210game.game.states;
 
 import org.jsfml.system.Vector2i;
+import scc210game.engine.combat.CombatUtils;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.events.LeaveCombatEvent;
@@ -46,7 +47,7 @@ public class MainGameState extends BaseInGameState {
         // Spawning of all Enemies
         int id = 0;
         for (final Tile tile : map.getEnemyTiles()) {
-            world.entityBuilder().with(new EnemySpawner(tile, 60, id)).build();
+            world.entityBuilder().with(new EnemySpawner(tile, CombatUtils.ENEMY_DAMAGE, id)).build();
             id++;
         }
 
@@ -56,7 +57,7 @@ public class MainGameState extends BaseInGameState {
 
         int count = 0;
         for (final Vector2i[] v : map.getBossCoords()) {
-            world.entityBuilder().with(new BossSpawner(v, count, map, 80, id)).build();
+            world.entityBuilder().with(new BossSpawner(v, count, map, CombatUtils.BOSS_DAMAGE, id)).build();
             count++;
             id++;
         }
@@ -69,7 +70,7 @@ public class MainGameState extends BaseInGameState {
 					map.getTile(v.x,v.y).setHasEnemy(true);
 					map.getTile(v.x,v.y).setCanHaveStory(true);
 				}
-        world.entityBuilder().with(new FinalBossSpawner(90, id)).build();
+        world.entityBuilder().with(new FinalBossSpawner(CombatUtils.FINAL_BOSS_DAMAGE, id)).build();
 
 
 				world.eventQueue.broadcast(new DialogueCreateEvent(new DialogueMessage().getIntroDialogue(),

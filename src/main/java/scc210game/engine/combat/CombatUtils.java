@@ -21,12 +21,16 @@ public class CombatUtils
     public static final float X_AXIS_MOVE_DISTANCE = 0.003f;
     public static final float Y_AXIS_MOVE_DISTANCE = 0.005f;
 
+    public static final int ENEMY_DAMAGE = 100;
+    public static final int BOSS_DAMAGE = 130;
+    public static final int FINAL_BOSS_DAMAGE = 160;
+
     public static String PLAYER_SPRITE = "src/main/resources/textures/Combat/Combat-player-sprite-sheet.png";
     public static String TARGET_TEXTURE = "src/main/resources/textures/Combat/focus.png";
     public static float WEAPON_PADDING = 0.01f;
 
-    public static int MAX_HEALTH = 400;
-    public static int STARTING_HEALTH = 400;
+    public static int MAX_HEALTH = 700;
+    public static int STARTING_HEALTH = 700;
 
     public boolean hasCollided(UITransform rect1, UITransform rect2)
     {
