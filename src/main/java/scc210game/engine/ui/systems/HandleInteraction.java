@@ -114,7 +114,7 @@ public class HandleInteraction implements System {
 
                 if (world.hasComponent(entAtClick.l, UIClickable.class)) {
                     Event evt = new EntityClickEvent(e1.x, e1.y, entAtClick.l);
-                    world.ecs.eventQueue.broadcast(evt);
+                    world.eventQueue.broadcast(evt);
                 }
             } else {
                 var entAtDropP = this.getEntityAtPosition(e1.x, e1.y, world, this.droppableUIEntityQuery, state.draggingEntityData.draggingEntity);
@@ -125,7 +125,7 @@ public class HandleInteraction implements System {
                             state.draggingEntityData.dragStartY,
                             state.draggingEntityData.lastXPosition - state.draggingEntityData.dragStartX,
                             state.draggingEntityData.lastYPosition - state.draggingEntityData.dragStartY);
-                    world.ecs.eventQueue.broadcast(evt);
+                    world.eventQueue.broadcast(evt);
                 } else {
                     var entAtDrop = entAtDropP.get();
                     Event evt = new EntityDroppedEvent(state.draggingEntityData.draggingEntity, entAtDrop.l,
@@ -133,7 +133,7 @@ public class HandleInteraction implements System {
                             state.draggingEntityData.dragStartY,
                             state.draggingEntityData.lastXPosition - state.draggingEntityData.dragStartX,
                             state.draggingEntityData.lastYPosition - state.draggingEntityData.dragStartY);
-                    world.ecs.eventQueue.broadcast(evt);
+                    world.eventQueue.broadcast(evt);
                 }
 
                 state.draggingEntityData = null;
@@ -154,10 +154,10 @@ public class HandleInteraction implements System {
                     // new hover or changed hovers
 
                     if (state.hoveringEntity != null) {
-                        world.ecs.eventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
+                        world.eventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
                     }
 
-                    world.ecs.eventQueue.broadcast(new EntityHoverStartEvent(entAtHover.l));
+                    world.eventQueue.broadcast(new EntityHoverStartEvent(entAtHover.l));
                 }
 
                 state.hoveringEntity = entAtHover.l;
@@ -165,7 +165,7 @@ public class HandleInteraction implements System {
                 // not hovering over anything, discard the old hover if there was one
 
                 if (state.hoveringEntity != null) {
-                    world.ecs.eventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
+                    world.eventQueue.broadcast(new EntityHoverStopEvent(state.hoveringEntity));
                     state.hoveringEntity = null;
                 }
             }
@@ -173,7 +173,7 @@ public class HandleInteraction implements System {
             // now go on to handling dragged entities
 
             if (state.draggingEntityData != null) {
-                world.ecs.eventQueue.broadcast(new EntityDraggedEvent(
+                world.eventQueue.broadcast(new EntityDraggedEvent(
                         state.draggingEntityData.draggingEntity,
                         state.draggingEntityData.dragStartX,
                         state.draggingEntityData.dragStartY,
