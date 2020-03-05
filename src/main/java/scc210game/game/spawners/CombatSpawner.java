@@ -64,11 +64,11 @@ public class CombatSpawner implements Spawner {
 
         if(spriteInfo.getEnemyLevel() == CombatUtils.BOSS_DAMAGE)
         {
-            yPosition = 0.25f;
+            yPosition = 0.3f;
         }
         else if(spriteInfo.getEnemyLevel() == CombatUtils.FINAL_BOSS_DAMAGE)
         {
-            yPosition = 0.15f;
+            yPosition = 0.25f;
         }
 
 
