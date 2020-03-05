@@ -85,7 +85,8 @@ public class CombatAnimator {
                 if(!new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)))
                 {
                     spriteAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
-                    weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
+                    //weaponAttributes.xPos += CombatUtils.X_AXIS_MOVE_DISTANCE;
+                    weaponAttributes.xPos = (spriteAttributes.width)+0.0144f;
                     continueXAxisAnimation();
                 }
                 else if(new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)) || new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true)))
@@ -94,7 +95,6 @@ public class CombatAnimator {
                         if (new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
                             new CombatUtils().damageEnemy(world, damage.damage);
                             if(!target.visible) {
-                                java.lang.System.out.println("WEapon x: " + weaponAttributes.xPos);
                                 target.xPos = weaponAttributes.xPos;
                                 target.yPos = weaponAttributes.yPos;
                                 target.visible = true;

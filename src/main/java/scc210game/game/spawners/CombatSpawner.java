@@ -112,7 +112,7 @@ public class CombatSpawner implements Spawner {
                                         this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
                                     }
                                     //System.out.println(this.image.getGlobalBounds().height);
-                                    
+
 
                                     if(spriteInfo.getEnemyLevel() == 25)
                                     {
