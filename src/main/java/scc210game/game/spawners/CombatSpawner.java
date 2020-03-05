@@ -54,7 +54,6 @@ public class CombatSpawner implements Spawner {
             this.klass = CombatEnemy.class;
         }
 
-        yPosition = 0.8f;
 
     }
 
@@ -84,7 +83,11 @@ public class CombatSpawner implements Spawner {
                             double height = (double) t.getSize().y / 1080;
                             float fheight = (float) (height);
 
-                            //spriteUI.yPos = fMaxHeight - fheight;
+                            if(spriteInfo.getEnemyStatus()){
+                                spriteUI.yPos = fMaxHeight - fheight + 0.1f;
+                            }else{
+                                spriteUI.yPos = 0.33f;
+                            }
 
                                 if(!this.spriteInfo.getEnemyStatus())
                                 {
