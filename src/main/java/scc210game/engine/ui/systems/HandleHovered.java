@@ -35,7 +35,8 @@ public class HandleHovered implements System {
                 world.addComponentToEntity(e1.entity, new UIHovered());
             } else if (e instanceof EntityHoverStopEvent) {
                 EntityHoverStopEvent e1 = (EntityHoverStopEvent) e;
-                world.removeComponentFromEntity(e1.entity, UIHovered.class);
+                if (world.hasEntity(e1.entity))
+                    world.removeComponentFromEntity(e1.entity, UIHovered.class);
             }
         }
     }

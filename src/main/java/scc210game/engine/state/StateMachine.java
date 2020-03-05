@@ -147,6 +147,8 @@ public class StateMachine {
             stateData.tLastRun = tLastRun;
             stateData.tOnPause = tOnPause;
 
+            stateData.state.onReload(world);
+
             this.states.addLast(stateData);
         });
     }

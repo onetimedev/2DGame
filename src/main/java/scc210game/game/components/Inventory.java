@@ -1,11 +1,12 @@
 package scc210game.game.components;
 
-import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
 import scc210game.engine.utils.Tuple2;
 import scc210game.game.utils.BiMap;
+import scc210game.game.utils.LoadJsonNum;
 import scc210game.game.utils.NamedTypeParam;
 
 import java.util.*;
@@ -134,12 +135,12 @@ public class Inventory extends Component {
     static {
         register(Inventory.class, j -> {
             var json = (JsonObject) j;
-            var slotCount = (Integer) json.get("slotCount");
+            var slotCount = LoadJsonNum.loadInt(json.get("slotCount"));
             var itemsSlotsS = (JsonArray) json.get("itemsSlots");
             var itemsSlots = itemsSlotsS.stream()
                     .map(slotS -> {
                         var slotA = (JsonArray) slotS;
-                        return new Tuple2<>((Integer) slotA.get(0), (Integer) slotA.get(1));
+                        return new Tuple2<>(LoadJsonNum.loadInt(slotA.get(0)), LoadJsonNum.loadInt(slotA.get(1)));
                     })
                     .collect(Collectors.toList());
 

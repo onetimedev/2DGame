@@ -3,6 +3,7 @@ package scc210game.engine.movement;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 
 public class Position extends Component {
 
@@ -12,8 +13,8 @@ public class Position extends Component {
 	static {
 		register(Position.class, j -> {
             var json = (JsonObject) j;
-			float x = (float) json.get("xPos");
-			float y = (float) json.get("yPos");
+			float x = LoadJsonNum.loadFloat(json.get("xPos"));
+			float y = LoadJsonNum.loadFloat(json.get("yPos"));
 
 			return new Position(x, y);
 		});

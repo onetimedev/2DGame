@@ -3,6 +3,7 @@ package scc210game.game.items;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Copyable;
+import scc210game.game.utils.LoadJsonNum;
 
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class Weapon extends ItemData implements Copyable<Weapon> {
     static {
         register(Weapon.class, j -> {
             var json = (JsonObject) j;
-            var damage = (Integer) json.get("damage");
+            var damage = LoadJsonNum.loadInt(json.get("damage"));
             var lore = (String) json.get("lore");
             var element = Element.valueOf((String) json.get("element"));
 
@@ -33,7 +34,7 @@ public class Weapon extends ItemData implements Copyable<Weapon> {
         return new JsonObject(Map.of(
                 "damage", this.damage,
                 "lore", this.lore,
-                "element", this.element.name
+                "element", this.element.toString()
         ));
     }
 
