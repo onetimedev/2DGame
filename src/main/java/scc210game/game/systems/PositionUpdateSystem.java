@@ -340,7 +340,7 @@ public class PositionUpdateSystem implements System {
 	 */
 	public String inDialogue(World world, Entity player, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(0.6f);
+		view.zoomIn();
 		java.lang.System.out.println("Zoomed in");
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = true;
@@ -358,7 +358,7 @@ public class PositionUpdateSystem implements System {
 	 */
 	public void acceptChest(World world, Entity player, Entity target) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(1f/0.6f);
+		view.zoomOut();
 
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
@@ -396,7 +396,7 @@ public class PositionUpdateSystem implements System {
 	 */
 	public void refuse(World world, Entity player) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(1f/0.6f);
+		view.zoomOut();
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 	}
