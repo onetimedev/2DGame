@@ -120,6 +120,7 @@ public class PositionUpdateSystem implements System {
 			}
 		}
 
+		//if player is not moving stop sound
 		if(deltaX == 0 && deltaY == 0) {
 			this.au.stopSound();
 		}
@@ -322,22 +323,27 @@ public class PositionUpdateSystem implements System {
 	public void biomeSound(int type, Audio au) {
 		switch(type) {
 			case 0: { //grass
+				//if tile type is 0 (grass) play walking on grass sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 				break;
 			}
 			case 1: { //sand
+				//if tile type is 1 (sand) play walking on sand sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_sand.wav"), false);
 				break;
 			}
 			case 2: { //basalt
+				//if tile type is 2 (basalt) play walking on basalt sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_gravel.wav"), false);
 				break;
 			}
 			case 3: { //snow
+				//if tile type is 3 (snow) play walking on snow sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_snow.wav"), false);
 				break;
 			}
 			case 5: { //path
+				//if tile type is 5 (path) play walking on path sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_path.wav"), false);
 				break;
 			}
