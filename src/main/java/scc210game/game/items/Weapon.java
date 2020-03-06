@@ -9,12 +9,10 @@ import java.util.Map;
 
 public class Weapon extends ItemData implements Copyable<Weapon> {
     public final int damage;
-    public final String lore;
     public final Element element;
 
-    public Weapon(int damage, String lore, Element element) {
+    public Weapon(int damage, Element element) {
         this.damage = damage;
-        this.lore = lore;
         this.element = element;
     }
 
@@ -22,10 +20,9 @@ public class Weapon extends ItemData implements Copyable<Weapon> {
         register(Weapon.class, j -> {
             var json = (JsonObject) j;
             var damage = LoadJsonNum.loadInt(json.get("damage"));
-            var lore = (String) json.get("lore");
             var element = Element.valueOf((String) json.get("element"));
 
-            return new Weapon(damage, lore, element);
+            return new Weapon(damage, element);
         });
     }
 
@@ -33,14 +30,13 @@ public class Weapon extends ItemData implements Copyable<Weapon> {
     public Jsonable serialize() {
         return new JsonObject(Map.of(
                 "damage", this.damage,
-                "lore", this.lore,
                 "element", this.element.toString()
         ));
     }
 
     @Override
     public String infoData() {
-        return "damage: " + this.damage + "\nlore: " + this.lore;
+        return "damage: " + this.damage + "\nelement: " + this.element.name;
     }
 
     @Override

@@ -1,40 +1,47 @@
 package scc210game.game.spawners;
 
-import org.jsfml.graphics.Texture;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
-import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.Item;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.items.Element;
 import scc210game.game.items.Material;
 import scc210game.game.items.Type;
 import scc210game.game.items.Weapon;
-import scc210game.game.components.TextureStorage;
 import scc210game.game.resources.ItemIDCounterResource;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 public class WeaponSpawner implements Spawner {
     private final int level;
+    private final int dmg;
+    private final Element element;
+    private final String name;
+    private final String tex;
 
     public WeaponSpawner(int level) {
         this.level = level;
+        this.dmg = generateDamage(this.level);
+        this.element = randomEnum(Element.class);
+        this.name = generateWeaponName(this.level, element);
+        this.tex = generateTexture(this.level, element);
+    }
+
+    public WeaponSpawner(int level, int dmg, Element element, String name, String tex) {
+        this.level = level;
+        this.dmg = dmg;
+        this.element = element;
+        this.name = name;
+        this.tex = tex;
     }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
-        var dmg = generateDamage(this.level);
-        var element = randomEnum(Element.class);
-        var name = generateWeaponName(this.level, element);
-        var lore = generateLore(this.level);
-        var tex = generateTexture(this.level, element);
-
         var itemID = world.ecs.fetchGlobalResource(ItemIDCounterResource.class).getItemID();
 
         return builder
-                .with(new Item(itemID, name, this.level, List.of(new Weapon(dmg, lore, element))))
+                .with(new Item(itemID, name, this.level, List.of(new Weapon(dmg, element))))
                 .with(new TextureStorage(tex));
     }
 
