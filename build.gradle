@@ -38,13 +38,25 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes "Main-Class": "scc210game.App"
+    }
+
+    archiveBaseName.set('scc210game-packed')
+    from {
+        configurations.runtimeClasspath.filter { (!it.name.contains("jsfml")) }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
 jar {
     into 'resources', {
         from 'resources'
     }
 }
 
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 import org.gradle.internal.os.OperatingSystem
 

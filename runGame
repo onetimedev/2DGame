@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mkdir -p libs
+
+cp $1 libs/jsfml.jar
+
+./gradlew run

@@ -4,11 +4,11 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.utils.LoadJsonNum;
 import scc210game.game.utils.MapHelper;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 
 public class Tile {
@@ -26,7 +26,6 @@ public class Tile {
 
     public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
         this.fileName = fn;
-        String assetsPath = "src/main/resources/textures/map/";
         this.xPos = x;
         this.yPos = y;
         this.hasCollision = collision;
@@ -36,7 +35,7 @@ public class Tile {
         this.hasEnemy = false;
 
         try {
-            this.tileTexture.loadFromFile(Paths.get(assetsPath, this.fileName));
+            this.tileTexture.loadFromStream(ResourceLoader.resolve("textures/map/" + this.fileName));
             this.textureSize = this.tileTexture.getSize();
         } catch (final IOException e) {
             throw new RuntimeException(e);

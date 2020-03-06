@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Font {
     public static final org.jsfml.graphics.Font freesans = new org.jsfml.graphics.Font() {{
         try {
-            this.loadFromFile(ResourceLoader.resolve("font/FreeSans.ttf"));
+            this.loadFromStream(ResourceLoader.resolve("font/FreeSans.ttf"));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -15,7 +15,7 @@ public class Font {
 
     public static final org.jsfml.graphics.Font fantasqueSansMono = new org.jsfml.graphics.Font() {{
         try {
-            this.loadFromFile(ResourceLoader.resolve("font/FantasqueSansMono-Regular.ttf"));
+            this.loadFromStream(ResourceLoader.resolve("font/FantasqueSansMono-Regular.ttf"));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -23,7 +23,7 @@ public class Font {
 
     public static final org.jsfml.graphics.Font CaladeaRegular = new org.jsfml.graphics.Font() {{
         try {
-            this.loadFromFile(ResourceLoader.resolve("font/Caladea-Regular.ttf"));
+            this.loadFromStream(ResourceLoader.resolve("font/Caladea-Regular.ttf"));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
