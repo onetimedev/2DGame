@@ -3,6 +3,7 @@ package scc210game.game.map;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.game.utils.LoadJsonNum;
 
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class Enemy extends Component {
     static {
         register(Enemy.class, j -> {
             var json = (JsonObject) j;
-            return new Enemy((Boolean) json.get("defeated"), (int) json.get("damage"), (int) json.get("id"));
+            return new Enemy((Boolean) json.get("defeated"), LoadJsonNum.loadInt(json.get("damage")), LoadJsonNum.loadInt(json.get("id")));
         });
     }
 

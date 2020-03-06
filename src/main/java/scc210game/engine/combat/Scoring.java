@@ -1,7 +1,12 @@
 package scc210game.engine.combat;
 
 import com.github.cliftonlabs.json_simple.Jsonable;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import scc210game.engine.ecs.Component;
+import scc210game.game.map.Enemy;
+import scc210game.game.utils.LoadJsonNum;
+
+import java.util.Map;
 
 public class Scoring extends Component {
 
@@ -64,6 +69,16 @@ public class Scoring extends Component {
 
     @Override
     public Jsonable serialize() {
-        return null;
+        return new JsonObject(Map.of("enemyhealth", this.enemyHealth, "playerhealth", this.playerHealth, "playerexperience", this.playerExperience));
     }
+
+
+    static {
+        register(Scoring.class, j -> {
+            var json = (JsonObject) j;
+            return new Scoring(LoadJsonNum.loadInt(json.get("enemyhealth")), LoadJsonNum.loadInt(json.get("playerhealth")), LoadJsonNum.loadInt(json.get("playerexperience")));
+        });
+    }
+
+
 }
