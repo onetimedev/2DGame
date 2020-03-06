@@ -12,8 +12,8 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.utils.ResourceLoader;
-import scc210game.game.map.Enemy;
 import scc210game.game.components.TextureStorage;
+import scc210game.game.map.Enemy;
 import scc210game.game.map.Tile;
 
 import java.time.Duration;
@@ -30,8 +30,8 @@ public class EnemySpawner implements Spawner {
     public EnemySpawner(Tile tile) {
       this.setTexture(tile.getTextureName());  // Update enemyTexturePath
       try {
-        this.t = new Texture();
-        this.t.loadFromFile(ResourceLoader.resolve(enemyTexturePath));
+          this.t = new Texture();
+          this.t.loadFromStream(ResourceLoader.resolve(this.enemyTexturePath));
       }
       catch (final Exception e) {
         throw new RuntimeException();

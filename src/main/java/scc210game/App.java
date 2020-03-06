@@ -3,7 +3,12 @@
  */
 package scc210game;
 
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.Main;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class App {
     public static void main(String[] args) {
@@ -18,7 +23,15 @@ public class App {
             }
 
             if (ext != null) {
-                System.load(System.getProperty("user.dir") + "/libXinitThreads.so." + ext);
+                try {
+                    var tempFile = File.createTempFile("libXinitThreads", ".so");
+                    var outFile = new FileOutputStream(tempFile);
+                    ResourceLoader.resolve("libXinitThreads.so." + ext).transferTo(outFile);
+                    outFile.close();
+                    System.load(tempFile.getAbsolutePath());
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         Main.runForever();

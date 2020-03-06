@@ -14,9 +14,9 @@ import scc210game.engine.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.*;
 import scc210game.game.map.Player;
-import scc210game.engine.utils.ResourceLoader;
 
 import java.time.Duration;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class PlayerSpawner implements Spawner {
 	public PlayerSpawner() {
 		try {
 			this.t = new Texture();
-			this.t.loadFromFile(ResourceLoader.resolve("textures/player/player_anim.png"));
+			this.t.loadFromStream(ResourceLoader.resolve("textures/player/player_anim.png"));
 		} catch (final Exception e) {
 			throw new RuntimeException();
 		}

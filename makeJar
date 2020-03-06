@@ -1,0 +1,11 @@
+#!/bin/sh
+
+mkdir -p libs
+
+cp $1 libs/jsfml.jar
+
+./gradlew fatJar
+
+cp build/libs/scc210game-packed-1.0.jar $2
+
+echo $2

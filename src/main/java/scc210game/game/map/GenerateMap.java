@@ -5,10 +5,12 @@ import com.github.cliftonlabs.json_simple.JsonException;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsoner;
 import org.jsfml.system.Vector2i;
+import scc210game.engine.utils.ResourceLoader;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Class to Generate the maps tiles given mapdata.json.
@@ -38,31 +40,32 @@ public class GenerateMap {
 	 */
 	private void jsonToTiles() {
 		try {
-            FileReader fr = new FileReader("./mapdata.json");
-            JsonObject jsonData = (JsonObject) Jsoner.deserialize(fr);
-            JsonArray tileValues = (JsonArray) jsonData.get("data");
+			var mapDataS = ResourceLoader.resolve("map/mapdata.json");
+			var mapData = new BufferedReader(new InputStreamReader(mapDataS)).lines().collect(Collectors.joining("\n"));
+			JsonObject jsonData = (JsonObject) Jsoner.deserialize(mapData);
+			JsonArray tileValues = (JsonArray) jsonData.get("data");
 
-            int cnt = 0;  // Count to get each tile value from tileValues
-            for (int y = 0; y < this.mapSize.y; y++)
-                for (int x = 0; x < this.mapSize.x; x++) {
-                    //System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
-                    this.allTiles[x][y] = Tile.deserialize(this.tileData(tileValues.getInteger(cnt), x, y));
-                    if (this.allTiles[x][y].getTextureName().contains("enemy_"))
-                        this.possEnemyTiles.add(this.allTiles[x][y]);
+			int cnt = 0;  // Count to get each tile value from tileValues
+			for (int y = 0; y < this.mapSize.y; y++)
+				for (int x = 0; x < this.mapSize.x; x++) {
+					//System.out.println("[" + cnt + "]" + " Tile " + x + "," + y + " created. With texture: "  + tileValues.getInteger(cnt));
+					this.allTiles[x][y] = Tile.deserialize(this.tileData(tileValues.getInteger(cnt), x, y));
+					if (this.allTiles[x][y].getTextureName().contains("enemy_"))
+						this.possEnemyTiles.add(this.allTiles[x][y]);
 
-                    if (this.allTiles[x][y].getTextureName().contains("story.png"))
-                        this.npcTiles.add(this.allTiles[x][y]);
+					if (this.allTiles[x][y].getTextureName().contains("story.png"))
+						this.npcTiles.add(this.allTiles[x][y]);
 
-                    if (this.allTiles[x][y].canHaveChest() && this.allTiles[x][y].getTextureName().equals("chest.png"))
-                        this.chestTiles.add(this.allTiles[x][y]);
+					if (this.allTiles[x][y].canHaveChest() && this.allTiles[x][y].getTextureName().equals("chest.png"))
+						this.chestTiles.add(this.allTiles[x][y]);
 
-                    cnt++;
+					cnt++;
 
-                }
+				}
 
-        } catch (final FileNotFoundException | JsonException e) {
-            throw new RuntimeException();
-        }
+		} catch (final JsonException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 
@@ -343,7 +346,7 @@ public class GenerateMap {
 						break;
 					}
 					case 3: {
-						allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
+						this.allTiles[allBossCoords.get(i)[j].x][allBossCoords.get(i)[j].y].setTexture("ice.png");
 						break;
 					}
 				}

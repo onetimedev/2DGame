@@ -2,9 +2,9 @@ package scc210game.game.utils;
 
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.map.Tile;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class MapHelper {
@@ -19,10 +19,10 @@ public class MapHelper {
 	 */
 	public static Texture loadTexture(String fileName) {
         try {
-            Texture t = new Texture();
-            t.loadFromFile(Paths.get("./src/main/resources/textures/map/", fileName));
-            return t;
-        }
+			Texture t = new Texture();
+			t.loadFromStream(ResourceLoader.resolve("textures/map/" + fileName));
+			return t;
+		}
         catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -37,7 +37,7 @@ public class MapHelper {
 	 * @param enemy on the tile?
 	 */
 	public static void changeTiles(ArrayList<Tile> tilesToChange, String newTextureName, boolean collision, boolean enemy) {
-		for (Tile t: tilesToChange) {
+		for (final Tile t : tilesToChange) {
 			t.setTexture(newTextureName);
 			t.setHasCollision(collision);
 			t.setHasEnemy(enemy);
