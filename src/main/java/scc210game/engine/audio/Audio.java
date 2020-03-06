@@ -20,6 +20,7 @@ public class Audio {
             e.printStackTrace();
         }
 
+        //if sound is not playing then play sound
         if (this.sound.getStatus() != SoundSource.Status.PLAYING) {
             this.sound.setBuffer(sB);
             this.sound.setVolume(20.0f);
@@ -27,6 +28,7 @@ public class Audio {
         }
     }
 
+    //if tile is not equal to biomeTile set tile to biomeTile
     public void changeBiome(int tT) {
         if (this.biomeTile != tT) {
             this.biomeTile = tT;
@@ -34,6 +36,7 @@ public class Audio {
         }
     }
 
+    //stop the sound
     public void stopSound() {
         this.sound.stop();
     }
