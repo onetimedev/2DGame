@@ -1,10 +1,8 @@
 package scc210game.game.systems;
 
 import scc210game.engine.animation.Animate;
-import scc210game.engine.combat.Scoring;
-import scc210game.engine.ecs.*;
 import scc210game.engine.audio.Audio;
-
+import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
 import scc210game.engine.movement.Position;
@@ -14,6 +12,7 @@ import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.*;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
+import scc210game.game.resources.ZoomStateResource;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.states.events.TriggerCombatEvent;
 import scc210game.game.utils.DialogueHelper;
@@ -25,7 +24,29 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public class PositionUpdateSystem implements System {
+    private static Query playerQuery = Query.builder().require(Player.class).build();
+
+    private static Entity getPlayerEnt(World w) {
+		return w.applyQuery(playerQuery).findFirst().orElseThrow();
+	}
+
 	Audio au = new Audio();
+
+	private static void refuseStory(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
+
+	private static void refuseChest(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
+
+	private static void dialogueAccept(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
+
+	private static void dialogueRefuse(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
 
 	/**
 	 * Run method that will continue while the system is active.
@@ -215,41 +236,46 @@ public class PositionUpdateSystem implements System {
 				if (t == null)
 					continue;
 				if (t.getHasEnemy()) {  // Enemy checks
+				    final int tX = t.getXPos();
+				    final int tY = t.getYPos();
 					if(t.canHaveStory() && t.getTextureName().contains("light")) {
 						//java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> acceptCombat(world, playerEnt, 4, this.getEntityAtPos(world, t, FinalBoss.class, 9)),  //hardcoded biometype
-								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
+								(e, w) -> acceptCombat(w, getPlayerEnt(w), 4, getEntityAtPos(w, tX, tY, FinalBoss.class, 9)),  //hardcoded biometype
+								PositionUpdateSystem::refuseStory));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
 						//java.lang.System.out.println("Boss nearby");
+						final var biome = MapHelper.checkBiome(t.getTextureName());
 						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> this.acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), this.getEntityAtPos(world, t, Boss.class, 4)),
-								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
+								(e, w) -> acceptCombat(w, getPlayerEnt(w), biome, getEntityAtPos(world, tX, tY, Boss.class, 4)),
+								PositionUpdateSystem::refuseStory));
 					}
 					else {
 						//java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
+						final var biome = MapHelper.checkBiome(t.getTextureName());
 						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> this.acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), this.getEntityAtPos(world, t, Enemy.class, 1)),
-								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
+								(e, w) -> acceptCombat(w, getPlayerEnt(w), biome, getEntityAtPos(world, tX, tY, Enemy.class, 1)),
+								PositionUpdateSystem::refuseStory));
 					}
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveChest()) {  // Chest check
 					//java.lang.System.out.println("Chest nearby");
-					var chestEnt = getEntityAtPos(world, t, Chest.class, 1);
+					final var cX = t.getXPos();
+					final var cY = t.getYPos();
 					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> this.acceptChest(world, playerEnt, chestEnt),
-							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
+							(e, w) -> this.acceptChest(w, getPlayerEnt(w), getEntityAtPos(w, cX, cY, Chest.class, 1)),
+							PositionUpdateSystem::refuseChest));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {  // NPC check
 					//java.lang.System.out.println("NPC nearby");
 					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> DialogueHelper.refuse(world, playerEnt),
-							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
+							PositionUpdateSystem::dialogueAccept,
+							PositionUpdateSystem::dialogueRefuse));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -261,26 +287,27 @@ public class PositionUpdateSystem implements System {
 	/**
 	 * Method to check the single entity against a position
 	 * @param world the world for the state
-	 * @param t tile being checked
+     * @param x x pos of tile
+	 * @param y y pos of tile
 	 * @param klass component class being searched for
 	 * @return
 	 */
-	private Entity getEntityAtPos(World world, Tile t, Class<? extends Component> klass, int radius) {
+	private static Entity getEntityAtPos(World world, int x, int y, Class<? extends Component> klass, int radius) {
 		return world.applyQuery(Query.builder().require(klass).build()).filter(e -> {
 			var pos = world.fetchComponent(e, Position.class);
 
 			for(int i=0; i < radius; i++) {
-				if(pos.xPos == t.getXPos() && pos.yPos == t.getYPos()+i || pos.xPos == t.getXPos() && pos.yPos == t.getYPos() -i)
+				if(pos.xPos == x && pos.yPos == y+i || pos.xPos == x && pos.yPos == y -i)
 					return true;
-				if(pos.xPos == t.getXPos() +i && pos.yPos == t.getYPos() || pos.xPos == t.getXPos() -i && pos.yPos == t.getYPos())
+				if(pos.xPos == x +i && pos.yPos == y || pos.xPos == x -i && pos.yPos == y)
 					return true;
-				if(pos.xPos == t.getXPos()-i && pos.yPos == t.getYPos()-i || pos.xPos == t.getXPos() +i && pos.yPos == t.getYPos() +i)
+				if(pos.xPos == x-i && pos.yPos == y-i || pos.xPos == x +i && pos.yPos == y +i)
 					return true;
-				if(pos.xPos == t.getXPos() -i && pos.yPos == t.getYPos() +i || pos.xPos == t.getXPos() +i && pos.yPos == t.getYPos() -i)
+				if(pos.xPos == x -i && pos.yPos == y +i || pos.xPos == x +i && pos.yPos == y -i)
 					return true;
 			}
 
-			return (pos.xPos == t.getXPos() && pos.yPos == t.getYPos()) || (pos.xPos == t.getXPos() && pos.yPos == t.getYPos());
+			return (pos.xPos == x && pos.yPos == y) || (pos.xPos == x && pos.yPos == y);
 		}).findFirst().orElseThrow();
 	}
 
@@ -362,8 +389,10 @@ public class PositionUpdateSystem implements System {
 	 */
 	public String inDialogue(World world, Entity player, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(0.6f);
-		//java.lang.System.out.println("Zoomed in");
+		view.zoomIn();
+		var zoomState = world.fetchGlobalResource(ZoomStateResource.class);
+		zoomState.zoomed = true;
+		java.lang.System.out.println("Zoomed in");
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = true;
 
@@ -379,7 +408,9 @@ public class PositionUpdateSystem implements System {
 	public void acceptChest(World world, Entity player, Entity target) {
 		au.playSound(ResourceLoader.resolve("sounds/open_chest.wav"), false);
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(1f/0.6f);
+		view.zoomOut();
+		var zoomState = world.fetchGlobalResource(ZoomStateResource.class);
+		zoomState.zoomed = false;
 
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
@@ -403,7 +434,7 @@ public class PositionUpdateSystem implements System {
 	 * @param biomeType the type of biome  0=Grass, 1=Sand, 2=Fire, 3=Snow
 	 * @param enemy the enemy entity
 	 */
-	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
+	public static void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
 		//java.lang.System.out.println("Combat State Initiated");
 		var enemyDamage = world.fetchComponent(enemy, Enemy.class);
 
@@ -474,8 +505,8 @@ public class PositionUpdateSystem implements System {
 			{
 				DialogueMessage dl = new DialogueMessage();
 				world.eventQueue.broadcast(new DialogueCreateEvent(dl.getNoEquippedWeapon(),
-						(en, w) -> DialogueHelper.refuse(world, player),
-						(en, w) -> DialogueHelper.refuse(world, player)));
+						PositionUpdateSystem::dialogueAccept,
+						PositionUpdateSystem::dialogueRefuse));
 			}
 
 
@@ -489,7 +520,7 @@ public class PositionUpdateSystem implements System {
 	 * @param world
 	 * @return
 	 */
-	protected Entity findItem(int itemID, World world) {
+	protected static Entity findItem(int itemID, World world) {
 		Query itemQuery = Query.builder()
 				.require(Item.class)
 				.build();

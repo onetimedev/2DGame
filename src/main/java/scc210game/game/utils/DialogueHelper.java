@@ -4,6 +4,7 @@ import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.World;
 import scc210game.engine.render.MainViewResource;
 import scc210game.game.components.PlayerLocked;
+import scc210game.game.resources.ZoomStateResource;
 
 public class DialogueHelper {
 
@@ -14,7 +15,9 @@ public class DialogueHelper {
 	 */
 	public static void refuse(World world, Entity player) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.mainView.zoom(1f/0.6f);
+		view.zoomOut();
+		var zoomState = world.fetchGlobalResource(ZoomStateResource.class);
+		zoomState.zoomed = false;
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 	}

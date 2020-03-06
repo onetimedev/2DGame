@@ -6,7 +6,6 @@ import org.jsfml.graphics.View;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Mouse;
 import org.jsfml.window.VideoMode;
-import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
 import org.jsfml.window.event.MouseButtonEvent;
@@ -25,10 +24,12 @@ import scc210game.engine.ui.systems.HandleClicked;
 import scc210game.engine.ui.systems.HandleDragDrop;
 import scc210game.engine.ui.systems.HandleHovered;
 import scc210game.engine.ui.systems.HandleInteraction;
-import scc210game.game.systems.*;
 import scc210game.game.resources.ItemIDCounterResource;
 import scc210game.game.resources.SavesDatabaseResource;
+import scc210game.game.resources.ZoomStateResource;
 import scc210game.game.states.MainMenuState;
+import scc210game.game.systems.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import java.util.function.Function;
  * Singleton class to hold game loop, take entities to render, and change mainWindow views
  */
 public class Main {
+    public final Vector2f windowSize = new Vector2f(1920, 1080);
     public final RenderWindow mainWindow;
     public final Map<ViewType, View> views;
     private final ECS ecs;
@@ -49,10 +51,10 @@ public class Main {
         this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
-            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
+            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), windowSize ){{
                 this.zoom(0.7f);
             }});
-            this.put(ViewType.UI, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize())));
+            this.put(ViewType.UI, new View(new Vector2f(0, 0),  windowSize ));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
         final List<Function<ECS, ? extends System>> systems = List.of(
@@ -74,6 +76,7 @@ public class Main {
         );
         this.ecs = new ECS(systems, new MainMenuState());
         this.ecs.addGlobalResource(new MainViewResource(this.views.get(ViewType.MAIN)));
+        this.ecs.addGlobalResource(new ZoomStateResource(false));
         this.ecs.addGlobalResource(new MainWindowResource(this.mainWindow));
         this.ecs.addGlobalResource(new ItemIDCounterResource());
         this.ecs.addGlobalResource(new SavesDatabaseResource());
