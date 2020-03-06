@@ -177,7 +177,7 @@ public class CombatAnimator {
                 }
                 else
                 {
-                    System.out.println("enemy exiting");
+                    //System.out.println("enemy exiting");
                     exit();
                 }
                 break;
@@ -193,7 +193,7 @@ public class CombatAnimator {
                 }
                 else
                 {
-                    System.out.println("enemy exiting");
+                    //System.out.println("enemy exiting");
                     exit();
                 }
                 break;

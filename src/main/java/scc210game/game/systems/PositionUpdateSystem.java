@@ -215,19 +215,19 @@ public class PositionUpdateSystem implements System {
 					continue;
 				if (t.getHasEnemy()) {  // Enemy checks
 					if(t.canHaveStory() && t.getTextureName().contains("light")) {
-						java.lang.System.out.println("FinalBoss nearby");
+						//java.lang.System.out.println("FinalBoss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> acceptCombat(world, playerEnt, 4, this.getEntityAtPos(world, t, FinalBoss.class, 9)),  //hardcoded biometype
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else if(!t.getTextureName().contains("enemy")) {
-						java.lang.System.out.println("Boss nearby");
+						//java.lang.System.out.println("Boss nearby");
 						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> this.acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), this.getEntityAtPos(world, t, Boss.class, 4)),
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
 					}
 					else {
-						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
+						//java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
 						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
 								(e, w) -> this.acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), this.getEntityAtPos(world, t, Enemy.class, 1)),
 								(e, w) -> DialogueHelper.refuse(world, playerEnt)));
@@ -236,7 +236,7 @@ public class PositionUpdateSystem implements System {
 					break;
 				}
 				else if (t.canHaveChest()) {  // Chest check
-					java.lang.System.out.println("Chest nearby");
+					//java.lang.System.out.println("Chest nearby");
 					var chestEnt = getEntityAtPos(world, t, Chest.class, 1);
 					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> this.acceptChest(world, playerEnt, chestEnt),
@@ -245,7 +245,7 @@ public class PositionUpdateSystem implements System {
 					break;
 				}
 				else if (t.canHaveStory()) {  // NPC check
-					java.lang.System.out.println("NPC nearby");
+					//java.lang.System.out.println("NPC nearby");
 					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
 							(e, w) -> DialogueHelper.refuse(world, playerEnt),
 							(e, w) -> DialogueHelper.refuse(world, playerEnt)));
@@ -357,7 +357,7 @@ public class PositionUpdateSystem implements System {
 	public String inDialogue(World world, Entity player, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.mainView.zoom(0.6f);
-		java.lang.System.out.println("Zoomed in");
+		//java.lang.System.out.println("Zoomed in");
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = true;
 
@@ -378,7 +378,7 @@ public class PositionUpdateSystem implements System {
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 
-		java.lang.System.out.println("Chest State Initiated");
+		//java.lang.System.out.println("Chest State Initiated");
 		var playerInv = world.fetchComponent(player, Inventory.class);
 
 
@@ -398,7 +398,7 @@ public class PositionUpdateSystem implements System {
 	 * @param enemy the enemy entity
 	 */
 	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
-		java.lang.System.out.println("Combat State Initiated");
+		//java.lang.System.out.println("Combat State Initiated");
 		var enemyDamage = world.fetchComponent(enemy, Enemy.class);
 
 		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
@@ -462,7 +462,7 @@ public class PositionUpdateSystem implements System {
 				var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
 				var scores = world.fetchComponent(player, Scoring.class);
 				world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName,  itemTextureStorage, background, enemyDamage.damage, enemy, itemDamage.level));
-				java.lang.System.out.println("Sending combat request");
+				//java.lang.System.out.println("Sending combat request");
 			}
 			catch(NoSuchElementException e)
 			{

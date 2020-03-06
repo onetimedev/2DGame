@@ -67,7 +67,7 @@ public class DatabaseManager {
             }
             else
             {
-                System.out.println("Error: error creating the directory '" + DBNAME + "'");
+                //System.out.println("Error: error creating the directory '" + DBNAME + "'");
             }
 
         }
@@ -91,12 +91,12 @@ public class DatabaseManager {
                 }
                 else
                 {
-                    System.out.println("Key is empty");
+                    //System.out.println("Key is empty");
                 }
             }
             else
             {
-                System.out.println("Key '" + keyId + "' does not exist");
+                //System.out.println("Key '" + keyId + "' does not exist");
                 LOG(DatabaseOperation.PROVIDING_KEY_ERROR, keyId, getTS());
             }
 
@@ -119,7 +119,7 @@ public class DatabaseManager {
         catch (Exception e)
         {
             LOG(DatabaseOperation.PROVIDING_KEY_ERROR, keyId, getTS());
-            System.out.println("Value of '" + keyId + "' cannot be converted to an integer, use getKey() to obtain String value");
+            //System.out.println("Value of '" + keyId + "' cannot be converted to an integer, use getKey() to obtain String value");
         }
 
         return value;
@@ -141,7 +141,7 @@ public class DatabaseManager {
             else
             {
                 LOG(DatabaseOperation.ADD_KEY_ERROR, format(keyId, keyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
-                System.out.println("Error: key '" + keyId + "' already exists in the database, use updateKey() to alter its value");
+                //System.out.println("Error: key '" + keyId + "' already exists in the database, use updateKey() to alter its value");
             }
         }
         else
@@ -178,13 +178,13 @@ public class DatabaseManager {
             else
             {
                 LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
-                System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
+                //System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
             }
         }
         else
         {
             LOG(DatabaseOperation.UPDATE_KEY_ERROR, format(keyId, replacementKeyData).replace(DatabaseOperation.DELIMITER, ""), getTS());
-            System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
+            //System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
         }
 
 
@@ -209,13 +209,13 @@ public class DatabaseManager {
             else
             {
                 LOG(DatabaseOperation.DELETE_KEY_ERROR, keyId, getTS());
-                System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
+                //System.out.println("Error: key '" + keyId + "' does not exists in the database, use addKey() to create it");
             }
         }
         else
         {
             LOG(DatabaseOperation.DELETE_KEY_ERROR, keyId, getTS());
-            System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
+            //System.out.println("Error: the database is empty, use addKey() to create a new key value pair");
         }
 
     }

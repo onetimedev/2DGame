@@ -105,7 +105,7 @@ public class CombatSpawner implements Spawner {
                                 {
                                     if(System.currentTimeMillis() >= state.nextChange && state.signal){
                                         this.image = new Sprite(t, new IntRect(365*state.enemyState,0,365,365));
-                                        System.out.println(t.getSize().x);
+                                        //System.out.println(t.getSize().x);
                                         int maxFrame = (t.getSize().x / t.getSize().y)-1;
                                         if(state.enemyState < maxFrame) {
                                             state.nextChange = System.currentTimeMillis() + 60;
