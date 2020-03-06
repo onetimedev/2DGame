@@ -3,11 +3,13 @@ package scc210game.game.states;
 import org.jsfml.system.Vector2i;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
+import scc210game.engine.render.MainViewResource;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.map.Map;
 import scc210game.game.map.Tile;
+import scc210game.game.resources.ZoomStateResource;
 import scc210game.game.spawners.*;
 import scc210game.game.spawners.ui.EnterInventoryButtonSpawner;
 import scc210game.game.states.events.EnterInventoryEvent;
@@ -18,7 +20,17 @@ public class MainGameState extends BaseInGameState {
 		register(MainGameState.class, (j) -> new MainGameState());
 	}
 
-	@Override
+    @Override
+    public void onReload(World world) {
+        var zoomState = world.fetchGlobalResource(ZoomStateResource.class);
+        var mainView = world.fetchGlobalResource(MainViewResource.class);
+        if (zoomState.zoomed)
+            mainView.zoomIn();
+        else
+            mainView.zoomOut();
+    }
+
+    @Override
 	public void onStart(World world) {
         world.entityBuilder().with(new MapSpawner()).build();
         world.entityBuilder().with(new PlayerSpawner()).build();
