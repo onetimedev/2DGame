@@ -38,6 +38,7 @@ import java.util.function.Function;
  * Singleton class to hold game loop, take entities to render, and change mainWindow views
  */
 public class Main {
+    public final Vector2f windowSize = new Vector2f(1920, 1080);
     public final RenderWindow mainWindow;
     public final Map<ViewType, View> views;
     private final ECS ecs;
@@ -48,10 +49,10 @@ public class Main {
         this.mainWindow.setVerticalSyncEnabled(true);
         this.mainWindow.setFramerateLimit(60);
         this.views = new HashMap<>() {{
-            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize()) ){{
+            this.put(ViewType.MAIN, new View(new Vector2f(0, 0), windowSize ){{
                 this.zoom(0.7f);
             }});
-            this.put(ViewType.UI, new View(new Vector2f(0, 0), new Vector2f(Main.this.mainWindow.getSize())));
+            this.put(ViewType.UI, new View(new Vector2f(0, 0),  windowSize ));
             this.put(ViewType.MINIMAP, new View(new Vector2f(0, 0), new Vector2f(100, 80)));
         }};
         final List<Function<ECS, ? extends System>> systems = List.of(
