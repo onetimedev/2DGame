@@ -15,12 +15,14 @@ public class ResourceLoader {
         byte[] bytes;
         if (cache.containsKey(s))
             bytes = cache.get(s);
-        var stream = Objects.requireNonNull(loader.getResourceAsStream(s));
-        try {
-            bytes = stream.readAllBytes();
-            cache.put(s, bytes);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        else {
+            var stream = Objects.requireNonNull(loader.getResourceAsStream(s));
+            try {
+                bytes = stream.readAllBytes();
+                cache.put(s, bytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return new ByteArrayInputStream(bytes);
