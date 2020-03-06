@@ -1,11 +1,18 @@
 #!/bin/sh
 
+JSFML_PATH=$(readlink -f $1)
+DEST_PATH=$(readlink -f $2)
+
+cd game
+
 mkdir -p libs
 
-cp $1 libs/jsfml.jar
+cp $JSFML_PATH libs/jsfml.jar
 
 ./gradlew fatJar
 
-cp build/libs/scc210game-packed-1.0.jar $2
+cp build/libs/scc210game-packed-1.0.jar $DEST_PATH
 
-echo $2
+echo $DEST_PATH
+
+cd ..

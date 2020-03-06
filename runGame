@@ -1,7 +1,13 @@
 #!/bin/sh
 
+JSFML_PATH=$(readlink -f $1)
+
+cd game
+
 mkdir -p libs
 
-cp $1 libs/jsfml.jar
+cp $JSFML_PATH libs/jsfml.jar
 
 ./gradlew run
+
+cd ..
