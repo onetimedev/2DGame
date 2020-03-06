@@ -10,7 +10,10 @@ import scc210game.game.utils.MapHelper;
 
 import java.io.IOException;
 
-
+/**
+ * Class to hold a tile, and its properties that will be used to spawn entities
+ * and check the players surrounding.
+ */
 public class Tile {
     private Texture tileTexture = new Texture();
     private Vector2i textureSize;
@@ -24,6 +27,15 @@ public class Tile {
     private Boolean canHaveStory;
 
 
+	/**
+	 * Constructor assigns all properties to the tile and loads the tiles texture
+	 * @param fn the file name of the tiles texture
+	 * @param x the x position of the tile
+	 * @param y the y poisiton of the tile
+	 * @param collision if the tile has collision
+	 * @param chest if the tile has a chest
+	 * @param enemy if the tile has an enemy
+	 */
     public Tile(String fn, int x, int y, Boolean collision, Boolean chest, Boolean enemy) {
         this.fileName = fn;
         this.xPos = x;
@@ -122,6 +134,10 @@ public class Tile {
       return this.textureSize;
   }
 
+	/**
+	 * Method to give a tile a new texture given a file name
+	 * @param fn file name of texture
+	 */
   public void setTexture(String fn) {
 		this.tileTexture = MapHelper.loadTexture(fn);
 		this.fileName = fn;
