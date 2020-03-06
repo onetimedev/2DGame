@@ -42,105 +42,114 @@ public class Tile {
         }
     }
 
-
-	/**
-	 * Method to store a tile as a JSON object
-	 * @return the tiles data as a JSON object
-	 */
-	public JsonObject serialize() {  // returns a JSON object representing the tile
-    JsonObject json = new JsonObject();
-    json.put("texture", this.fileName);
-    json.put("x", this.xPos);
-    json.put("y", this.yPos);
-    json.put("collision", this.hasCollision);
-    json.put("chest", this.canHaveChest);
-    json.put("enemy", this.canHaveEnemy);
-    return json;
+    /**
+     * Method to store a tile as a JSON object
+     * @return the tiles data as a JSON object
+     */
+    public JsonObject serialize() {  // returns a JSON object representing the tile
+        JsonObject json = new JsonObject();
+        json.put("texture", this.fileName);
+        json.put("x", this.xPos);
+        json.put("y", this.yPos);
+        json.put("collision", this.hasCollision);
+        json.put("chest", this.canHaveChest);
+        json.put("enemy", this.canHaveEnemy);
+        json.put("hasEnemy", this.hasEnemy);
+        json.put("canHaveStory", this.canHaveStory);
+        return json;
     }
 
 
-	/**
-	 * Method to load a tile from a JSON object
-	 * @param json the object containing the file values
-	 * @return the created tile based on the JSON values
-	 */
-	public static Tile deserialize(JsonObject json) {  // changing JSON to Tile class
-		String texture = (String) json.get("texture");
-		int x = LoadJsonNum.loadInt(json.get("x"));
-		int y = LoadJsonNum.loadInt(json.get("y"));
-		Boolean hasCol = (Boolean) json.get("collision");
-		Boolean hasCh = (Boolean) json.get("chest");
-		Boolean hasEn = (Boolean) json.get("enemy");
-		return new Tile(texture, x, y, hasCol, hasCh, hasEn);
-	}
+    /**
+     * Method to load a tile from a JSON object
+     * @param json the object containing the file values
+     * @return the created tile based on the JSON values
+     */
+    public static Tile deserialize(JsonObject json) {  // changing JSON to Tile class
+        String texture = (String) json.get("texture");
+        int x = LoadJsonNum.loadInt(json.get("x"));
+        int y = LoadJsonNum.loadInt(json.get("y"));
+        Boolean hasCol = (Boolean) json.get("collision");
+        Boolean hasCh = (Boolean) json.get("chest");
+        Boolean canHasEn = (Boolean) json.get("enemy");
+        var tile = new Tile(texture, x, y, hasCol, hasCh, canHasEn);
 
-  public Vector2f getPosition() {
-      return new Vector2f(this.xPos, this.yPos);
-  }
+        Boolean hasEn = (Boolean) json.get("hasEnemy");
+        tile.hasEnemy = hasEn == null ? false : hasEn;
 
-  public int getXPos() {
-      return this.xPos;
-  }
+        var hasStory = (Boolean) json.get("canHaveStory");
+        tile.canHaveStory = hasStory == null ? false : hasStory;
 
-  public int getYPos() {
-      return this.yPos;
-  }
+        return tile;
+    }
 
-  public Vector2i getXYPos() {
-      return new Vector2i(this.xPos, this.yPos);
-  }
+    public Vector2f getPosition() {
+        return new Vector2f(this.xPos, this.yPos);
+    }
 
-  public Texture getTexture() {
-      return this.tileTexture;
-  }
+    public int getXPos() {
+        return this.xPos;
+    }
 
-  public String getTextureName() {
-      return this.fileName;
-  }
+    public int getYPos() {
+        return this.yPos;
+    }
 
-  public Boolean canHaveChest() {
-      return this.canHaveChest;
-  }
+    public Vector2i getXYPos() {
+        return new Vector2i(this.xPos, this.yPos);
+    }
 
-  public Boolean canHaveEnemy() {
-      return this.canHaveEnemy;
-  }
+    public Texture getTexture() {
+        return this.tileTexture;
+    }
 
-  public Boolean hasCollision() {
-      return this.hasCollision;
-  }
+    public String getTextureName() {
+        return this.fileName;
+    }
 
-  public Boolean getHasEnemy() {
-      return this.hasEnemy;
-  }
+    public Boolean canHaveChest() {
+        return this.canHaveChest;
+    }
 
-  public void setHasEnemy(Boolean en) {
-      this.hasEnemy = en;
-  }
+    public Boolean canHaveEnemy() {
+        return this.canHaveEnemy;
+    }
 
-  public Vector2i getTextureSize() {
-      return this.textureSize;
-  }
+    public Boolean hasCollision() {
+        return this.hasCollision;
+    }
 
-  public void setTexture(String fn) {
-		this.tileTexture = MapHelper.loadTexture(fn);
-		this.fileName = fn;
-		this.textureSize = this.tileTexture.getSize();
-  }
+    public Boolean getHasEnemy() {
+        return this.hasEnemy;
+    }
 
-  public void setHasCollision(Boolean b) {
-      this.hasCollision = b;
-  }
+    public void setHasEnemy(Boolean en) {
+        this.hasEnemy = en;
+    }
 
-	public void setCanHaveEnemy(Boolean b) {
+    public Vector2i getTextureSize() {
+        return this.textureSize;
+    }
+
+    public void setTexture(String fn) {
+        this.tileTexture = MapHelper.loadTexture(fn);
+        this.fileName = fn;
+        this.textureSize = this.tileTexture.getSize();
+    }
+
+    public void setHasCollision(Boolean b) {
+        this.hasCollision = b;
+    }
+
+    public void setCanHaveEnemy(Boolean b) {
         this.canHaveEnemy = b;
-	}
+    }
 
-	public void setCanHaveStory(Boolean b) {
+    public void setCanHaveStory(Boolean b) {
         this.canHaveStory = b;
-	}
+    }
 
-	public boolean canHaveStory() {
+    public boolean canHaveStory() {
         return this.canHaveStory;
     }
 
