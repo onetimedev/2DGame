@@ -33,7 +33,7 @@ public class Item extends Component {
                 .append("-".repeat(this.name.length()))
                 .append("\n");
 
-        s.append("level: ").append(this.level);
+        s.append("level: ").append(this.level).append("\n");
 
         for (var itemData: this.itemDatas) {
             s.append(itemData.infoData());
