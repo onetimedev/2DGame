@@ -24,9 +24,15 @@ import java.time.Duration;
 import java.util.Set;
 
 
+/**
+ * Class to create a player entity, render the player and assign its components
+ */
 public class PlayerSpawner implements Spawner {
 	private final Texture t;
 
+	/**
+	 * Constructor to load the players texture
+	 */
 	public PlayerSpawner() {
 		try {
 			this.t = new Texture();
@@ -36,6 +42,13 @@ public class PlayerSpawner implements Spawner {
 		}
 	}
 
+
+	/**
+	 * Method to create the player entity and assign all of its components
+	 * @param builder the {@link World.EntityBuilder} to inject into
+	 * @param world the World the entity is being built in
+	 * @return the player entity
+	 */
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		world.entityBuilder()
@@ -58,6 +71,13 @@ public class PlayerSpawner implements Spawner {
 						PlayerSpawner::accept));
 	}
 
+
+	/**
+	 * Method called by renderable to display the player in the main game window
+	 * @param entity the player entity
+	 * @param window the main game window
+	 * @param world the world for this state
+	 */
 	private static void accept(Entity entity, RenderWindow window, World world) {
 		var playerEnt = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
 		var position = world.fetchComponent(playerEnt, Position.class);
@@ -70,7 +90,6 @@ public class PlayerSpawner implements Spawner {
 
 		sprite.setPosition(position.xPos * 64, position.yPos * 64);
 
-		//System.out.println("POS:" + Math.floor(position.xPos) + "," + Math.floor(position.yPos));
 		if (oldPosition.xPos != Math.floor(position.xPos) || oldPosition.yPos != Math.floor(position.yPos))
 			steps.count++;
 

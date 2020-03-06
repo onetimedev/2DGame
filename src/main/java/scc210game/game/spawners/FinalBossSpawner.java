@@ -17,15 +17,31 @@ import scc210game.game.components.TextureStorage;
 import java.time.Duration;
 import java.util.Set;
 
+/**
+ * Class to create a final boss entity with its components
+ */
 public class FinalBossSpawner implements Spawner {
 
     private int damage;
     private int id;
+
+    /**
+     * Constructor to assign the boss' damage amount and id number
+     * @param dmg damage the boss will do
+     * @param id enemy number
+     */
     public FinalBossSpawner(int dmg, int id) {
         damage = dmg;
         this.id = id;
     }
 
+
+    /**
+     * Constructor to assign attributes that will be used in the creation of the entity
+     * @param builder the {@link World.EntityBuilder} to inject into
+     * @param world the World the entity is being built in
+     * @return the boss entity
+     */
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
@@ -39,6 +55,13 @@ public class FinalBossSpawner implements Spawner {
                 .with(new Renderable(Set.of(ViewType.MAIN), 5, FinalBossSpawner::accept));
     }
 
+
+    /**
+     * Method called during the rendering of the final boss
+     * @param entity the final boss entity
+     * @param window the main game window
+     * @param world the world for this state
+     */
     private static void accept(Entity entity, RenderWindow window, World world) {
         var enemy = world.fetchComponent(entity, Enemy.class);
         if(!enemy.defeated) {

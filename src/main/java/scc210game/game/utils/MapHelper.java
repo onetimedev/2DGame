@@ -8,6 +8,10 @@ import scc210game.game.map.Tile;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+
+/**
+ * Class to provide helper methods related to tiles in the map
+ */
 public class MapHelper {
 
 	public static Vector2i mapSize = new Vector2i(120,120);
@@ -45,6 +49,7 @@ public class MapHelper {
 		}
 	}
 
+
 	/**
 	 * Method to change all tiles collision, textures and enemy values at given coordinates
 	 * @param map
@@ -55,14 +60,13 @@ public class MapHelper {
 	 */
 	public static void changeTiles(Map map, Vector2i[] tileCoords, String newTextureName, boolean collision, boolean enemy, boolean story) {
 		for (Vector2i v: tileCoords) {
-			map.getTile(v.x, v.y).setTexture("map/" + newTextureName);
+			map.getTile(v.x, v.y).setTexture(newTextureName);
 			map.getTile(v.x, v.y).setHasCollision(collision);
 			map.getTile(v.x, v.y).setHasEnemy(enemy);
 			map.getTile(v.x, v.y).setCanHaveStory(story);
 
 		}
 	}
-
 
 
 	/**

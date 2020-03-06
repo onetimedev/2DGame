@@ -60,20 +60,13 @@ public class CombatLeaveHandler implements System {
 	 * @param e the generic event
 	 */
 	private void handleEvent(World world, Event e) {
-		java.lang.System.out.println("Combat exit event triggered");
 		LeaveCombatEvent evt = (LeaveCombatEvent) e;
 
 		var player = world.applyQuery(Query.builder().require(Player.class).build()).findFirst().orElseThrow();
-		
-
-		java.lang.System.out.println("Player gotten");
 
 		var scoring = world.fetchComponent(player, Scoring.class);
 
-
 		scoring.playerExperience = evt.score.playerExperience;  //Update players experience after combat
-
-		java.lang.System.out.println("Event case, scoring EXP updated");
 
 		DialogueMessage dl = new DialogueMessage();
 		if(evt.playerWins) {  // If the player has won

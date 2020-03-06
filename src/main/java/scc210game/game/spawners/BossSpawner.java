@@ -21,6 +21,10 @@ import scc210game.game.components.TextureStorage;
 import java.time.Duration;
 import java.util.Set;
 
+
+/**
+ *  Class to create a boss entity with its components
+ */
 public class BossSpawner implements Spawner {
     private String bossTexturePath;
     private final int bossNum;
@@ -29,10 +33,15 @@ public class BossSpawner implements Spawner {
     private int id;
     private int damage;
 
-    /*
-        Create the boss texture based on coordinates and boss number.
-        Grass = 0, Water = 1, Fire = 2, Ice = 3
-    */
+
+    /**
+     * Constructor to assign the properties used in the entities components
+     * @param bc the coordinates of the boss (2x2)
+     * @param bn  Grass = 0, Water = 1, Fire = 2, Ice = 3
+     * @param map the map component
+     * @param dmg the amount of damage the boss will do
+     * @param id the enemy number
+     */
     public BossSpawner(Vector2i[] bc, int bn, Map map, int dmg, int id) {
         this.bossCoords = bc;
         this.bossNum = bn;
@@ -74,6 +83,13 @@ public class BossSpawner implements Spawner {
 
 	}
 
+
+    /**
+     * Constructor to assign attributes that will be used in the creation of the entity
+     * @param builder the {@link World.EntityBuilder} to inject into
+     * @param world the World the entity is being built in
+     * @return the boss entity
+     */
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
@@ -87,6 +103,13 @@ public class BossSpawner implements Spawner {
                 .with(new Renderable(Set.of(ViewType.MAIN), 5, BossSpawner::accept));
     }
 
+
+    /**
+     * Method called during the rendering of the boss
+     * @param entity the boss entity
+     * @param window the main game window
+     * @param world the world for this state
+     */
     private static void accept(Entity entity, RenderWindow window, World world) {
         var enemy = world.fetchComponent(entity, Enemy.class);
         if(!enemy.defeated) {
