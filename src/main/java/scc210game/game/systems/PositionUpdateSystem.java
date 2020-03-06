@@ -439,7 +439,7 @@ public class PositionUpdateSystem implements System {
 		var enemyDamage = world.fetchComponent(enemy, Enemy.class);
 
 		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
-		String root = "src/main/resources/textures/";
+		String root = "textures/";
 		String combatPath = "Combat/Enlarged/";
 		String textureName = "";
 		String background = "";

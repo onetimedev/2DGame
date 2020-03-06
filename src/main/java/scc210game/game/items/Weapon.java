@@ -40,7 +40,7 @@ public class Weapon extends ItemData implements Copyable<Weapon> {
 
     @Override
     public String infoData() {
-        return "damage: " + this.damage + "\nlore: " + this.lore;
+        return "damage: " + this.damage + "\n";
     }
 
     @Override

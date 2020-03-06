@@ -84,7 +84,7 @@ public class WeaponSpawner implements Spawner {
                     randomEnum(Type.class).name + " of " +
                     e.name;
         }
-        else if (level <= 20){
+        else if (level <= 30){
             return randomElem(possibleEnchantment) + " " +
                     randomEnum(Type.class).name + " of " +
                     e.name;

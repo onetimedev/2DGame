@@ -11,6 +11,7 @@ import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayer;
@@ -39,7 +40,7 @@ public class CombatSpawner implements Spawner {
         this.world = world;
 
         try{
-            t.loadFromFile(Paths.get(spriteInfo.getTextureLocation()));
+            t.loadFromStream(ResourceLoader.resolve(spriteInfo.getTextureLocation()));
         }catch (IOException e)
         {
             e.printStackTrace();

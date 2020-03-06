@@ -10,6 +10,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatBackgroundComponent;
 import scc210game.game.components.CombatEnemy;
@@ -34,7 +35,7 @@ public class CombatBackground implements Spawner {
         this.bg = background;
 
         try {
-            t.loadFromFile(Paths.get(bg));
+            t.loadFromStream(ResourceLoader.resolve(bg));
         }catch (IOException e){
             e.printStackTrace();
         }

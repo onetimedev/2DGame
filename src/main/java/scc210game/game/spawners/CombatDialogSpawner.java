@@ -10,6 +10,7 @@ import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatBackgroundComponent;
 import scc210game.game.components.CombatDialog;
@@ -86,7 +87,7 @@ public class CombatDialogSpawner implements Spawner {
     {
         try
         {
-            t.loadFromFile(Paths.get(path));
+            t.loadFromStream(ResourceLoader.resolve(path));
         }
         catch (IOException error)
         {

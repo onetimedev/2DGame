@@ -12,6 +12,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
 import scc210game.game.components.CombatPlayerWeapon;
@@ -34,7 +35,7 @@ public class WoundSpawner implements Spawner {
     {
 
         try {
-            t.loadFromFile(Paths.get(CombatUtils.TARGET_TEXTURE));
+            t.loadFromStream(ResourceLoader.resolve(CombatUtils.TARGET_TEXTURE));
         }catch (IOException e)
         {
             e.printStackTrace();

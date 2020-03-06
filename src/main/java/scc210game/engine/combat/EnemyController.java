@@ -64,7 +64,7 @@ public class EnemyController extends Component{
     {
         try{
             Texture t = new Texture();
-            t.loadFromFile(Paths.get(getSprite().spriteImage));
+            t.loadFromStream(ResourceLoader.resolve(getSprite().spriteImage));
             return (t.getSize().x / t.getSize().y)-1;
         }catch (IOException e){
             e.printStackTrace();
