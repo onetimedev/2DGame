@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css?family=Caladea&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+    <style>
+      body {
+        background-color: #dedede;
+        margin: 0;
+      }
+
+      h1 {
+        color: maroon;
+        margin-left: 40px;
+      }
+      html {
+        font-family: 'Caladea', sans-serif;
+      }
+      h1, h2, h3, p {
+        margin: 0px;
+      }
+      .wrapper {
+        display: grid;
+        grid-row-gap: 100px;
+        padding-bottom: 100px;
+      }
+
+      .info {
+        grid-column: 1/2;
+        grid-row: 2;
+        width: 600px;
+        justify-self: right;
+        margin-right: 250px;
+      }
+      .info h1 {
+        font-family: 'Caladea', sans-serif;
+        font-size: 40px;
+        border-bottom: 20px green solid;
+        width: 630px;
+        color: #233139;
+      }
+      .info p {
+        padding-top: 20px;
+        font-size: 18px;
+        color: #233139;
+      }
+
+      .col1 {
+        grid-column: 1;
+        grid-row: 3;
+      }
+      .col2 {
+        grid-column: 2;
+        grid-row: 3;
+      }
+      .col3 {
+        grid-column: 1;
+        grid-row: 4;
+      }
+      .col4 {
+        grid-column: 2;
+        grid-row: 4;
+      }
+	  .col5 {
+        grid-column: 1;
+        grid-row: 5;
+      }
+	  .col6 {
+        grid-column: 2;
+        grid-row: 5;
+      }
+      .col1, .col3, .col5 {
+        justify-self: right;
+        margin-right: 410px;
+      }
+      .col2, .col4, .col6 {
+        justify-self: left;
+        margin-left: -300px;
+      }
+      .col1, .col2, .col3, .col4, .col5, .col6 {
+        text-align: center;
+        width: 440px;
+      }
+      .col1 img, .col2 img, .col3 img, .col4 img, .col5 img, .col6 img {
+        width: 440px;
+      }
+
+      @media only screen and (max-width: 1000px) {
+        .wrapper {
+          grid-row-gap: 30px;
+          padding-bottom: 25px;
+        }
+        .info {
+          grid-column: 1;
+          grid-row: 2;
+          width: 300px;
+          justify-self: center;
+          margin: 0;
+        }
+        .info h1 {
+          font-size: 50px;
+          width: 300px;
+        }
+        .info p, .col1 p {
+          font-size: 16px;
+          padding-top: 5px;
+        }
+        .col1, .col2, .col3, .col4, .col5, .col6 {
+          margin: 0;
+          justify-self: center;
+          width: 350px;
+          padding-bottom: 30px;
+        }
+        .col1 img, .col2 img, .col3 img, .col4 img, .col5 img, .col6 img {
+          width: 350px;
+        }
+        .col1 {
+          grid-column: 1;
+          grid-row: 4;
+        }
+        .col2 {
+          grid-column: 1;
+          grid-row: 5;
+        }
+        .col3 {
+          grid-column: 1;
+          grid-row: 4;
+        }
+        .col4 {
+          grid-column: 1;
+          grid-row: 7;
+        }
+		.col5 {
+		  grid-column: 1;
+		  grid-row: 5
+		}
+		.col6 {
+          grid-column: 1;
+          grid-row: 7;
+        }
+	}
+    </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+
+    <div class="info">
+      <h1 id="text">Elemental Guardian: A Return Home</h1>
+	  <p id="text2"></p>
+    </div>
+
+
+    <div class="col1">
+      <img src="" alt="" />
+	  <h3>The Story</h3>
+      <p>You are set in a time of great anguish, monsters are attacking people in the night,
+	  and food is running low, many people are dying. There are some people helping fight back against 
+	  the monsters, but they are severely outnumbered. <br> You start your journey as the Guardian who returns 
+	  to his home after many years to find that it has been taken over by four elementalists that are 
+	  controlling the monsters. It is your job to stop these nefarious elementals and find out who is behind
+	  them coming to your home.</p>
+    </div>
+    <div class="col2">
+      <img src="" alt="" />
+	  <h3>How to play</h3>
+      <p>You start off with no items, so you will have to find and open chests to get weapons to fight enemies.
+	  You won’t be able to fight an enemy until you get a weapon and put it in the highlighted slot. You have a
+	  maximum of 6 slots in your inventory to store weapons and if you die you will lose them all except the one 
+	  in the highlighted box.<br> Walking up to an NPC will prompt some dialogue to pop up giving you little bits 
+	  of the story. Walking up to an enemy will give you the option to fight or run away, choosing to fight will set
+	  a different screen view and you will engage in a real-time fight until there is a victor. <br> You will have
+	  to beat all the elemental bosses before you can fight the final boss, and once you defeat him you will have 
+	  beaten the game, but you will still be free to explore the map.</p>
+    </div>
+    <div class="col3">
+	<h2>Game Map</h2>
+      <img src="html_images/map.png" alt="Game Map"/>
+      <p> </p>
+    </div>
+    <div class="col4">
+	<h2>Game Controls</h2>
+      <img src="html_images/controls.png" alt="Game Controls"/>
+      <p></p>
+    </div>
+	<div class="col5">
+	<h2>Combat</h2>
+		<img src="html_images/combat.png" alt="Game Combat"/>
+	</div>
+	<div class="col6">
+	<h2>Inventory</h2>
+		<img src="html_images/inventory.png" alt="Game Inventory"/>
+	</div>
+</body>
