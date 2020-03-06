@@ -8,8 +8,19 @@ import scc210game.game.Main;
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world: " + System.getProperty("os.name"));
-        if (System.getProperty("os.name").equals("Linux"))
-            System.load(System.getProperty("user.dir") + "/libXinitThreads.so");
+        if (System.getProperty("os.name").equals("Linux")) {
+            var arch = System.getProperty("os.arch");
+            String ext = null;
+            if (arch.contains("amd64")) {
+                ext = "amd64";
+            } else if (arch.contains("arm")) {
+                ext = "arm";
+            }
+
+            if (ext != null) {
+                System.load(System.getProperty("user.dir") + "/libXinitThreads.so." + ext);
+            }
+        }
         Main.runForever();
     }
 }
