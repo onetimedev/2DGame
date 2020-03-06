@@ -12,10 +12,7 @@ import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.Transition;
 import scc210game.game.components.*;
 import scc210game.game.resources.MainWorldEventQueueResource;
-import scc210game.game.spawners.CombatSpawner;
-import scc210game.game.spawners.CombatWeapon;
-import scc210game.game.spawners.EnemySpawner;
-import scc210game.game.spawners.WoundSpawner;
+import scc210game.game.spawners.*;
 import scc210game.game.spawners.ui.CombatBackground;
 
 public class CombatState extends BaseInGameState {
@@ -42,15 +39,17 @@ public class CombatState extends BaseInGameState {
 
     @Override
     public void onStart(World world) {
-        String weaponPath = "src/main/resources/" + weapon.getPath();
+        String weaponPath = CombatUtils.RES_ROOT_PATH + weapon.getPath();
 
         world.activateCombat();
 
         world.entityBuilder().with(new TargetPosition()).build();
         world.entityBuilder().with(new CombatInfo()).build();
         world.entityBuilder().with(new ControlLock()).build();
+        world.entityBuilder().with(new CombatDialog()).build();
 
         world.entityBuilder().with(new CombatBackground(background)).build();
+        world.entityBuilder().with(new CombatDialogSpawner(world)).build();
 
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.PLAYER)).build();
         world.entityBuilder().with(new CombatHealthBar(CombatUtils.BOSS)).build();

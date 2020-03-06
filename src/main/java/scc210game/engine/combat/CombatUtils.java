@@ -27,6 +27,11 @@ public class CombatUtils
 
     public static String PLAYER_SPRITE = "src/main/resources/textures/Combat/Combat-player-sprite-sheet.png";
     public static String TARGET_TEXTURE = "src/main/resources/textures/Combat/focus.png";
+    public static String RES_ROOT_PATH = "src/main/resources/";
+    public static String winnerText = CombatUtils.RES_ROOT_PATH + "textures/Combat/Winner-text.png";
+    public static String loserText = RES_ROOT_PATH + "textures/Combat/Loser-text.png";
+    public static String pmText = RES_ROOT_PATH + "textures/Combat/Power-move-text.png";
+
     public static float WEAPON_PADDING = 0.01f;
 
     public static int MAX_HEALTH = 700;

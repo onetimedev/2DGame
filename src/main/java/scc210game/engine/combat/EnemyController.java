@@ -101,6 +101,8 @@ public class EnemyController extends Component{
         var cLock = w.applyQuery(Query.builder().require(ControlLock.class).build()).findFirst().orElseThrow();
         var lock = w.fetchComponent(cLock, ControlLock.class);
 
+        var cDialog = w.applyQuery(Query.builder().require(CombatDialog.class).build()).findFirst().get();
+        var dialog = w.fetchComponent(cDialog, CombatDialog.class);
 
         if(w.getCombatStatus())
         {
@@ -132,13 +134,20 @@ public class EnemyController extends Component{
                             lock.lock();
                             collisionCount++;
                             new CombatUtils().damagePlayer(w, (damage+10));
-                            new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 65, CombatUtils.BACKWARD, false).animateXAxis();
+                            dialog.path = CombatUtils.pmText;
+                            dialog.active = true;
+                            dialog.activeUntil = System.currentTimeMillis() + 900;
 
+                            new CombatAnimator(w, CombatPlayer.class, CombatPlayerWeapon.class, 65, CombatUtils.BACKWARD, false).animateXAxis();
                             if(new CombatUtils().getAbsHealth(w, false) <= 0)
                             {
                                 scheduledExecutorService.shutdown();
                                 w.deactivateCombat();
                                 animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, false);
+
+                                dialog.path = CombatUtils.loserText;
+                                dialog.active = true;
+                                dialog.activeUntil = System.currentTimeMillis() + 9000;
                             }
 
 
@@ -166,6 +175,11 @@ public class EnemyController extends Component{
                 w.deactivateCombat();
                 state.playerSprite = 1;
                 animateDeath(CombatEnemy.class, null, true);
+
+                dialog.path = CombatUtils.winnerText;
+                dialog.active = true;
+                dialog.activeUntil = System.currentTimeMillis() + 9000;
+
             }
 
 

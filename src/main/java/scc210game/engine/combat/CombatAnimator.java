@@ -209,7 +209,9 @@ public class CombatAnimator {
     {
         var cLock = world.applyQuery(Query.builder().require(ControlLock.class).build()).findFirst().orElseThrow();
         var lock = world.fetchComponent(cLock, ControlLock.class);
+
         if(lock.isLocked()) lock.unlock();
+
         animationCounter = 0;
         animationMax = 0;
         scheduledExecutorService.shutdown();
