@@ -9,6 +9,10 @@ public class DialogueMessage {
 
 	private String message = "";
 
+	public DialogueMessage() {
+
+	}
+
 	// Enemy = 0, NPC = 1, Chest = 2, Boss = 3, FinalBoss = 4
 	//Grass = 0, Water = 1, Fire = 2, Ice = 3
 	public DialogueMessage(int entityType, int biome) {
@@ -96,18 +100,20 @@ public class DialogueMessage {
 		}
 
 		public String getIceBossDefeatDialogue() {
-			String s = "The ice where the elemental had once stood groaned and shimmered, it was as if an entire area had just relaxed.\n" +
-					"No longer being stressed by an elemental presence that had made such a beautiful place inhospitable.\n" +
+			String s = "The ice where the Elemental had once stood groaned and shimmered, it was as if an entire area had just relaxed.\n" +
+					"No longer being stressed by an Elemental presence that had made such a beautiful place inhospitable.\n" +
 					"Now communities will be able to return and live as they once did, it is much closer to being home again.";
 
+			s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 			return s;
 		}
 
 	public String getFireBossDefeatDialogue() {
-		String s = "Feeling comfortable in such an environment doesn’t seem possible, but at least now the elemental terror has been removed.\n" +
+		String s = "Feeling comfortable in such an environment doesn’t seem possible, but at least now the Elemental terror has been removed.\n" +
 				"Leaving only the natural dangers plaguing a travellers path.\n" +
-				"Another step towards reclaiming your home from these elementals that have driven so many away and decimated what once were thriving villages.";
+				"Another step towards reclaiming your home from these Elementals that have driven so many away and decimated what once were thriving villages.";
 
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
@@ -115,23 +121,31 @@ public class DialogueMessage {
 		String s = "Once again the forests erupted with noise, it almost seemed as though the many creatures were sending their thanks.\n" +
 				"Even the grass seemingly started to move with the wind, no longer being stopped by such a monster.\n" +
 				"Removing such a terror and drain on the earth element can only help to restore your home to what it once was.";
+
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
 	public String getWaterBossDefeatDialogue() {
-		String s = "Hearing the small waves lap onto the sand provided much needed peace after the terror imposed by the elemental.\n" +
+		String s = "Hearing the small waves lap onto the sand provided much needed peace after the terror imposed by the Elemental.\n" +
 				"Now perhaps these idyllic sands will be inhabitable again by those who choose to return to their lives here.\n" +
-				"Restoring the populations trust that these elementals are truly gone will be challenging however.";
+				"Restoring the populations trust that these Elementals are truly gone will be challenging however.";
 
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
 	}
 
 	public String getFinalBossDefeatDialogue() {
-		String s = "The gigantic elemental crashed to the ground. Immediately a change could be felt, this was nothing like the previous elementals.\n" +
-				"Controlling the elements and taking the land and homes of generations was no more. No longer would your home be threatening or dangerous.\n" +
-				"Now the communities and lives can be restored, with the trust that such elementals are gone. Time will tell how impactful the reign of these creatures has been.";
+		String s = "The gigantic Elemental crashed to the ground. Immediately a change could be felt, this was nothing like the previous Elementals.\n" +
+				"Controlling the elements and taking the land and homes of generations was no more. No longer would your home be threatened or in danger.\n" +
+				"Now the communities and lives can be restored, with the knowledge that these Elementals are gone. Now you can explore, and settle back into your home!";
 
+		s += "\n\n----- Press Q to ignore, ENTER to Receive Item -----";
 		return s;
+	}
+
+	public String getNoEquippedWeapon() {
+		return "Please equip a weapon to fight with!\n\n----- Press Q or ENTER to Continue -----";
 	}
 
 
@@ -215,8 +229,35 @@ public class DialogueMessage {
 	}
 
 
+	public String getVictoryDialogue() {
+		String s = "";
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("A hard fought battle, through skill you have succeeded!");
+		possDialogs.add("Another creature that can no longer plague your home!");
+		possDialogs.add("A convincing victory!");
 
-		//Grass = 0, Water = 1, Fire = 2, Ice = 3
+		s += possDialogs.get(randomMessage(possDialogs.size()));
+		s += "\n\n----- Press Q to Ignore, ENTER for a chance to get an item -----";
+
+		return s;
+	}
+
+
+	public String getDefeatDialogue() {
+		String s = "";
+		ArrayList<String> possDialogs = new ArrayList<>();
+		possDialogs.add("The light begins to fade, perhaps they are too strong.");
+		possDialogs.add("It seems only the best weapons will suffice to defeat such a foe!");
+
+		s += possDialogs.get(randomMessage(possDialogs.size()));
+		s += "\n\nYour inventory seems lighter, it seems these creatures have taken all!";
+		s += "\n----- Press Q or ENTER to Respawn -----";
+		return s;
+	}
+
+
+
+	//Grass = 0, Water = 1, Fire = 2, Ice = 3
 		private void bossDialogue(int biome) {
 			switch (biome) {
 				case 0: {
@@ -240,34 +281,34 @@ public class DialogueMessage {
 		}
 
 	private void iceBossDialogue() {
-		message = "No need to shiver because of the cold, the fear induced from the elemental will suffice!";
-		message += "\nThis elemental seized the cooling temperatures and has made these ice shelves its home for millenia.";
+		message = "No need to shiver because of the cold, the fear induced from the Elemental will suffice!";
+		message += "\nThis Elemental seized the cooling temperatures and has made these ice shelves its home for millenia.";
 		message += "\nIt has prevented the people who used to live around what was the lake from returning to their own lands.";
 	}
 
 	private void fireBossDialogue() {
-		message = "Now confronted in the depths of the lava fields the towering elemental appeared more dangerous than any amount of lava!";
-		message += "\nWhile this area has never been thriving this elemental has made it impossible to even travel through!";
+		message = "Now confronted in the depths of the lava fields the towering Elemental appeared more dangerous than any amount of lava!";
+		message += "\nWhile this area has never been thriving this Elemental has made it impossible to even travel through!";
 		message += "\nTo restore safe routes between the areas is vital to help the people who also used to live here to return.";
 	}
 
 	private void waterBossDialogue() {
-		message = "Claiming the island as its own the elemental stood surrounded by sand, the homes that previously stood here no doubt beneath it.";
+		message = "Claiming the island as its own the Elemental stood surrounded by sand, the homes that previously stood here no doubt beneath it.";
 		message += "\nThe fish could no longer be seen in the water, nothing lived here now, nothing was misguided enough to believe it stood a chance.";
-		message += "\nAll of the beautiful scenery was drowned out by the elemental, its presence had removed any allure from the water and sands.";
+		message += "\nAll of the beautiful scenery was drowned out by the Elemental, its presence had removed any allure from the water and sands.";
 	}
 
 	private void grassBossDialogue() {
-		message = "Trying to enter the clearing presented an imposing sight, the forests quietened and now only the elemental ahead could be heard!";
+		message = "Trying to enter the clearing presented an imposing sight, the forests quietened and now only the Elemental ahead could be heard!";
 		message += "\nThese beautiful fields and forests now lay empty, devoid of the community and happiness which they had once held.";
-		message += "\n Nothing has been done by the Kings that govern this land, leaving such an elemental to be faced by the only guardian!";
+		message += "\n Nothing has been done by the Kings that govern this land, leaving such an Elemental to be faced by the only guardian!";
 	}
 
 	private void finalBossDialogue() {
-		message = "The largest elemental yet, it dwarfed the previous elementals fought and looked as if it was about to make sure their defeats would be avenged.";
+		message = "The largest Elemental yet, it dwarfed the previous Elementals fought and looked as if it was about to make sure their defeats would be avenged.";
 		message += "\nThe hard rock surrounding it was surely a sign of what was to come for all areas if it is allowed to continue its terror.";
 		message += "\nThis was the creature that had brought on such fear, and that had taken over the homes of so many.";
-		message += "\nIts many skulls could be a sign of your fate, but who else has the ability to defeat such an elemental!";
+		message += "\nIts many skulls could be a sign of your fate, but who else has the ability to defeat such an Elemental!";
 
 		message += "\n\n----- Press Q to Ignore, ENTER to Fight -----";
 	}
@@ -275,8 +316,10 @@ public class DialogueMessage {
 
 	public String getIntroDialogue() {
 		String s = "After many years you have returned home, to revisit the communities and areas where you once lived.\n" +
-				"However no longer present are those who you once knew! Now the inhabitants of your home are elemental creatures, intent on controlling the elements at any cost!\n" +
-				"Move using W A S D    |    Enter or Q for dialogs    |    SPACE to attack    |    ESC to pause    |    ";
+				"However no longer present are those who you once knew! Now the inhabitants of your home are Elemental creatures, intent on controlling the elements at any cost!" +
+				"\nYou must find and defeat the four elemental bosses to face the elemental controlling this invasion!" +
+				"\n\nMove using W A S D    |    ENTER or Q for dialogs    |    SPACE to attack    |    ESC to exit inventory or pause    |    CLICK top left chest icon for inventory" +
+				"\n\n----- Press Q or ENTER to Continue -----";
 
 		return s;
 	}

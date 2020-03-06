@@ -30,7 +30,8 @@ public class BaseInGameState extends InputHandlingState {
         if (evt instanceof KeyDepressedEvent) {
             KeyDepressedEvent evt1 = (KeyDepressedEvent) evt;
             if (evt1.key == Keyboard.Key.ESCAPE) {
-                world.ecs.acceptEvent(new TogglePauseEvent());
+                if(!world.getCombatStatus())
+                    world.ecs.acceptEvent(new TogglePauseEvent());
             }
         }
 
@@ -42,6 +43,7 @@ public class BaseInGameState extends InputHandlingState {
         if (evt instanceof ReturnToMainMenuEvent) {
             return new TransReplaceAll(new MainMenuState());
         }
+
 
         return super.handleEvent(evt, world);
     }

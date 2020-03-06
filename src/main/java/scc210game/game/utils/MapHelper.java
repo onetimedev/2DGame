@@ -2,15 +2,19 @@ package scc210game.game.utils;
 
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
+import scc210game.game.map.Map;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.map.Tile;
 
 import java.util.ArrayList;
 
+
+/**
+ * Class to provide helper methods related to tiles in the map
+ */
 public class MapHelper {
 
 	public static Vector2i mapSize = new Vector2i(120,120);
-
 
 	/**
 	 * Method used in enemy spawners to load the specific texture for the entity.
@@ -30,17 +34,36 @@ public class MapHelper {
 
 
 	/**
-	 * Method to update tiles, useful for enemies, bosses, barriers
-	 * @param tilesToChange tiles that need updating
-	 * @param newTextureName name of the new texture
-	 * @param collision of the tile
-	 * @param enemy on the tile?
+	 * Method to change all tiles collision, textures and enemy values at given coordinates
+	 * @param map
+	 * @param tileCoords
+	 * @param newTextureName
+	 * @param collision
+	 * @param enemy
 	 */
-	public static void changeTiles(ArrayList<Tile> tilesToChange, String newTextureName, boolean collision, boolean enemy) {
-		for (final Tile t : tilesToChange) {
-			t.setTexture(newTextureName);
-			t.setHasCollision(collision);
-			t.setHasEnemy(enemy);
+	public static void changeTiles(Map map, Vector2i[] tileCoords, String newTextureName, boolean collision, boolean enemy) {
+		for (Vector2i v: tileCoords) {
+			map.getTile(v.x, v.y).setTexture(newTextureName);
+			map.getTile(v.x, v.y).setHasCollision(collision);
+			map.getTile(v.x, v.y).setHasEnemy(enemy);
+		}
+	}
+
+
+	/**
+	 * Method to change all tiles collision, textures and enemy values at given coordinates
+	 * @param map
+	 * @param tileCoords
+	 * @param newTextureName
+	 * @param collision
+	 * @param enemy
+	 */
+	public static void changeTiles(Map map, Vector2i[] tileCoords, String newTextureName, boolean collision, boolean enemy, boolean story) {
+		for (Vector2i v: tileCoords) {
+			map.getTile(v.x, v.y).setTexture(newTextureName);
+			map.getTile(v.x, v.y).setHasCollision(collision);
+			map.getTile(v.x, v.y).setHasEnemy(enemy);
+			map.getTile(v.x, v.y).setCanHaveStory(story);
 		}
 	}
 

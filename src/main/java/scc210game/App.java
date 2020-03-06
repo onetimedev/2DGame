@@ -5,7 +5,6 @@ package scc210game;
 
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.Main;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

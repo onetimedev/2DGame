@@ -9,6 +9,7 @@ import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.TransQuit;
 import scc210game.engine.state.trans.Transition;
 import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
+import scc210game.game.states.events.CombatStateEvent;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.states.events.QuitGameEvent;

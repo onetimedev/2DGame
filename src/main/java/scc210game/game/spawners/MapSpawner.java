@@ -18,21 +18,25 @@ import scc210game.game.map.Player;
 import java.util.Set;
 
 
+/**
+ * Class to create the map entity and render the appropriate tiles based on the players location
+ */
 public class MapSpawner implements Spawner {
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
         return builder
                 .with(new Map())
                 .with(new Renderable(Set.of(ViewType.MAIN), 0,
-                        // Number of tiles that can fit in windows X and Y
-                        // Goes through each X,Y coordinate around the player that can be rendered and
-                        // renders the tile at this X,Y coordinate
-                        //int tileCount = 0;
-                        //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
-                        //tileCount++;
                         MapSpawner::accept));
     }
 
+
+    /**
+     * Method called for the map tiles around the player to be rendered in the main game window
+     * @param entity the map entity
+     * @param window the game window
+     * @param world the world for this state
+     */
     private static void accept(Entity entity, RenderWindow window, World world) {
         Map m = world.fetchComponent(entity, Map.class);
 
@@ -52,7 +56,6 @@ public class MapSpawner implements Spawner {
 
         // Goes through each X,Y coordinate around the player that can be rendered and
         // renders the tile at this X,Y coordinate
-        //int tileCount = 0;
         for (int y = 0; y < m.getTileMaxY(); y++) {
             for (int x = 0; x < m.getTileMaxX(); x++) {
                 if (x < mapLeft || x > mapRight || y < mapTop || y > mapBottom)
@@ -61,12 +64,10 @@ public class MapSpawner implements Spawner {
                 var tile1 = m.getTile(x, y);
                 Sprite tile = new Sprite(tile1.getTexture());
                 tile.setPosition(x * 64, y * 64);
-                //System.out.println("["+ tileCount + "] " + "Texture: " + m.getTile(startX, startY).getTextureName() + " Tile " + startX + "," + startY + " at Position " + positionX + "," + positionY);
                 if (tile1.getTextureName().equals("water.png"))
                     window.draw(tile, new RenderStates(Shaders.water));
                 else
                     window.draw(tile);
-                //tileCount++;
             }
 
         }

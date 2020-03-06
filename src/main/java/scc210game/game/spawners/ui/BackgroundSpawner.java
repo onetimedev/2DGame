@@ -29,7 +29,7 @@ public class BackgroundSpawner implements Spawner {
 	@Override
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
-				.with(new UITransform(0, 0, 0, 1, 1))
+				.with(new UITransform(0, 0, 0, 1f, 1f))
 				.with(new TextureStorage("textures/backgrounds/" + backgroundName))
 				.with(new Renderable(Set.of(ViewType.UI), 0, BackgroundSpawner::accept));
 	}

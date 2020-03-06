@@ -2,6 +2,7 @@ package scc210game.game.systems;
 
 import scc210game.engine.animation.Animate;
 import scc210game.engine.audio.Audio;
+import scc210game.engine.combat.Scoring;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
 import scc210game.engine.movement.Position;
@@ -11,15 +12,41 @@ import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.*;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
+import scc210game.game.resources.ZoomStateResource;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
+import scc210game.game.states.events.TriggerCombatEvent;
+import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class PositionUpdateSystem implements System {
+    private static Query playerQuery = Query.builder().require(Player.class).build();
+
+    private static Entity getPlayerEnt(World w) {
+		return w.applyQuery(playerQuery).findFirst().orElseThrow();
+	}
+
 	Audio au = new Audio();
+
+	private static void refuseStory(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
+
+	private static void refuseChest(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
+
+	private static void dialogueAccept(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
+
+	private static void dialogueRefuse(Entity e, World w) {
+		DialogueHelper.refuse(w, getPlayerEnt(w));
+	}
 
 	/**
 	 * Run method that will continue while the system is active.
@@ -114,6 +141,7 @@ public class PositionUpdateSystem implements System {
 			}
 		}
 
+		//if player is not moving stop sound
 		if(deltaX == 0 && deltaY == 0) {
 			this.au.stopSound();
 		}
@@ -208,43 +236,46 @@ public class PositionUpdateSystem implements System {
 				if (t == null)
 					continue;
 				if (t.getHasEnemy()) {  // Enemy checks
-					if (t.getTextureName().contains("final")) {
-						java.lang.System.out.println("FinalBoss nearby");
-						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt, 4, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> this.acceptCombat(world, playerEnt, 2, this.getEntityAtPos(world, t, Enemy.class)),  //hardcoded biometype
-								(e, w) -> this.refuse(world, playerEnt)));
-					} else if (!t.getTextureName().contains("enemy")) {
-						java.lang.System.out.println("Boss nearby");
-						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt, 3, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> this.acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), this.getEntityAtPos(world, t, Enemy.class)),
-								(e, w) -> this.refuse(world, playerEnt)));
-					} else {
-						java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
-						java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
-						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt, 0, MapHelper.checkBiome(t.getTextureName())),
-								(e, w) -> this.acceptCombat(world, playerEnt, MapHelper.checkBiome(t.getTextureName()), this.getEntityAtPos(world, t, Enemy.class)),
-								(e, w) -> this.refuse(world, playerEnt)));
+				    final int tX = t.getXPos();
+				    final int tY = t.getYPos();
+					if(t.canHaveStory() && t.getTextureName().contains("light")) {
+						//java.lang.System.out.println("FinalBoss nearby");
+						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,4, MapHelper.checkBiome(t.getTextureName())),
+								(e, w) -> acceptCombat(w, getPlayerEnt(w), 4, getEntityAtPos(w, tX, tY, FinalBoss.class, 9)),  //hardcoded biometype
+								PositionUpdateSystem::refuseStory));
+					}
+					else if(!t.getTextureName().contains("enemy")) {
+						//java.lang.System.out.println("Boss nearby");
+						final var biome = MapHelper.checkBiome(t.getTextureName());
+						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,3, MapHelper.checkBiome(t.getTextureName())),
+								(e, w) -> acceptCombat(w, getPlayerEnt(w), biome, getEntityAtPos(world, tX, tY, Boss.class, 4)),
+								PositionUpdateSystem::refuseStory));
+					}
+					else {
+						//java.lang.System.out.println("Enemy nearby: " + t.getTextureName());
+						final var biome = MapHelper.checkBiome(t.getTextureName());
+						world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,0, MapHelper.checkBiome(t.getTextureName())),
+								(e, w) -> acceptCombat(w, getPlayerEnt(w), biome, getEntityAtPos(world, tX, tY, Enemy.class, 1)),
+								PositionUpdateSystem::refuseStory));
 					}
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveChest()) {  // Chest check
-					java.lang.System.out.println("Chest nearby");
-					var chestEnt = this.getEntityAtPos(world, t, Chest.class);
-					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt, 2, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> this.acceptChest(world, playerEnt, chestEnt),
-							(e, w) -> this.refuse(world, playerEnt)));
+					//java.lang.System.out.println("Chest nearby");
+					final var cX = t.getXPos();
+					final var cY = t.getYPos();
+					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,2, MapHelper.checkBiome(t.getTextureName())),
+							(e, w) -> this.acceptChest(w, getPlayerEnt(w), getEntityAtPos(w, cX, cY, Chest.class, 1)),
+							PositionUpdateSystem::refuseChest));
 					steps.oldCount = steps.count;
 					break;
 				}
 				else if (t.canHaveStory()) {  // NPC check
-					java.lang.System.out.println("NPC nearby");
-					java.lang.System.out.println(MapHelper.checkBiome(t.getTextureName()));
-					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt, 1, MapHelper.checkBiome(t.getTextureName())),
-							(e, w) -> this.refuse(world, playerEnt),
-							(e, w) -> this.refuse(world, playerEnt)));
+					//java.lang.System.out.println("NPC nearby");
+					world.eventQueue.broadcast(new DialogueCreateEvent(this.inDialogue(world, playerEnt,1, MapHelper.checkBiome(t.getTextureName())),
+							PositionUpdateSystem::dialogueAccept,
+							PositionUpdateSystem::dialogueRefuse));
 					steps.oldCount = steps.count;
 					break;
 				}
@@ -256,14 +287,27 @@ public class PositionUpdateSystem implements System {
 	/**
 	 * Method to check the single entity against a position
 	 * @param world the world for the state
-	 * @param t tile being checked
+     * @param x x pos of tile
+	 * @param y y pos of tile
 	 * @param klass component class being searched for
 	 * @return
 	 */
-	private Entity getEntityAtPos(World world, Tile t, Class<? extends Component> klass) {
+	private static Entity getEntityAtPos(World world, int x, int y, Class<? extends Component> klass, int radius) {
 		return world.applyQuery(Query.builder().require(klass).build()).filter(e -> {
 			var pos = world.fetchComponent(e, Position.class);
-			return pos.xPos == t.getXPos() && pos.yPos == t.getYPos();
+
+			for(int i=0; i < radius; i++) {
+				if(pos.xPos == x && pos.yPos == y+i || pos.xPos == x && pos.yPos == y -i)
+					return true;
+				if(pos.xPos == x +i && pos.yPos == y || pos.xPos == x -i && pos.yPos == y)
+					return true;
+				if(pos.xPos == x-i && pos.yPos == y-i || pos.xPos == x +i && pos.yPos == y +i)
+					return true;
+				if(pos.xPos == x -i && pos.yPos == y +i || pos.xPos == x +i && pos.yPos == y -i)
+					return true;
+			}
+
+			return (pos.xPos == x && pos.yPos == y) || (pos.xPos == x && pos.yPos == y);
 		}).findFirst().orElseThrow();
 	}
 
@@ -306,22 +350,27 @@ public class PositionUpdateSystem implements System {
 	public void biomeSound(int type, Audio au) {
 		switch(type) {
 			case 0: { //grass
+				//if tile type is 0 (grass) play walking on grass sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_medium.wav"), false);
 				break;
 			}
 			case 1: { //sand
+				//if tile type is 1 (sand) play walking on sand sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_sand.wav"), false);
 				break;
 			}
 			case 2: { //basalt
+				//if tile type is 2 (basalt) play walking on basalt sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_gravel.wav"), false);
 				break;
 			}
 			case 3: { //snow
+				//if tile type is 3 (snow) play walking on snow sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_snow.wav"), false);
 				break;
 			}
 			case 5: { //path
+				//if tile type is 5 (path) play walking on path sound
 				au.playSound(ResourceLoader.resolve("sounds/walking_path.wav"), false);
 				break;
 			}
@@ -341,11 +390,11 @@ public class PositionUpdateSystem implements System {
 	public String inDialogue(World world, Entity player, int type, int biome) {
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.zoomIn();
+		var zoomState = world.fetchGlobalResource(ZoomStateResource.class);
+		zoomState.zoomed = true;
 		java.lang.System.out.println("Zoomed in");
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = true;
-
-		java.lang.System.out.println("Type: " + type + ", Biome: " + biome);
 
 		return new DialogueMessage(type, biome).getMessage();
 	}
@@ -357,13 +406,16 @@ public class PositionUpdateSystem implements System {
 	 * @param player the player entity
 	 */
 	public void acceptChest(World world, Entity player, Entity target) {
+		au.playSound(ResourceLoader.resolve("sounds/open_chest.wav"), false);
 		var view = world.fetchGlobalResource(MainViewResource.class);
 		view.zoomOut();
+		var zoomState = world.fetchGlobalResource(ZoomStateResource.class);
+		zoomState.zoomed = false;
 
 		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
 		positionLocked.locked = false;
 
-		java.lang.System.out.println("Chest State Initiated");
+		//java.lang.System.out.println("Chest State Initiated");
 		var playerInv = world.fetchComponent(player, Inventory.class);
 
 
@@ -382,23 +434,102 @@ public class PositionUpdateSystem implements System {
 	 * @param biomeType the type of biome  0=Grass, 1=Sand, 2=Fire, 3=Snow
 	 * @param enemy the enemy entity
 	 */
-	public void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
-		java.lang.System.out.println("Combat State Initiated");
-		//world.ecs.acceptEvent(new TriggerCombatEvent());  //TODO: Need to know params that should be passed to combat
+	public static void acceptCombat(World world, Entity player, int biomeType, Entity enemy) {
+		//java.lang.System.out.println("Combat State Initiated");
+		var enemyDamage = world.fetchComponent(enemy, Enemy.class);
+
+		var enemyTexture = world.fetchComponent(enemy, TextureStorage.class);
+		String root = "textures/";
+		String combatPath = "Combat/Enlarged/";
+		String textureName = "";
+		String background = "";
+		switch(biomeType) {
+				case 0: {
+					background = root + "Combat/combat-bground-grass.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = root + combatPath + "Earth-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = root + combatPath + "Earth-Enemy-Combat-Animation-LARGE.png";
+					break;
+				}
+				case 1: {
+					background = root + "Combat/combat-background-water.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = root + combatPath + "Water-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = root + combatPath + "Water-Enemy-Combat-Animation-LARGE.png";
+					break;
+				}
+				case 2: {
+					background = root + "Combat/combat-background-lava.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = root + combatPath + "Fire-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = root + combatPath + "Fire-Enemy-Combat-Animation-LARGE.png";
+					break;
+				}
+				case 3: {
+					background = root + "Combat/combat-background-ice.png";
+					if(enemyTexture.getPath().contains("boss"))
+						textureName = root + combatPath + "Ice-Boss-Combat-Animation-LARGE.png";
+					else
+						textureName = root + combatPath + "Ice-Enemy-Combat-Animation-LARGE.png";
+					break;
+				}
+
+				case 4:{
+					textureName = root + "Combat/Enlarged/Final-Boss-Combat-Animation-LARGE.png";
+					background = root + "Combat/combat-background-lava.png";
+					break;
+				}
+		}
+
+
+			// Getting inventory to get currently equipped item to pass into combat
+			var invEntO = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst();
+			if (!invEntO.isPresent())
+				return;
+			var invEnt = invEntO.get();
+			var invComp = world.fetchComponent(invEnt, Inventory.class);
+
+			try {
+				var item = findItem(invComp.items().findFirst().orElseThrow().l, world);  // Isolate item entity from stream of items
+				var itemDamage = world.fetchComponent(item, Item.class);
+
+				var itemTextureStorage = world.fetchComponent(item, TextureStorage.class);
+				var scores = world.fetchComponent(player, Scoring.class);
+				world.ecs.acceptEvent(new TriggerCombatEvent(scores, textureName,  itemTextureStorage, background, enemyDamage.damage, enemy, itemDamage.level));
+				//java.lang.System.out.println("Sending combat request");
+			}
+			catch(NoSuchElementException e)
+			{
+				DialogueMessage dl = new DialogueMessage();
+				world.eventQueue.broadcast(new DialogueCreateEvent(dl.getNoEquippedWeapon(),
+						PositionUpdateSystem::dialogueAccept,
+						PositionUpdateSystem::dialogueRefuse));
+			}
+
+
 
 	}
 
 
 	/**
-	 * Method triggered upon player refusal of an entities dialogue option.
-	 * @param world the world for this state
-	 * @param player the player entity
+	 * Method taken from InventoryViewStateMethods, needed here for SelectedWeaponInventory
+	 * @param itemID
+	 * @param world
+	 * @return
 	 */
-	public void refuse(World world, Entity player) {
-		var view = world.fetchGlobalResource(MainViewResource.class);
-		view.zoomOut();
-		var positionLocked = world.fetchComponent(player, PlayerLocked.class);
-		positionLocked.locked = false;
+	protected static Entity findItem(int itemID, World world) {
+		Query itemQuery = Query.builder()
+				.require(Item.class)
+				.build();
+
+		return world.applyQuery(itemQuery)
+				.filter(e -> world.hasComponent(e, Item.class))
+				.filter(e -> world.fetchComponent(e, Item.class).itemID == itemID)
+				.findFirst()
+				.orElseThrow();
 	}
 
 }
