@@ -24,6 +24,7 @@ public class App {
             if (ext != null) {
                 try {
                     var tempFile = File.createTempFile("libXinitThreads", ".so");
+                    tempFile.setExecutable(true);
                     var outFile = new FileOutputStream(tempFile);
                     ResourceLoader.resolve("libXinitThreads.so." + ext).transferTo(outFile);
                     outFile.close();
