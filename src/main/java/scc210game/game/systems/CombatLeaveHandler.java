@@ -70,14 +70,14 @@ public class CombatLeaveHandler implements System {
 
 		DialogueMessage dl = new DialogueMessage();
 		if(evt.playerWins) {  // If the player has won
-			java.lang.System.out.println("Player Won");
+			//java.lang.System.out.println("Player Won");
 			String msg = enemyDefeated(evt.enemy, world);
 			world.eventQueue.broadcast(new DialogueCreateEvent(msg,
 					(en, w) -> winReward(world, evt.enemy, player),
 					(en, w) -> DialogueHelper.refuse(world, player)));
 		}
 		else {  // If the player has lost and needs to respawn
-			java.lang.System.out.println("Player Lost");
+			//java.lang.System.out.println("Player Lost");
 			world.eventQueue.broadcast(new DialogueCreateEvent(dl.getDefeatDialogue(),
 					(en, w) -> resetPlayerInventory(player, world),
 					(en, w) -> resetPlayerInventory(player, world)));

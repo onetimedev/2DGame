@@ -130,7 +130,7 @@ public class EnemyController extends Component{
 
                         if (new CombatUtils().hasCollided(newAttr, new CombatUtils().getOpponent(w, false)))
                         {
-                            //System.out.println("collided so moving backward");
+                            ////System.out.println("collided so moving backward");
                             lock.lock();
                             collisionCount++;
                             new CombatUtils().damagePlayer(w, (damage+10));
@@ -156,7 +156,7 @@ public class EnemyController extends Component{
                         }
                         else
                         {
-                            //System.out.println("moving forward");
+                            ////System.out.println("moving forward");
                             new CombatAnimator(w, CombatEnemy.class, CombatEnemyWeapon.class, 15, CombatUtils.FORWARD, true).animateXAxis();
                         }
 

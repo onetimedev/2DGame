@@ -18,7 +18,7 @@ public class CombatController extends Component {
             if(scores.getPlayerAbsHealth() <= 0)
             {
                 //enemy won
-                System.out.println("enemy won");
+                //System.out.println("enemy won");
                 break;
             }
         }
