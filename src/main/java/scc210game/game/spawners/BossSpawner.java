@@ -13,10 +13,10 @@ import scc210game.engine.movement.Position;
 import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.utils.ResourceLoader;
+import scc210game.game.components.TextureStorage;
 import scc210game.game.map.Boss;
 import scc210game.game.map.Enemy;
 import scc210game.game.map.Map;
-import scc210game.game.components.TextureStorage;
 
 import java.time.Duration;
 import java.util.Set;
@@ -75,7 +75,7 @@ public class BossSpawner implements Spawner {
 
         try {
             this.t = new Texture();
-            this.t.loadFromFile(ResourceLoader.resolve(bossTexturePath));
+            this.t.loadFromStream(ResourceLoader.resolve(this.bossTexturePath));
         }
         catch (final Exception e) {
             throw new RuntimeException();

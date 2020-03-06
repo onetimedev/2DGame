@@ -28,18 +28,18 @@ public class TextureStorage extends Component {
     }
 
     public Texture getTexture() {
-        return texture;
+        return this.texture;
     }
 
     public String getPath() {
-        return path;
+        return this.path;
     }
 
     public void reloadTexture(String p) {
         this.path = p;
         this.texture = new Texture();
         try {
-            this.texture.loadFromFile(ResourceLoader.resolve(this.path));
+            this.texture.loadFromStream(ResourceLoader.resolve(this.path));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

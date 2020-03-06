@@ -1,18 +1,12 @@
 package scc210game.engine.utils;
 
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class ResourceLoader {
     private static final ClassLoader loader = ClassLoader.getSystemClassLoader();
 
-    public static Path resolve(String s) {
-        try {
-            return Paths.get(Objects.requireNonNull(loader.getResource(s)).toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    public static InputStream resolve(String s) {
+        return Objects.requireNonNull(loader.getResourceAsStream(s));
     }
 }

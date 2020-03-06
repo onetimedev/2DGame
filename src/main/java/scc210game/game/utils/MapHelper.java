@@ -3,9 +3,9 @@ package scc210game.game.utils;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
 import scc210game.game.map.Map;
+import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.map.Tile;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -23,10 +23,10 @@ public class MapHelper {
 	 */
 	public static Texture loadTexture(String fileName) {
         try {
-            Texture t = new Texture();
-            t.loadFromFile(Paths.get("./src/main/resources/textures/map/", fileName));
-            return t;
-        }
+			Texture t = new Texture();
+			t.loadFromStream(ResourceLoader.resolve("textures/map/" + fileName));
+			return t;
+		}
         catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -64,7 +64,6 @@ public class MapHelper {
 			map.getTile(v.x, v.y).setHasCollision(collision);
 			map.getTile(v.x, v.y).setHasEnemy(enemy);
 			map.getTile(v.x, v.y).setCanHaveStory(story);
-
 		}
 	}
 
