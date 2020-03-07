@@ -9,24 +9,21 @@ import scc210game.game.components.Item;
 import scc210game.game.map.Player;
 
 public class FilledInventorySpawner implements Spawner {
+    private final int level;
 
+    public FilledInventorySpawner(int level) {
+        this.level = level;
+    }
 
     @Override
     public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
-        var inv = new Inventory(1);
+        var inv = new Inventory(5);
 
-        var playerEntO = world.applyQuery(Query.builder().require(Player.class).build()).findFirst();
-        playerEntO.orElseThrow();
-        var playerEnt = playerEntO.get();
-        var scores = world.fetchComponent(playerEnt, Scoring.class);
-
-        for (var i = 0; i < 1; i++) {
-            var itemEnt = world.entityBuilder()
-                    .with(new WeaponSpawner(scores.playerExperience + 8))
-                    .build();
-            var item = world.fetchComponent(itemEnt, Item.class);
-            inv.addItem(item.itemID);
-        }
+        var itemEnt = world.entityBuilder()
+                .with(new WeaponSpawner(this.level))
+                .build();
+        var item = world.fetchComponent(itemEnt, Item.class);
+        inv.addItem(item.itemID);
 
         return builder.with(inv);
     }

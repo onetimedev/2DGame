@@ -2,6 +2,8 @@ package scc210game.game.spawners;
 
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
+import scc210game.engine.utils.ResourceLoader;
+import scc210game.engine.utils.Tuple2;
 import scc210game.game.components.Item;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.items.Element;
@@ -9,6 +11,7 @@ import scc210game.game.items.Material;
 import scc210game.game.items.Type;
 import scc210game.game.items.Weapon;
 import scc210game.game.resources.ItemIDCounterResource;
+import scc210game.game.utils.NamedTypeParam;
 
 import java.util.List;
 import java.util.Random;
@@ -24,8 +27,15 @@ public class WeaponSpawner implements Spawner {
         this.level = level;
         this.dmg = generateDamage(this.level);
         this.element = randomEnum(Element.class);
-        this.name = generateWeaponName(this.level, element);
-        this.tex = generateTexture(this.level, element);
+        String name;
+        String tex;
+        do {
+            var nameTex = generateWeapon(this.level, element);
+            name = nameTex.l;
+            tex = nameTex.r;
+        } while (!ResourceLoader.exists(tex));
+        this.name = name;
+        this.tex = tex;
     }
 
     public WeaponSpawner(int level, int dmg, Element element, String name, String tex) {
@@ -67,44 +77,26 @@ public class WeaponSpawner implements Spawner {
         return (int) (level * scale * 10 + 10);
     }
 
-    private static String getSwordTextureName(Element e) {
-        switch (e) {
-            case FLAMES:
-                return "Fire-Sword.png";
-            case WATER:
-                return "Water-Sword.png";
-            case EARTH:
-                return "Earth-Sword.png";
-            case ICE:
-            default:
-                return "Basic-Sword.png";
-        }
-    }
-
-    private static String generateTexture(int level, Element element) {
-        return "textures/" + getSwordTextureName(element);
-    }
-
-    private static String generateWeaponName(int level, Element e){
+    private static Tuple2<@NamedTypeParam(name = "weaponName") String, @NamedTypeParam(name = "texture") String> generateWeapon(int level, Element e){
         if (level <= 10){
-            return randomEnum(Material.class).name + " " +
-                    randomEnum(Type.class).name + " of " +
-                    e.name;
+            var material = randomEnum(Material.class).name;
+            var type = randomElem(new Type[] {Type.SWORD, Type.STAFF}).name;
+            var name = String.format("%s %s of %s", material, type, e.name);
+            var tex = String.format("textures/Weapons/%s-%s-%s.png", material, type, e.name);
+            return new Tuple2<>(name, tex);
         }
         else if (level <= 30){
-            return randomElem(possibleEnchantment) + " " +
-                    randomEnum(Type.class).name + " of " +
-                    e.name;
+            var enchantment = randomElem(possibleEnchantment);
+            var name = String.format("%s Sword of %s", enchantment, e.name);
+            var tex = String.format("textures/Weapons/%s-Sword-%s.png", enchantment, e.name);
+            return new Tuple2<>(name, tex);
         }
-        else{
-            return randomElem(possibleNamed) + " " +
-                    randomElem(possibleTitle) + " " +
-                    randomEnum(Type.class).name + " of " +
-                    e.name;
+        else {
+            var title = randomElem(possibleTitle);
+            var named = randomElem(possibleNamed);
+            var name = String.format("%s %s of %s", title, named, e.name);
+            var tex = String.format("textures/Weapons/%s-%s.png", named, e.name);
+            return new Tuple2<>(name, tex);
         }
-    }
-
-    private static String generateLore(int level) {
-        return "";
     }
 }

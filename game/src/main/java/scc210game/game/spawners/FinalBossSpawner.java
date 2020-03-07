@@ -47,7 +47,6 @@ public class FinalBossSpawner implements Spawner {
         return builder
                 .with(new Enemy(false, this.damage, this.id))
                 .with(new FinalBoss())
-                .with(new FilledInventorySpawner())
                 .with(new Position(59, 59))
                 .with(new TextureStorage("textures/map/boss_final.png"))
                 .with(new Animate(Duration.ofMillis((900 * 192) / 64 - 1), ((e, w) -> {

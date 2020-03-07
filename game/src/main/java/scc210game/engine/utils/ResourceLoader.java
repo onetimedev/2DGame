@@ -11,12 +11,17 @@ public class ResourceLoader {
 
     private static final ClassLoader loader = ClassLoader.getSystemClassLoader();
 
+    public static boolean exists(String s) {
+        return loader.getResource(s) != null;
+    }
+
     public static InputStream resolve(String s) {
         byte[] bytes;
         if (cache.containsKey(s))
             bytes = cache.get(s);
         else {
-            var stream = Objects.requireNonNull(loader.getResourceAsStream(s));
+            var stream = loader.getResourceAsStream(s);
+            assert stream != null : "Resource doesn't exist: " + s;
             try {
                 bytes = stream.readAllBytes();
                 cache.put(s, bytes);

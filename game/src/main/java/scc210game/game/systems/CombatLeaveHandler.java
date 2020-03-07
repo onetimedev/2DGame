@@ -13,6 +13,7 @@ import scc210game.game.components.SelectedWeaponInventory;
 import scc210game.game.components.TextureStorage;
 import scc210game.game.events.DialogueCreateEvent;
 import scc210game.game.map.*;
+import scc210game.game.spawners.FilledInventorySpawner;
 import scc210game.game.states.events.EnterTwoInventoryEvent;
 import scc210game.game.utils.DialogueHelper;
 import scc210game.game.utils.MapHelper;
@@ -62,6 +63,7 @@ public class CombatLeaveHandler implements System {
 		var scoring = world.fetchComponent(player, Scoring.class);
 
 		scoring.playerExperience = evt.score.playerExperience;  //Update players experience after combat
+		java.lang.System.out.println("scoring.playerExperience = " + scoring.playerExperience);
 
 		DialogueMessage dl = new DialogueMessage();
 		if(evt.playerWins) {  // If the player has won
@@ -236,33 +238,30 @@ public class CombatLeaveHandler implements System {
 		DialogueHelper.refuse(world, player);
 		int rng = (int) (Math.random() * 50);  // Chance of enemy dropping item
 
+		var scoring = world.fetchComponent(player, Scoring.class);
+
 		var playerInv = world.fetchComponent(player, Inventory.class);
-		var boss = world.fetchComponent(enemy, Boss.class);
-		var finalBoss = world.fetchComponent(enemy, FinalBoss.class);
+		var isBoss = world.hasComponent(enemy, Boss.class);
+		var isFinalBoss = world.hasComponent(enemy, FinalBoss.class);
 
 
 		var selectedWeapon = world.applyQuery(Query.builder().require(SelectedWeaponInventory.class).build()).findFirst().orElseThrow();
 		var sw = world.fetchComponent(selectedWeapon, Inventory.class);
 
-		var enemyInv = world.fetchComponent(enemy, Inventory.class);
+		var enemyInvEnt = world.entityBuilder().with(new FilledInventorySpawner(scoring.playerExperience + 8)).build();
+		var enemyInv = world.fetchComponent(enemyInvEnt, Inventory.class);
 
-		if(enemyInv == null)
-			java.lang.System.out.println("Enemy Inv Null");
-		else {
-			if (finalBoss == null) {
-				if (boss == null) {
-					if (rng > 30) // If it is an enemy then chance of item
-						world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemy));
-				} else {   // if it is a boss
-					world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemy));
-				}
-			} else {  // If it is the finalboss
-				world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemy));
-
+		if (!isFinalBoss) {
+			if (!isBoss) {
+				if (rng > 30) // If it is an enemy then chance of item
+					world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemyInvEnt));
+			} else {   // if it is a boss
+				world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemyInvEnt));
 			}
+		} else {  // If it is the finalboss
+			world.ecs.acceptEvent(new EnterTwoInventoryEvent(playerInv, sw, enemyInv, player, selectedWeapon, enemyInvEnt));
+
 		}
-
-
 
 	}
 

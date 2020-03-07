@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class DialogueHandlingSystem implements System {
     private final EventQueueReader eventReader;
@@ -59,7 +60,8 @@ public class DialogueHandlingSystem implements System {
                 }
                 case RETURN: {
                     var entitiesToRemove = new ArrayList<Entity>();
-                    world.applyQuery(this.dialogueQuery).forEach(ent -> {
+                    var dialogueEntities = world.applyQuery(this.dialogueQuery).collect(Collectors.toList());
+                    dialogueEntities.forEach(ent -> {
                         var dialogue = world.fetchComponent(ent, Dialogue.class);
                         dialogue.accept.accept(ent, world);
                         entitiesToRemove.add(ent);
@@ -75,7 +77,8 @@ public class DialogueHandlingSystem implements System {
 
     private void ignoreExistingDialogues(World world) {
         var entitiesToRemove = new ArrayList<Entity>();
-        world.applyQuery(this.dialogueQuery).forEach(ent -> {
+        var dialogueEntities = world.applyQuery(this.dialogueQuery).collect(Collectors.toList());
+        dialogueEntities.forEach(ent -> {
             var dialogue = world.fetchComponent(ent, Dialogue.class);
             dialogue.ignore.accept(ent, world);
             entitiesToRemove.add(ent);

@@ -30,4 +30,12 @@ public class Tuple2<L, R> {
         result = 31 * result + this.r.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Tuple2{" +
+                "l=" + l +
+                ", r=" + r +
+                '}';
+    }
 }

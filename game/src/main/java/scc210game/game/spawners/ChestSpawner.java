@@ -29,7 +29,7 @@ public class ChestSpawner implements Spawner {
 	public World.EntityBuilder inject(World.EntityBuilder builder, World world) {
 		return builder
         .with(new Chest(this.chestTile))
-        .with(new FilledInventorySpawner())
+        .with(new FilledInventorySpawner(8))
         .with(new Position(this.chestTile.getXPos(), this.chestTile.getYPos()))
 				.with(new TextureStorage("textures/map/chest.png"))
 				.with(new Renderable(Set.of(ViewType.MAIN), 5,
