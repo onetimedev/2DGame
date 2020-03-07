@@ -1,9 +1,8 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import scc210game.engine.ecs.Component;
-import scc210game.game.map.Enemy;
 import scc210game.game.utils.LoadJsonNum;
 
 import java.util.Map;

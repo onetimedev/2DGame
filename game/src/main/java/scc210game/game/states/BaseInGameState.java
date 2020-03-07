@@ -7,6 +7,7 @@ import scc210game.engine.ecs.World;
 import scc210game.engine.state.InputHandlingState;
 import scc210game.engine.state.event.KeyDepressedEvent;
 import scc210game.engine.state.event.StateEvent;
+import scc210game.engine.state.trans.TransNop;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.TransReplaceAll;
 import scc210game.engine.state.trans.Transition;
@@ -30,8 +31,8 @@ public class BaseInGameState extends InputHandlingState {
         if (evt instanceof KeyDepressedEvent) {
             KeyDepressedEvent evt1 = (KeyDepressedEvent) evt;
             if (evt1.key == Keyboard.Key.ESCAPE) {
-                if(!world.getCombatStatus())
-                    world.ecs.acceptEvent(new TogglePauseEvent());
+                world.ecs.acceptEvent(new TogglePauseEvent());
+                return TransNop.getInstance();
             }
         }
 

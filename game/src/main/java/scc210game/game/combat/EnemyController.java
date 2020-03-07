@@ -1,4 +1,4 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import org.jsfml.graphics.Texture;
 import scc210game.engine.audio.Audio;
@@ -10,10 +10,8 @@ import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.*;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -104,7 +102,8 @@ public class EnemyController extends Component{
         var cDialog = w.applyQuery(Query.builder().require(CombatDialog.class).build()).findFirst().get();
         var dialog = w.fetchComponent(cDialog, CombatDialog.class);
 
-        if(w.getCombatStatus())
+        var combatResource = CombatUtils.getCombatResources(w);
+        if(combatResource.isCombatActive)
         {
             if(getHealth() > 0)
             {
@@ -142,7 +141,7 @@ public class EnemyController extends Component{
                             if(new CombatUtils().getAbsHealth(w, false) <= 0)
                             {
                                 scheduledExecutorService.shutdown();
-                                w.deactivateCombat();
+                                combatResource.isCombatActive = false;
                                 animateDeath(CombatPlayer.class, CombatPlayerWeapon.class, false);
 
                                 dialog.path = CombatUtils.loserText;
@@ -172,7 +171,7 @@ public class EnemyController extends Component{
             else
             {
                 scheduledExecutorService.shutdown();
-                w.deactivateCombat();
+                combatResource.isCombatActive = false;
                 state.playerSprite = 1;
                 animateDeath(CombatEnemy.class, null, true);
 

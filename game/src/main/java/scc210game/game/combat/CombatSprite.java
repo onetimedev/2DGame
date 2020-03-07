@@ -1,4 +1,4 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;

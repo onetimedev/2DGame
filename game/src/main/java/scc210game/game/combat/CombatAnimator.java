@@ -1,14 +1,12 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.events.ExitCombatState;
-import scc210game.engine.events.LeaveCombatEvent;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.game.components.*;
 
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +90,7 @@ public class CombatAnimator {
                 else if(new CombatUtils().hasCollided(spriteAttributes, new CombatUtils().getOpponent(world, true)) || new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true)))
                 {
                     if(new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true))) {
-                        if (new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
+                        if (CombatUtils.getCombatResources(world).getPlayerWeaponRaised()) {
                             new CombatUtils().damageEnemy(world, damage.damage);
                             if(!target.visible) {
                                 target.xPos = weaponAttributes.xPos;
@@ -225,10 +223,11 @@ public class CombatAnimator {
         animationMax = 0;
         scheduledExecutorService.shutdown();
 
+        var combatResource = CombatUtils.getCombatResources(world);
         var combatInfo = world.applyQuery(Query.builder().require(CombatInfo.class).build()).findFirst().orElseThrow();
         var info = world.fetchComponent(combatInfo, CombatInfo.class);
         info.didPlayerWin = spriteClass != CombatPlayer.class;
-        world.deactivateCombat();
+        combatResource.isCombatActive = false;
         world.ecs.acceptEvent(new ExitCombatState());
 
     }

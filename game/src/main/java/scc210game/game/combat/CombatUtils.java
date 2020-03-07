@@ -1,4 +1,4 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import scc210game.engine.ecs.Component;
 import scc210game.engine.ecs.Query;
@@ -86,10 +86,9 @@ public class CombatUtils
     }
 
 
-    public CombatResources getCombatResources(World w)
+    public static CombatResources getCombatResources(World w)
     {
-        var handle = w.applyQuery(Query.builder().require(CombatResources.class).build()).findFirst().get();
-        return w.fetchComponent(handle, CombatResources.class);
+        return w.fetchResource(CombatResources.class);
     }
 
     public float getHealth(World w, boolean enemy)

@@ -1,12 +1,16 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import com.github.cliftonlabs.json_simple.Jsonable;
 import scc210game.engine.ecs.Component;
+import scc210game.engine.ecs.Resource;
 
-public class CombatResources extends Component {
+public class CombatResources extends Resource {
 
     private boolean playerWeaponRaised = false;
     private boolean enemyWeaponRaised = false;
+
+    public boolean isCombatActive = false;
+    public boolean activeAnimation = true;
 
     public void raisePlayerWeapon()
     {

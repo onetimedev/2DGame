@@ -2,11 +2,11 @@ package scc210game.game.systems;
 
 import scc210game.engine.animation.Animate;
 import scc210game.engine.audio.Audio;
-import scc210game.engine.combat.Scoring;
+import scc210game.game.combat.Scoring;
 import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.*;
-import scc210game.engine.movement.Position;
-import scc210game.engine.movement.Velocity;
+import scc210game.game.movement.Position;
+import scc210game.game.movement.Velocity;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.game.components.*;

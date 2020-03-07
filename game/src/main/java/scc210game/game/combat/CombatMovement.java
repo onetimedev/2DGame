@@ -1,7 +1,6 @@
-package scc210game.engine.movement;
+package scc210game.game.combat;
 
 import org.jsfml.window.Keyboard;
-import scc210game.engine.combat.*;
 import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.System;
@@ -10,6 +9,8 @@ import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.state.event.KeyDepressedEvent;
 import scc210game.engine.state.event.KeyPressedEvent;
 import scc210game.engine.ui.components.UITransform;
+import scc210game.game.combat.CombatSprite;
+import scc210game.game.combat.CombatUtils;
 import scc210game.game.components.CombatPlayer;
 import scc210game.game.components.CombatPlayerWeapon;
 import scc210game.game.components.ControlLock;
@@ -18,7 +19,6 @@ import scc210game.game.components.TargetPosition;
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -52,8 +52,13 @@ public class CombatMovement implements System {
     @SuppressWarnings("unchecked")
     private void handleMovement(World world, Event event)
     {
+        if (!world.hasResource(CombatResources.class)) {
+            return;
+        }
 
-        if(world.getCombatStatus()) {
+        var combatResource = CombatUtils.getCombatResources(world);
+
+        if(combatResource.isCombatActive) {
             var cLock = world.applyQuery(Query.builder().require(ControlLock.class).build()).findFirst().orElseThrow();
             var lock = world.fetchComponent(cLock, ControlLock.class);
 
@@ -75,17 +80,17 @@ public class CombatMovement implements System {
                     switch (type.key) {
                         case A: {
 
-                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.BACKWARD, false).animateXAxis();
+                            new scc210game.game.combat.CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, scc210game.game.combat.CombatUtils.BACKWARD, false).animateXAxis();
                             state.playerSprite = 0;
                             left = true;
-                            new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
+                            CombatUtils.getCombatResources(world).lowerPlayerWeapon();
                             cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
 
                             break;
                         }
                         case D: {
                             //right move
-                            new CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, CombatUtils.FORWARD, false).animateXAxis();
+                            new scc210game.game.combat.CombatAnimator(world, CombatPlayer.class, CombatPlayerWeapon.class, 20, scc210game.game.combat.CombatUtils.FORWARD, false).animateXAxis();
                             state.playerSprite = 2;
                             left = false;
 
@@ -94,9 +99,9 @@ public class CombatMovement implements System {
 
                         case SPACE: {
                             //attack
-                            if (!new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
+                            if (!CombatUtils.getCombatResources(world).getPlayerWeaponRaised()) {
                                 if (!left) {
-                                    new CombatUtils().getCombatResources(world).raisePlayerWeapon();
+                                    CombatUtils.getCombatResources(world).raisePlayerWeapon();
                                     cplayerWeaponPosition.rotation = WEAPON_RAISED;
 
                                     var sprite = world.applyQuery(Query.builder().require(CombatPlayer.class).build()).findFirst().get();
@@ -106,16 +111,16 @@ public class CombatMovement implements System {
                                     var weaponAttributes = world.fetchComponent(weapon, UITransform.class);
                                     var damage = world.fetchComponent(weapon, CombatPlayerWeapon.class);
                                     UITransform modWeaponAttributes = new UITransform(weaponAttributes);
-                                    modWeaponAttributes.xPos = modWeaponAttributes.xPos + CombatUtils.WEAPON_PADDING;
+                                    modWeaponAttributes.xPos = modWeaponAttributes.xPos + scc210game.game.combat.CombatUtils.WEAPON_PADDING;
 
-                                    if (new CombatUtils().hasCollided(modWeaponAttributes, new CombatUtils().getOpponent(world, true))) {
-                                        new CombatUtils().damageEnemy(world, damage.damage);
+                                    if (new scc210game.game.combat.CombatUtils().hasCollided(modWeaponAttributes, new scc210game.game.combat.CombatUtils().getOpponent(world, true))) {
+                                        new scc210game.game.combat.CombatUtils().damageEnemy(world, damage.damage);
                                         if (!target.visible) {
                                             target.xPos = weaponAttributes.xPos;
                                             target.yPos = weaponAttributes.yPos;
                                             target.visible = true;
                                             target.visibleUntil = java.lang.System.currentTimeMillis() + TargetPosition.TIMEOUT;
-                                            target.offset = new CombatUtils().getOffset();
+                                            target.offset = new scc210game.game.combat.CombatUtils().getOffset();
                                         }
                                     }
 
@@ -130,9 +135,9 @@ public class CombatMovement implements System {
                     KeyDepressedEvent type = (KeyDepressedEvent) event;
 
                     if (type.key == Keyboard.Key.SPACE) {
-                        if (new CombatUtils().getCombatResources(world).getPlayerWeaponRaised()) {
+                        if (CombatUtils.getCombatResources(world).getPlayerWeaponRaised()) {
 
-                            new CombatUtils().getCombatResources(world).lowerPlayerWeapon();
+                            CombatUtils.getCombatResources(world).lowerPlayerWeapon();
                             cplayerWeaponPosition.rotation = WEAPON_HOLSTERED;
 
                             //cplayerWeaponPosition.xPos -= 0.1f;

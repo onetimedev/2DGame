@@ -38,6 +38,18 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
 }
 
+task fatJarJsfml(type: Jar) {
+    manifest {
+        attributes "Main-Class": "scc210game.App"
+    }
+
+    archiveBaseName.set('scc210game-packed-withjsml')
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
 task fatJar(type: Jar) {
     manifest {
         attributes "Main-Class": "scc210game.App"

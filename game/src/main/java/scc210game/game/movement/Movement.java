@@ -1,14 +1,11 @@
-package scc210game.engine.movement;
+package scc210game.game.movement;
 
 import org.jsfml.window.Keyboard;
-import scc210game.engine.ecs.*;
 import scc210game.engine.ecs.System;
 import scc210game.engine.events.Event;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.Query;
-import scc210game.engine.ecs.System;
 import scc210game.engine.ecs.World;
-import scc210game.engine.events.Event;
 import scc210game.engine.events.EventQueueReader;
 import scc210game.engine.state.event.KeyDepressedEvent;
 import scc210game.engine.state.event.KeyPressedEvent;

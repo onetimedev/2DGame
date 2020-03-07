@@ -4,7 +4,6 @@ import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
-import scc210game.engine.combat.CombatUtils;
 import scc210game.engine.ecs.*;
 import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.render.Renderable;
@@ -12,14 +11,10 @@ import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
-import scc210game.game.components.CombatBackgroundComponent;
 import scc210game.game.components.CombatDialog;
-import scc210game.game.components.CombatEnemy;
-import scc210game.game.components.CombatPlayer;
 
 import java.io.IOException;
 import java.lang.System;
-import java.nio.file.Paths;
 import java.util.Set;
 
 public class CombatDialogSpawner implements Spawner {

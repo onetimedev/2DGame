@@ -1,4 +1,4 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import scc210game.engine.ecs.Component;
 

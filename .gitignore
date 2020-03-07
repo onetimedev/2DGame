@@ -7,3 +7,5 @@ build
 .idea
 
 saves.json
+
+.DS_Store

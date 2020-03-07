@@ -6,7 +6,7 @@ import scc210game.engine.state.event.StateEvent;
 import scc210game.engine.state.trans.TransPop;
 import scc210game.engine.state.trans.TransPush;
 import scc210game.engine.state.trans.Transition;
-import scc210game.engine.ui.spawners.ClickableTextBoxSpawner;
+import scc210game.game.spawners.ClickableTextBoxSpawner;
 import scc210game.game.spawners.ui.BackgroundSpawner;
 import scc210game.game.states.events.ReturnToMainMenuEvent;
 import scc210game.game.states.events.TogglePauseEvent;

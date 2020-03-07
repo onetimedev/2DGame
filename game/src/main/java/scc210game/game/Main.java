@@ -13,8 +13,8 @@ import org.jsfml.window.event.MouseEvent;
 import scc210game.engine.animation.AnimationUpdater;
 import scc210game.engine.ecs.ECS;
 import scc210game.engine.ecs.System;
-import scc210game.engine.movement.CombatMovement;
-import scc210game.engine.movement.Movement;
+import scc210game.game.combat.CombatMovement;
+import scc210game.game.movement.Movement;
 import scc210game.engine.render.MainViewResource;
 import scc210game.engine.render.MainWindowResource;
 import scc210game.engine.render.RenderSystem;
@@ -151,7 +151,6 @@ public class Main {
                         break;
                     }
                     case CLOSED: {
-                        this.ecs.getCurrentWorld().deactivateCombat();
                         this.mainWindow.close();
                         break;
                     }

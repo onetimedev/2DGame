@@ -1,7 +1,7 @@
 package scc210game.game.states;
 
 import org.jsfml.system.Vector2i;
-import scc210game.engine.combat.CombatUtils;
+import scc210game.game.combat.CombatUtils;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.World;
 import scc210game.engine.render.MainViewResource;

@@ -1,4 +1,4 @@
-package scc210game.engine.ui.spawners;
+package scc210game.game.spawners;
 
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;

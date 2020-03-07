@@ -1,9 +1,9 @@
 package scc210game.game.states;
 
-import scc210game.engine.combat.*;
+import scc210game.engine.state.trans.TransNop;
+import scc210game.game.combat.*;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
-import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.engine.events.ExitCombatState;
 import scc210game.engine.events.LeaveCombatEvent;
@@ -14,6 +14,7 @@ import scc210game.game.components.*;
 import scc210game.game.resources.MainWorldEventQueueResource;
 import scc210game.game.spawners.*;
 import scc210game.game.spawners.ui.CombatBackground;
+import scc210game.game.states.events.TogglePauseEvent;
 
 public class CombatState extends BaseInGameState {
 
@@ -41,7 +42,10 @@ public class CombatState extends BaseInGameState {
     public void onStart(World world) {
         String weaponPath = CombatUtils.RES_ROOT_PATH + weapon.getPath();
 
-        world.activateCombat();
+        world.addResource(new CombatResources());
+
+        var combatResource = CombatUtils.getCombatResources(world);
+        combatResource.isCombatActive = true;
 
         world.entityBuilder().with(new TargetPosition()).build();
         world.entityBuilder().with(new CombatInfo()).build();
@@ -61,7 +65,7 @@ public class CombatState extends BaseInGameState {
 
         world.entityBuilder().with(new CombatSprite(textureName)).build();
         world.entityBuilder().with(new Scoring(scores.getPlayerExperience(), scores.getPlayerAbsHealth() ,scores.getEnemyAbsHealth())).build();
-        world.entityBuilder().with(new CombatResources()).build();
+
 
         world.entityBuilder().with(new EnemyController(world, CombatEnemy.class, enemyDamage)).build();
 
@@ -84,6 +88,12 @@ public class CombatState extends BaseInGameState {
             mainWorldEventQ.queue.broadcast(new LeaveCombatEvent(new Scoring(scores.playerExperience,scores.getPlayerAbsHealth(),scores.getEnemyAbsHealth()), this.enemy, info.didPlayerWin));  //TODO:
             return TransPop.getInstance();
         }
+
+        // don't pause in combat
+        if (evt instanceof TogglePauseEvent) {
+            return TransNop.getInstance();
+        }
+
         return super.handleEvent(evt, world);
     }
 }

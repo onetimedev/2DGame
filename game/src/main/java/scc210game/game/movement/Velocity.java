@@ -1,4 +1,4 @@
-package scc210game.engine.movement;
+package scc210game.game.movement;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;

@@ -1,4 +1,4 @@
-package scc210game.engine.combat;
+package scc210game.game.combat;
 
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderWindow;
@@ -10,9 +10,6 @@ import scc210game.engine.render.Renderable;
 import scc210game.engine.render.ViewType;
 import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.UiUtils;
-import scc210game.game.components.CombatEnemy;
-import scc210game.game.components.CombatPlayer;
-import scc210game.game.components.Health;
 
 import java.awt.*;
 import java.util.Set;

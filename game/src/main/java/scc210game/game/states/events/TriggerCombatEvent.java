@@ -1,6 +1,6 @@
 package scc210game.game.states.events;
 
-import scc210game.engine.combat.Scoring;
+import scc210game.game.combat.Scoring;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.state.event.StateEvent;
 import scc210game.game.components.TextureStorage;

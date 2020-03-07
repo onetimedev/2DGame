@@ -1,12 +1,11 @@
 package scc210game.game.spawners;
 
-import scc210game.engine.combat.Scoring;
+import scc210game.game.combat.Scoring;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
 import scc210game.engine.ecs.World;
 import scc210game.game.components.Inventory;
 import scc210game.game.components.Item;
-import scc210game.game.components.Steps;
 import scc210game.game.map.Player;
 
 public class FilledInventorySpawner implements Spawner {

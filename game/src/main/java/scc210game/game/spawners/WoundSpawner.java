@@ -3,8 +3,7 @@ package scc210game.game.spawners;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
-import org.jsfml.system.Vector2f;
-import scc210game.engine.combat.CombatUtils;
+import scc210game.game.combat.CombatUtils;
 import scc210game.engine.ecs.Entity;
 import scc210game.engine.ecs.Query;
 import scc210game.engine.ecs.Spawner;
@@ -15,12 +14,9 @@ import scc210game.engine.ui.components.UITransform;
 import scc210game.engine.utils.ResourceLoader;
 import scc210game.engine.utils.UiUtils;
 import scc210game.game.components.CombatEnemy;
-import scc210game.game.components.CombatPlayerWeapon;
 import scc210game.game.components.TargetPosition;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Random;
 import java.util.Set;
 
 public class WoundSpawner implements Spawner {
